@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import HeaderComponent from "./components/HeaderComponent";
@@ -11,7 +10,7 @@ function App() {
     <div>
       <Router>
         <HeaderComponent />
-        <div className="container">
+        <div className="container-fluid">
           <Switch>
             <Route path="/" exact component={HomeComponent}></Route>
           </Switch>
