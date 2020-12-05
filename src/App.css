@@ -31,10 +31,3 @@
   color: white;
   text-align: center;
 }
-
-.ace-editor {
-  position: relative;
-  overflow: hidden;
-  width: 700px;
-  height: 400px;
-}

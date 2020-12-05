@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import { Link } from "react-router-dom";
 import "./Header.CSS";
 
 class HeaderComponent extends Component {
@@ -16,22 +17,29 @@ class HeaderComponent extends Component {
               />
             </Navbar.Brand>
             <Nav className="mr-auto">
-              <Nav.Link href="/">HOME</Nav.Link>
-              <Nav.Link href="/learn">LEARN</Nav.Link>
-              <Nav.Link href="#pricing">PRACTICE</Nav.Link>
-              <Nav.Link href="#pricing">COMPETE</Nav.Link>
-              <Nav.Link href="#pricing">DOCS</Nav.Link>
-              <Nav.Link href="#pricing">RESOURCE</Nav.Link>
-              <Nav.Link href="#pricing">PRACTICE</Nav.Link>
+              <Link to="/" className="nav-link">
+                HOME
+              </Link>
+              <Link to="/learn" className="nav-link">
+                LEARN
+              </Link>
+              <Link to="/practice" className="nav-link">
+                PRACTICE
+              </Link>
+              <Link to="/learn" className="nav-link">
+                COMPETE
+              </Link>
+              <Link to="/learn" className="nav-link">
+                DOCS
+              </Link>
+              <Link to="/learn" className="nav-link">
+                RESOURCE
+              </Link>
             </Nav>
-            <Form inline>
-              <FormControl
-                type="text"
-                placeholder="Search"
-                className="mr-sm-2"
-              />
-              <Button variant="outline-info">Search</Button>
-            </Form>
+            <Button variant="outline-info" className="mr-3">
+              Sign in
+            </Button>
+            <Button variant="primary">Sign up</Button>
           </div>
         </Navbar>
       </div>

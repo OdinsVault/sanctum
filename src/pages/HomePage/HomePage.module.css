@@ -1,5 +1,6 @@
-.bgco {
+.jumboStyle {
   background-color: white !important;
+  text-align: center;
 }
 
 .buttonCenter {
@@ -12,4 +13,8 @@
 
 .jumboPadding {
   padding: 2rem !important;
+}
+
+.cardWidth {
+  width: "5rem";
 }
