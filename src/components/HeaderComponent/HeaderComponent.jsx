@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import { Navbar, Nav, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./Header.CSS";
 
@@ -36,10 +36,12 @@ class HeaderComponent extends Component {
                 RESOURCE
               </Link>
             </Nav>
-            <Button variant="outline-info" className="mr-3">
+            <Button variant="outline-info" className="mr-3" href="/auth">
               Sign in
             </Button>
-            <Button variant="primary">Sign up</Button>
+            <Button variant="primary" href="/auth">
+              Sign up
+            </Button>
           </div>
         </Navbar>
       </div>

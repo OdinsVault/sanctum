@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Container, Breadcrumb, Card, Button, Col, Row } from "react-bootstrap";
+import { Container, Breadcrumb, Card, Button, Row } from "react-bootstrap";
 import AceEditor from "react-ace";
 import styles from "./QuestionPage.module.css";
 
