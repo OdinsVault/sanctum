@@ -1,0 +1,16 @@
+#top-user-menu {
+    margin-right: 20px;
+    margin-left: 15px;
+}
+
+.top-right-side {
+    float: right;
+}
+
+.top-hosp-name {
+    margin-left: 25%;
+    font-size: 25px;
+	font-weight: 900;
+	color: rgb(2, 27, 49);
+	font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
