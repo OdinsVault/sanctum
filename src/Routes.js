@@ -6,6 +6,8 @@ import SiteLayout from './Components/Layout/Layout';
 import Login from './Components/Login/Login';
 import AddUser from './Components/Users/AddUser';
 import ManageUser from './Components/Users/ManageUsers';
+import OverviewCourse from './Components/Learn/courseOverview';
+import OverviewPractice from "./Components/Practice/practiceOverview";
 
 
 // function TryPoke() {
@@ -69,6 +71,8 @@ const Routes = () => {
             <Switch>
                 <Route path="/login" component={Login} />
                 <PrivateRoute  path='/dashboard' component={DashBoard}/>
+                <PrivateRoute  path='/courses/overview' component={OverviewCourse}/>
+                <PrivateRoute  path='/practice/overview' component={OverviewPractice}/>
                 <PrivateRoute path='/addUser' component={AddUser}/>
                 <PrivateRoute path= '/manageUser' component={ManageUser}/>
                 <PrivateRoute exact path="/" component={DashBoard} />

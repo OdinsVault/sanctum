@@ -65,12 +65,12 @@ class TopNav extends Component {
                     })}
 
                     <span role="img" style={{color: 'white', fontSize: '18px', fontWeight: '4px'}}>
-                        {/* <img style={{ width: '5%' }} src="./public/Images/691027.jpg" className="align-center" alt="DIPS" /> */}
+                          {/*<img alt={"Welcome"} style={{height:'50px',width:'150px'}} src={'http://localhost:3000/simplyLogo.png'}/>*/}
                         Logo Here
                     </span>
 
                     <span className="top-hosp-name">
-                      Simple Steps to Simply...
+                      <img alt={"Welcome"} style={{height:'60px',width:'150px'}} src={'http://localhost:3000/simplyLogo.png'}/>
                     </span>
                     <div className="top-right-side">
                         <span>

@@ -46,10 +46,12 @@ class SiteLayout extends React.Component{
 
 		return(
 		<Layout>
-			<Sider trigger={null} collapsible collapsed={this.state.collapsed}>
+			<Sider trigger={null} collapsible collapsed={this.state.collapsed}
+				   // style={{backgroundColor:'orange'}}
+			>
             <div className="logo" >
               <h4 style={{ color: 'white', fontWeight: 'bold' }}>
-                Welcome...
+                Welcome
               </h4>
             </div>
             <SideMenu />
@@ -58,9 +60,9 @@ class SiteLayout extends React.Component{
 		  <TopNav collapsed={this.state.collapsed} onCollapse={this.toggle} />
 			<Content style={{ margin: '0 16px' }}
 			>
-				<Breadcrumb style={{ margin: '16px 0' }}>
-                {breadcrumbItems}
-              </Breadcrumb>
+				{/*<Breadcrumb style={{ margin: '16px 0' }}>*/}
+              {/*  {breadcrumbItems}*/}
+              {/*</Breadcrumb>*/}
 			  <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
 				{this.props.children}
 				</div>

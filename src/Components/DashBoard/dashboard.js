@@ -32,11 +32,11 @@ class DashBoard extends React.Component {
         return (
             <div>
                 <Card>
-                    <PageHeader className="site-page-header" title="Dashboard"/>
+                    <PageHeader className="site-page-header" title=""/>
                     <Carousel autoplay effect="fade">
                         <div>
                             <h3 style={contentStyle}><img style={{height: '260px', width: '100%'}}
-                                                          src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"/>
+                                                          src={process.env.PUBLIC_URL + '/Images/Learn-1.jpeg'}/>
                             </h3>
                         </div>
                         <div>

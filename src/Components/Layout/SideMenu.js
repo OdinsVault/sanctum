@@ -35,6 +35,7 @@ class SideMenu extends React.Component {
             <Menu
                 mode="inline"
                 theme="dark"
+                // style={{backgroundColor:'orange'}}
                 // defaultSelectedKeys={['1']}
                 // defaultOpenKeys={['sub1']}
                 // style={{ height: '100%', borderRight: 0 }}
@@ -44,22 +45,22 @@ class SideMenu extends React.Component {
                 </Menu.Item>
                 <SubMenu key='sub1' icon={<GiftOutlined/>} title="Learn">
                     <Menu.Item key='2'>
-                        <Link >My Courses</Link>
+                        <Link to="/courses/overview">Courses</Link>
                     </Menu.Item>
                 </SubMenu>
                 <SubMenu key="sub2" icon={<ShopOutlined/>} title="Practice">
                     <Menu.Item key="3">
-                        <Link >View</Link>
+                        <Link to="/practice/overview" >View</Link>
                     </Menu.Item>
                 </SubMenu>
-                <SubMenu key="sub3" icon={<LaptopOutlined/>} title="Competitions">
-                    <Menu.Item key="4">
-                        <Link >New Competetions</Link>
+                {/*<SubMenu key="sub3" icon={<LaptopOutlined/>} title="Compete">*/}
+                    <Menu.Item icon={<LaptopOutlined/>} key="4">
+                        <Link >Compete</Link>
                     </Menu.Item>
-                    <Menu.Item key="5">
-                        <Link >My Competetions</Link>
-                    </Menu.Item>
-                </SubMenu>
+                    {/*<Menu.Item key="5">*/}
+                    {/*    <Link >My Competetions</Link>*/}
+                    {/*</Menu.Item>*/}
+                {/*</SubMenu>*/}
                 <SubMenu key="sub4" icon={<ShoppingCartOutlined/>} title="Docs">
                     <Menu.Item key="6">
                         <Link >Getting Start with Simply</Link>
@@ -83,7 +84,6 @@ class SideMenu extends React.Component {
                     </Menu.Item>
                 </SubMenu>
             </Menu>
-
         )
     }
 
