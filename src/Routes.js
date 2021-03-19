@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react';
 import { Switch, Route, Redirect, BrowserRouter, useHistory } from 'react-router-dom';
 import App from './App';
-import DashBoard from './Components/DashBoard/dashboard';
+import DashBoard from './Components/Dashboard/Dashboard';
 import SiteLayout from './Components/Layout/Layout';
 import Login from './Components/Login/Login';
 import AddUser from './Components/Users/AddUser';
 import ManageUser from './Components/Users/ManageUsers';
-import OverviewCourse from './Components/Learn/courseOverview';
-import OverviewPractice from "./Components/Practice/practiceOverview";
+import OverviewCourse from './Components/Learn/CourseOverview';
+import OverviewPractice from "./Components/Practice/PracticeOverview";
+import CourseDetails from "./Components/Learn/CourseDetails";
+import QuestionList from "./Components/Practice/QuestionsList";
 
 
 // function TryPoke() {
@@ -21,17 +23,17 @@ import OverviewPractice from "./Components/Practice/practiceOverview";
 //     });
 // }
 
-// function CheckLogOnStatus() {
-//     let token = localStorage.getItem('token');
-//     let validTime = localStorage.getItem('loggedInData');
+function CheckLogOnStatus() {
+    let token = localStorage.getItem('token');
+    // let validTime = localStorage.getItem('loggedInData');
 
-//     if (token && validTime) {
-//         TryPoke();
-//         return true;
-//     } else {
-//         return false;
-//     }
-// }
+    if (token) {
+        // TryPoke();
+        return true;
+    } else {
+        return false;
+    }
+}
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
 
@@ -72,7 +74,9 @@ const Routes = () => {
                 <Route path="/login" component={Login} />
                 <PrivateRoute  path='/dashboard' component={DashBoard}/>
                 <PrivateRoute  path='/courses/overview' component={OverviewCourse}/>
+                <PrivateRoute  path="/courses/:courseName" component={CourseDetails}/>
                 <PrivateRoute  path='/practice/overview' component={OverviewPractice}/>
+                <PrivateRoute  path='/practice/:courseName' component={QuestionList}/>
                 <PrivateRoute path='/addUser' component={AddUser}/>
                 <PrivateRoute path= '/manageUser' component={ManageUser}/>
                 <PrivateRoute exact path="/" component={DashBoard} />

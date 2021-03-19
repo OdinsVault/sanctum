@@ -1,0 +1,27 @@
+.bg-image{
+    size: auto;
+    /*border: 2px ;*/
+    padding: 15px;
+    padding-bottom: 25%;
+    padding-top: 25%;
+    height: 100%;
+    background-color: darkslategrey;
+    background:url("http://localhost:3000/Images/SimplyLogin.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 0;
+    /*filter: blur(2px);*/
+    /*-webkit-filter: blur(2px);*/
+}
+
+.loginText{
+    position: absolute;
+    top: 60%;
+    left: 25%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    width: 80%;
+    padding: 20px;
+    text-align: center;
+}

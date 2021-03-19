@@ -31,7 +31,7 @@ class OverviewPractice extends React.Component {
     }
 
     getCourseList = async () => {
-
+console.log("works")
         this.setState({
             loading: true
         })
@@ -50,8 +50,12 @@ class OverviewPractice extends React.Component {
         })
     }
 
-    goToCourse =(course) =>{
-        console.log(course)
+    viewQuestions =(quiz) =>{
+        var name = quiz.courseName.split(" ").join("")
+        this.props.history.push({
+            pathname: `/practice/${name}`,
+            state: quiz
+        });
     }
 
     async componentDidMount() {
@@ -62,7 +66,7 @@ class OverviewPractice extends React.Component {
         return (
             <div>
                 <Card>
-                    <PageHeader className="site-page-header" title="Courses"/>
+                    <PageHeader className="site-page-header" title="Practice"/>
                     <Row style={{marginBottom: '40px'}}>
                         <Col offset={22}>
                             <Button onClick={this.getCourseList}><ReloadOutlined/> Refresh</Button>
@@ -83,12 +87,12 @@ class OverviewPractice extends React.Component {
                                                     <CheckCircleTwoTone twoToneColor="#52c41a"/>}
                                             hoverable
                                             // cover={<img alt="example" style={{height:'150px'}} src="" />}
-                                            title={<span>Level {item.level}: {item.courseName}</span>}
+                                            title={<span>Practice Level {item.level}: {item.courseName}</span>}
                                         >
                                             <Meta title={item.description} description="Your progress"/>
-                                            <Progress percent={(100 / item.steps) * item.completed} size="small"/>
+                                            <Progress percent={(100 / item.questions) * item.completed} size="small"/>
                                             <Col offset={20} style={{paddingTop: '15px'}}>
-                                                {item.status === "locked" ? '' : <Button onClick={()=>this.goToCourse(item)}><RightCircleTwoTone/></Button>}
+                                                {item.status === "locked" ? '' : <Button onClick={()=>this.viewQuestions(item)}><RightCircleTwoTone/></Button>}
                                             </Col>
                                             {item.status === 'locked' ? "Complete previous to unlock this level!" : ""}
                                         </Card>
@@ -98,7 +102,6 @@ class OverviewPractice extends React.Component {
                             />
                         </Spin>
                     </div>
-                    ,
                 </Card>
             </div>
         )

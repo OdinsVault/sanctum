@@ -5,11 +5,13 @@ import {
     UserOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
-    PoweroffOutlined, NotificationOutlined
+    PoweroffOutlined, NotificationOutlined,
+    TrophyTwoTone,FundTwoTone,CrownTwoTone
 } from '@ant-design/icons';
 
 // import { Logout } from '../../Services/AuthService';
 import './TopNav.css';
+import {logout} from "../../Services/UserLoginService";
 
 const {Header} = Layout;
 
@@ -19,24 +21,25 @@ class TopNav extends Component {
         this.state = {
             username: '',
             role: '',
-            hospital: ''
+            user: ''
         };
     }
 
-    // componentDidMount() {
-    //     var usersession = localStorage.getItem('usersession');
-    //     var userSessionObj = JSON.parse(usersession);
+    componentDidMount() {
+        var usersession = localStorage.getItem('usersession');
+        var userSessionObj = JSON.parse(usersession);
+        console.log(userSessionObj);
+        var user = userSessionObj.User
+        this.setState({
+            username: user.fname,
+            role: userSessionObj.Role[0],
+            user: user
+        });
+    }
 
-    //     this.setState({
-    //         username: userSessionObj.UserName,
-    //         role: userSessionObj.Role,
-    //         hospital: userSessionObj.Hospital
-    //     });
-    // }
-
-    handleUserMenuClick = e => {
+    LogoutClick = e => {
         if (e.key === 'logout') {
-            // Logout();
+            logout();
             const history = createHashHistory();
             history.go("/login");
         }
@@ -44,11 +47,20 @@ class TopNav extends Component {
 
     getUserMenu = () => {
         return (
-            <Menu >
-                <Menu.Item key="logout" icon={<UserOutlined />}>
+            <Menu>
+                <Menu.Item key="rank"  icon={<TrophyTwoTone/>}>
+                    Rank: {this.state.user.rank}
+                </Menu.Item>
+                <Menu.Item key="score"  icon={<FundTwoTone />}>
+                    Score: {this.state.user.score}
+                </Menu.Item>
+                <Menu.Item key="score"  icon={<CrownTwoTone />}>
+                    Leaderboards
+                </Menu.Item>
+                <Menu.Item key="logout" icon={<UserOutlined/>}>
                     My Profile
                 </Menu.Item>
-                <Menu.Item key="logout" onClick={this.handleUserMenuClick} icon={<PoweroffOutlined/>}>
+                <Menu.Item key="logout" onClick={this.LogoutClick} icon={<PoweroffOutlined/>}>
                     LogOut
                 </Menu.Item>
             </Menu>);
@@ -70,20 +82,21 @@ class TopNav extends Component {
                     </span>
 
                     <span className="top-hosp-name">
-                      <img alt={"Welcome"} style={{height:'60px',width:'150px'}} src={'http://localhost:3000/simplyLogo.png'}/>
+                      <img alt={"Welcome"} style={{height: '60px', width: '150px'}}
+                           src={'http://localhost:3000/simplyLogo.png'}/>
                     </span>
                     <div className="top-right-side">
                         <span>
-                        <Dropdown overlay={menu}>
-                        <Badge dot>
-                            <NotificationOutlined />
-                        </Badge>
-                        </Dropdown>
+                        {/*<Dropdown overlay={menu}>*/}
+                            {/*<Badge dot>*/}
+                            {/*    <NotificationOutlined />*/}
+                            {/*</Badge>*/}
+                            {/*</Dropdown>*/}
                             </span>
                         <span id="top-user-menu">
                             <Dropdown.Button overlay={this.getUserMenu()} placement="bottomCenter"
                                              icon={<UserOutlined/>}>
-                                {/* {`${this.state.username} | ${this.state.role}`} */} UserName
+                                 {`${this.state.username} `}
                             </Dropdown.Button>
                         </span>
                     </div>
@@ -101,7 +114,7 @@ const menu = (
     <Menu>
         <Menu.Item>
             <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-               You have notifications
+                You have notifications
             </a>
         </Menu.Item>
     </Menu>

@@ -1,6 +1,6 @@
 import React from 'react';
 import {Button, Col, PageHeader, Select, Form, Card, Space, Row, Divider, List, Carousel, Image} from 'antd';
-import {MinusCircleOutlined,BulbOutlined } from '@ant-design/icons';
+import {MinusCircleOutlined, BulbOutlined} from '@ant-design/icons';
 import {withRouter} from 'react-router';
 
 
@@ -20,12 +20,17 @@ class DashBoard extends React.Component {
             courses: "",
             practicalList: "",
             competitionList: '',
-            todaysTip:''
+            todaysTip: ''
         };
     }
 
+    setComponents =()=> {
+        var user = JSON.parse(localStorage.getItem('usersession'));
+
+    }
 
     componentDidMount() {
+        this.setComponents()
     }
 
     render() {
@@ -49,8 +54,8 @@ class DashBoard extends React.Component {
                             <h3 style={contentStyle}>4</h3>
                         </div>
                     </Carousel>
-                    <Divider> <b><BulbOutlined /> Today's Tip</b></Divider>
-                    <div><span style={{fontSize:'18px',fontWeight:'12px'}}>"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                    <Divider> <b><BulbOutlined/> Today's Tip</b></Divider>
+                    <div><span style={{fontSize: '18px', fontWeight: '12px'}}>"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                         sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                         Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
                         consequat.

@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons'
 import {withRouter} from 'react-router';
 import {getCourses} from "../../Services/learningService";
+import CourseDetails from "./CourseDetails";
 
 const {Meta} = Card;
 const contentStyle = {
@@ -26,7 +27,8 @@ class OverviewCourse extends React.Component {
         super(props);
         this.state = {
             courseList: [],
-            loading: false
+            loading: false,
+            isCourseSelected:false
         };
     }
 
@@ -38,7 +40,6 @@ class OverviewCourse extends React.Component {
         var user = null; //get userId from localStorage
         try {
             var list = await getCourses(user);
-            console.log(list);
             this.setState({
                 courseList: list
             })
@@ -51,7 +52,14 @@ class OverviewCourse extends React.Component {
     }
 
     goToCourse =(course) =>{
-        console.log(course)
+        this.setState({
+            isCourseSelected:true
+        })
+        var c = course.courseName.split(" ").join("")
+        this.props.history.push({
+            pathname: `/courses/${c}`,
+            state: course
+        });
     }
 
     async componentDidMount() {
@@ -87,7 +95,7 @@ class OverviewCourse extends React.Component {
                                             title={<span>Level {item.level}: {item.courseName}</span>}
                                         >
                                             <Meta title={item.description} description="Your progress"/>
-                                            <Progress percent={(100 / item.steps) * item.completed} size="small"/>
+                                            <Progress percent={(100 / item.questions) * item.completed} size="small"/>
                                             <Col offset={20} style={{paddingTop: '15px'}}>
                                                 {item.status === "locked" ? '' : <Button onClick={()=>this.goToCourse(item)}><RightCircleTwoTone/></Button>}
                                             </Col>
@@ -99,7 +107,6 @@ class OverviewCourse extends React.Component {
                             />
                         </Spin>
                     </div>
-                    ,
                 </Card>
             </div>
         )
