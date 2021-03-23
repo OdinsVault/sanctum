@@ -25,3 +25,12 @@ export async function getUserDetails (userId) {
     var response = await api.get(endpoint);
     return response;
 }
+
+export async function signup(user){
+    console.log(user);
+    const endpoint = '/user/signup';
+    let api = await API();
+    var response = await api.post(endpoint,user);
+    return response;
+}
+

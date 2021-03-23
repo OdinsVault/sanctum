@@ -1,5 +1,5 @@
 import {API} from "./APICallService";
-import {courses} from '../conastant'
+import {courses} from '../constant'
 
 export async function getCourses(user){
 

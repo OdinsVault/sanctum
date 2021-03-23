@@ -1,5 +1,5 @@
 import {API} from "./APICallService";
-import {quizzes} from "../conastant";
+import {quizzes} from "../constant";
 
 export async function getQuestionList(user,quizID) {
 

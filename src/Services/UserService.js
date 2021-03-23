@@ -1,4 +1,4 @@
-import {users} from "../conastant";
+import {users} from "../constant";
 
 
 export async function  addNewUser(user){

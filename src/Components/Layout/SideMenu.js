@@ -3,12 +3,15 @@ import {Layout, Menu} from 'antd';
 import {Link} from 'react-router-dom';
 import {
     HomeOutlined,
-    UserOutlined,
     LaptopOutlined,
+    FolderOpenOutlined,
+    HighlightOutlined,
     NotificationOutlined,
-    ShopOutlined,
-    ShoppingCartOutlined,
-    GiftOutlined
+    ShoppingOutlined,
+    ExperimentOutlined,
+    GiftOutlined,
+    CodeOutlined,
+    TrophyOutlined
 } from '@ant-design/icons';
 import React from 'react';
 
@@ -40,47 +43,41 @@ class SideMenu extends React.Component {
                 // defaultOpenKeys={['sub1']}
                 // style={{ height: '100%', borderRight: 0 }}
             >
-                <Menu.Item key="sub0" icon={<HomeOutlined/>}>
+                <Menu.Item key="1" icon={<HomeOutlined/>}>
                     <Link to="/dashboard">Dashboard</Link>
                 </Menu.Item>
-                <SubMenu key='sub1' icon={<GiftOutlined/>} title="Learn">
-                    <Menu.Item key='2'>
-                        <Link to="/courses/overview">Courses</Link>
-                    </Menu.Item>
-                </SubMenu>
-                <SubMenu key="sub2" icon={<ShopOutlined/>} title="Practice">
-                    <Menu.Item key="3">
-                        <Link to="/practice/overview" >View</Link>
-                    </Menu.Item>
-                </SubMenu>
-                {/*<SubMenu key="sub3" icon={<LaptopOutlined/>} title="Compete">*/}
-                    <Menu.Item icon={<LaptopOutlined/>} key="4">
-                        <Link >Compete</Link>
-                    </Menu.Item>
-                    {/*<Menu.Item key="5">*/}
-                    {/*    <Link >My Competetions</Link>*/}
-                    {/*</Menu.Item>*/}
-                {/*</SubMenu>*/}
-                <SubMenu key="sub4" icon={<ShoppingCartOutlined/>} title="Docs">
+                <Menu.Item key='2' icon={< HighlightOutlined/>}>
+                    <Link to="/courses/overview">Learn</Link>
+                </Menu.Item>
+                <Menu.Item key="3" icon={<ExperimentOutlined/>}>
+                    <Link to="/practice/overview">Practice</Link>
+                </Menu.Item>
+                <Menu.Item icon={<TrophyOutlined />} key="4">
+                    <Link>Compete</Link>
+                </Menu.Item>
+                <Menu.Item icon={<CodeOutlined />} key="5">
+                    <Link to="/codeVisualizer">Code VIsializer</Link>
+                </Menu.Item>
+                <SubMenu key="sub4" icon={< FolderOpenOutlined/>} title="Docs">
                     <Menu.Item key="6">
-                        <Link >Getting Start with Simply</Link>
+                        <Link to="/learn/gettingStart">Getting Start with Simply</Link>
                     </Menu.Item>
                     <Menu.Item key="7">
-                        <Link>Simply Documentation</Link>
+                        <Link to="/learn/documentation">Simply Documentation</Link>
                     </Menu.Item>
                     <Menu.Item key="8">
-                        <Link>Developers Guide</Link>
+                        <Link to="/learn/developerGuide">Developers Guide</Link>
                     </Menu.Item>
                 </SubMenu>
-                <SubMenu key='sub5' icon={<UserOutlined/>} title="Resources">
+                <SubMenu key='sub5' icon={< ShoppingOutlined/>} title="Resources">
                     <Menu.Item key="9">
-                        <Link >Download SDK</Link>
+                        <Link>Download SDK</Link>
                     </Menu.Item>
                     <Menu.Item key="10">
-                        <Link >Config File Generation</Link>
+                        <Link>Config File Generation</Link>
                     </Menu.Item>
                     <Menu.Item key="11">
-                        <Link >Syntax Highlighter Configs Download</Link>
+                        <Link>Syntax Highlighter Configs Download</Link>
                     </Menu.Item>
                 </SubMenu>
             </Menu>

@@ -10,6 +10,10 @@ import OverviewCourse from './Components/Learn/CourseOverview';
 import OverviewPractice from "./Components/Practice/PracticeOverview";
 import CourseDetails from "./Components/Learn/CourseDetails";
 import QuestionList from "./Components/Practice/QuestionsList";
+import GettingStart from "./Components/Documentation/GettingStart";
+import Documentation from "./Components/Documentation/Documentation";
+import DevelopersGuide from "./Components/Documentation/DevelopersGuide";
+import Visualizer from "./Components/Visualizer/CodeVisualizer";
 
 
 // function TryPoke() {
@@ -65,7 +69,7 @@ const Routes = () => {
     // if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
     //     basePath = "/"
     // } else {
-    //     basePath = ""
+    //     basePath = "/DIPS-ANC/ANCDMClient"
     // }
 
     return (
@@ -77,6 +81,10 @@ const Routes = () => {
                 <PrivateRoute  path="/courses/:courseName" component={CourseDetails}/>
                 <PrivateRoute  path='/practice/overview' component={OverviewPractice}/>
                 <PrivateRoute  path='/practice/:courseName' component={QuestionList}/>
+                <PrivateRoute  path='/learn/gettingStart' component={GettingStart}/>
+                <PrivateRoute  path='/learn/documentation' component={Documentation}/>
+                <PrivateRoute  path='/learn/developerGuide' component={DevelopersGuide}/>
+                <PrivateRoute  path='/codeVisualizer' component={Visualizer}/>
                 <PrivateRoute path='/addUser' component={AddUser}/>
                 <PrivateRoute path= '/manageUser' component={ManageUser}/>
                 <PrivateRoute exact path="/" component={DashBoard} />

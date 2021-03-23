@@ -1,13 +1,15 @@
 import React from 'react';
-import {Form, Input, Button, Checkbox, Col, Card, Row, notification, Modal} from 'antd';
+import {Form, Input, Button, Select, Col, Card, Row, notification, Modal, DatePicker} from 'antd';
 import {withRouter} from 'react-router';
-import {getUserDetails, login} from "../../Services/UserLoginService";
+import {getUserDetails, login, signup} from "../../Services/UserLoginService";
 import './Login.css';
 import {Header} from "antd/es/layout/layout";
 import jwt_decode from "jwt-decode";
+import moment from 'moment';
 
 var _ = require('underscore');
 
+const {Option} = Select;
 const {Meta} = Card;
 
 const layout = {
@@ -56,7 +58,10 @@ class Login extends React.Component {
                         usersession.User = user
                     }
                 } catch (error) {
-                    notification.error({message: 'Error!', description: (error.cause ? error.cause : "Error getting user details!")});
+                    notification.error({
+                        message: 'Error!',
+                        description: (error.cause ? error.cause : "Error getting user details!")
+                    });
                 }
             }
             localStorage.setItem("token", usersession.Token);
@@ -65,10 +70,9 @@ class Login extends React.Component {
             if ((session.token !== null) || (session.token !== undefined)) {
                 this.props.history.push({
                     pathname: "/dashboard",
-                    user:usersession
+                    user: usersession
                 });
-            }
-            else {
+            } else {
                 this.props.history.goBack();
             }
         } catch (error) {
@@ -81,6 +85,28 @@ class Login extends React.Component {
         //     signUpModalVisible: false,
         // })
     };
+
+    signUp = async(values) =>{
+        // console.log(values);
+        var user = {
+            fname: values.fname,
+            lname: values.lname,
+            email: values.email,
+            password: values.password,
+            dob: values.dob,
+            institute: values.institute,
+            xp: values.xp
+        }
+        try{
+            var response = await signup(user);
+            if(response){
+                notification.success({message:"Success!" ,description:'Please login to continue.'})
+            }
+        }catch (error){
+            notification.error({message: 'Error!', description: (error.cause ? error.cause : "")});
+        }
+
+    }
 
 
     render() {
@@ -159,48 +185,40 @@ class Login extends React.Component {
                 <Modal
                     title="Sign Up"
                     centered
-                    bodyStyle={{backgroundColor: '#ffe9d4'}}
+                    bodyStyle={{backgroundColor: '#e8f0ff'}}
                     visible={this.state.signUpModalVisible}
                     // onOk={() => this.setModal2Visible(false)}
                     onCancel={() => this.setState({signUpModalVisible: false})}
                     footer={[
-                        <span style={{color: '#cc935c'}}>Continue your journey with Simply...!</span>,
+                        <span style={{color: '#7fa3eb'}}><b>Continue your journey with Simply...!</b></span>,
                         // <Button key="submit" shape="round" disabled>
                         //     Forgot Password
                         // </Button>,
                     ]}
                 >
-
-                    {/*"fname": "hasintha",*/}
-                    {/*"lname": "abeykoon",*/}
-                    {/*"email": "hasinthaabyekoon@gmail.com",*/}
-                    {/*"password": "hasintha123",*/}
-                    {/*"dob": "12/25/1996",*/}
-                    {/*"institute": "UoM",*/}
-                    {/*"xp": "Beginner"*/}
                     <Form
                         {...layout}
                         name="basic"
-                        onFinish={this.LogIn}
+                        onFinish={this.signUp}
                         autoComplete={"off"}
                     >
                         <Form.Item label="First Name" name="fname"
                                    rules={[
                                        {
                                            required: true,
-                                           // message: 'Please input your username!',
+                                           message: 'Please enter your first name!',
                                        },
                                    ]}
                         >
                             <Input/>
                         </Form.Item>
                         <Form.Item label="Last Name" name="lname"
-                                   rules={[
-                                       {
-                                           required: true,
-                                           message: 'Please enter your lastname!',
-                                       },
-                                   ]}
+                                   // rules={[
+                                   //     {
+                                   //         required: true,
+                                   //         message: 'Please enter your last name!',
+                                   //     },
+                                   // ]}
                         >
                             <Input/>
                         </Form.Item>
@@ -215,29 +233,69 @@ class Login extends React.Component {
                         >
                             <Input/>
                         </Form.Item>
-                        <Form.Item label="Email" name="email"
-                                   rules={[
-                                       {
-                                           type: 'email',
-                                           required: true,
-                                           message: 'Please enter valid email!',
-                                       },
-                                   ]}
-                        >
+                        <Form.Item label="Date of Birth" name="dob">
+                            <DatePicker
+                                format="YYYY-MM-DD"
+                                disabledDate={disabledDate}
+                            />
+                        </Form.Item>
+                        <Form.Item label="Institute" name="institute">
                             <Input/>
                         </Form.Item>
-
-                        <Form.Item label="Password" name="password"
+                        <Form.Item name="xp" label="Experience"
                                    rules={[
                                        {
                                            required: true,
-                                           message: 'Please input your password!',
-                                       },
-                                   ]}
+                                           message: 'Please select your level of expertise!'
+                                       }
+                                       ]}>
+                            <Select
+                                placeholder="Level of experience in programming"
+                                onChange={this.onGenderChange}
+                                allowClear
+                            >
+                                <Option value="Beginner">Newbie</Option>
+                                <Option value="Intermediate">Intermediate</Option>
+                                <Option value="Advanced">Expert</Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            name="password"
+                            label="Password"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your password!',
+                                },
+                            ]}
+                            hasFeedback
                         >
                             <Input.Password/>
                         </Form.Item>
 
+                        <Form.Item
+                            name="confirm"
+                            label="Confirm Password"
+                            dependencies={['password']}
+                            hasFeedback
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please confirm your password!',
+                                },
+                                ({getFieldValue}) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+
+                                        return Promise.reject(new Error('The two passwords that you entered do not match!'));
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password/>
+                        </Form.Item>
                         <Col offset={18}>
                             <Button shape="round" size='large' htmlType="submit">
                                 Sign Up
@@ -249,6 +307,11 @@ class Login extends React.Component {
             </div>
         );
     }
+}
+
+function disabledDate(current) {
+    // Can not select days after today
+    return current > moment().endOf('day');
 }
 
 export default withRouter(Login)
