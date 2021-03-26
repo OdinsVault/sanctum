@@ -18,3 +18,10 @@ export async function getQuestionList(user,quizID) {
     //  var response = await api.get(endpoint,data);
     // return response
 }
+
+export async function getQuestionById (qId){
+    const endpoint = `/questions/${qId}`;
+    let api = await API();
+    // var response = await api.get(endpoint);
+    return "";
+}

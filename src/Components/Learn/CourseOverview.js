@@ -70,7 +70,7 @@ class OverviewCourse extends React.Component {
         return (
             <div>
                 <Card>
-                    <PageHeader className="site-page-header" title="Courses"/>
+                    <PageHeader className="site-page-header" title="Modules"/>
                     <div className="site-card-wrapper">
                         <Row style={{marginBottom: '40px'}}>
                             <Col offset={20}>
@@ -91,6 +91,7 @@ class OverviewCourse extends React.Component {
                                                 item.status === 'unlocked' ? <UnlockTwoTone/> :
                                                     <CheckCircleTwoTone twoToneColor="#52c41a"/>}
                                             hoverable
+                                            onClick={()=>this.goToCourse(item)}
                                             // cover={<img alt="example" style={{height:'150px'}} src="" />}
                                             title={<span>Level {item.level}: {item.courseName}</span>}
                                         >

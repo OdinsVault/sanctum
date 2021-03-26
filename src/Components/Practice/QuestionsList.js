@@ -51,8 +51,13 @@ class QuestionList extends React.Component {
         })
     }
 
-    goToCourse = (course) => {
-        console.log(course)
+    goToQuestion = (question) => {
+        var questionName = question.title.split(" ").join("");
+        this.props.history.push({
+            pathname: `/question/${questionName}`,
+            state: question,
+            course:this.state.course
+        });
     }
 
     async componentDidMount() {
@@ -99,7 +104,7 @@ class QuestionList extends React.Component {
                                             <Meta title={item.title} description={"Marks: "}/>
                                             {/*<Progress percent={(100 / item.questions) * item.completed} size="small"/>*/}
                                             <Col offset={20} style={{paddingTop: '15px'}}>
-                                                    <Button onClick={() => this.goToCourse(item)}><RightCircleTwoTone/></Button>
+                                                    <Button onClick={() => this.goToQuestion(item)}><RightCircleTwoTone/></Button>
                                             </Col>
                                             {item.status === 'locked' ? "Complete previous to unlock this level!" : ""}
                                         </Card>

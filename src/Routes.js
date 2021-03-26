@@ -14,6 +14,7 @@ import GettingStart from "./Components/Documentation/GettingStart";
 import Documentation from "./Components/Documentation/Documentation";
 import DevelopersGuide from "./Components/Documentation/DevelopersGuide";
 import Visualizer from "./Components/Visualizer/CodeVisualizer";
+import Question from "./Components/Practice/SelectedQuestion";
 
 
 // function TryPoke() {
@@ -80,7 +81,8 @@ const Routes = () => {
                 <PrivateRoute  path='/courses/overview' component={OverviewCourse}/>
                 <PrivateRoute  path="/courses/:courseName" component={CourseDetails}/>
                 <PrivateRoute  path='/practice/overview' component={OverviewPractice}/>
-                <PrivateRoute  path='/practice/:courseName' component={QuestionList}/>
+                <PrivateRoute exact path='/practice/:courseName' component={QuestionList}/>
+                <PrivateRoute exact path='/question/:questionTitle' component={Question}/>
                 <PrivateRoute  path='/learn/gettingStart' component={GettingStart}/>
                 <PrivateRoute  path='/learn/documentation' component={Documentation}/>
                 <PrivateRoute  path='/learn/developerGuide' component={DevelopersGuide}/>
