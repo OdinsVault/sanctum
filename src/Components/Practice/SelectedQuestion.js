@@ -159,14 +159,16 @@ class Question extends React.Component {
                                                 <TextArea rows={10} showCount
                                                           value={this.state.answerCode}
                                                           onChange={this.setCode}/>
-                                                {this.state.answerCode}
                                                 <br/>
                                                 <Row>
-                                                    <Col offset={18}>
+                                                    <Col offset={14}>
                                                     <Button><b>Run Code</b></Button>
                                                     </Col>
                                                     <Col >
-                                                    <Button style={{background:'#ffba59'}}><b>Submit Code</b></Button>
+                                                    <Button type="primary"><b>Submit Code</b></Button>
+                                                    </Col>
+                                                    <Col offset={1}>
+                                                    <Button ><b>Visualizer</b></Button>
                                                     </Col>
 
                                                 </Row>
@@ -182,12 +184,12 @@ class Question extends React.Component {
                                             )}
                                         </Spin>
                                     </TabPane>
-                                    <TabPane tab="Visualizer" key="3">
-                                        visualize your code
-                                    </TabPane>
-                                    <TabPane tab="Submissions" key="2" disabled>
-                                        No submissions
-                                    </TabPane>
+                                    {/*<TabPane tab="Visualizer" key="3">*/}
+                                    {/*    visualize your code*/}
+                                    {/*</TabPane>*/}
+                                    {/*<TabPane tab="Submissions" key="2" disabled>*/}
+                                    {/*    No submissions*/}
+                                    {/*</TabPane>*/}
                                 </Tabs>
                             </Col>
                             <Col offset={1} span={5}>
