@@ -6,7 +6,7 @@
     padding-top: 25%;
     height: 100%;
     background-color: darkslategrey;
-    background:url("http://localhost:3000/Images/SimplyLogin.jpg");
+    background:url("http://ui-simply.herokuapp.com/Images/SimplyLogin.jpg");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

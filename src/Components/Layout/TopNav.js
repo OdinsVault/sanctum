@@ -83,7 +83,7 @@ class TopNav extends Component {
 
                     <span className="top-hosp-name">
                       <img alt={"Welcome"} style={{height: '60px', width: '150px'}}
-                           src={'http://localhost:3000/simplyLogo.png'}/>
+                           src={'https://ui-simply.herokuapp.com/simplyLogo.png'}/>
                     </span>
                     <div className="top-right-side">
                         <span>

@@ -28,7 +28,8 @@ class QuestionList extends React.Component {
         this.state = {
             course: '',
             quizList: [],
-            loading: false
+            loading: false,
+            queByLevel:''
         };
     }
 
@@ -52,24 +53,33 @@ class QuestionList extends React.Component {
     }
 
     goToQuestion = (question) => {
+        var qL = this.state.queByLevel.questions[0];
         var questionName = question.title.split(" ").join("");
+        console.log("ql",qL);
         this.props.history.push({
             pathname: `/question/${questionName}`,
             state: question,
-            course:this.state.course
+            course:this.state.course,
+            ques:qL
         });
     }
 
     async componentDidMount() {
+
         var state = this.props.location.state;
-        this.setState({
-            course: state
-        })
         if (!state) {
-            this.props.history.goBack();
+            this.props.history.push({
+                pathname:'/practice/overview',
+            });
         } else {
             await this.getQuizList(state);
         }
+        var qLevels = this.props.location.QByLevel;
+        console.log("C", state);
+        this.setState({
+            course: state,
+            queByLevel:qLevels
+        })
 
     }
 
@@ -100,6 +110,7 @@ class QuestionList extends React.Component {
                                                 {backgroundColor: '#faffb8'}:{backgroundColor: '#ffdaad'}}
                                             hoverable
                                             title={<span style={{fontSize:'13px'}}>Difficulty : {item.difficulty}</span>}
+                                            onClick={() => this.goToQuestion(item)}
                                         >
                                             <Meta title={item.title} description={"Marks: "}/>
                                             {/*<Progress percent={(100 / item.questions) * item.completed} size="small"/>*/}

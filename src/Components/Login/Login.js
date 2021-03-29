@@ -33,14 +33,33 @@ class Login extends React.Component {
         this.state = {
             value: null,
             userName: '',
+            email:'',
+            password:'',
             loginModalVisible: false,
             signUpModalVisible: false,
         };
     }
 
+    setEmail = (e) =>{
+        let mail = e.target.value
+        this.setState({
+            email:mail
+        })
+    }
 
-    LogIn = async (values) => {
-        // this.setState({})
+    setPassword = (e) =>{
+        let pw = e.target.value
+        this.setState({
+            password:pw
+        })
+    }
+
+
+    LogIn = async () => {
+        let values = {
+            email:this.state.email,
+            password:this.state.password
+        }
         try {
             var session = await login(values)
             var decoded = jwt_decode(session.token);
@@ -76,14 +95,13 @@ class Login extends React.Component {
                 this.props.history.goBack();
             }
         } catch (error) {
-
             notification.error({message: 'Error!', description: (error.cause ? error.cause : "")});
         }
 
-        // this.setState({
-        //     loginModalVisible: false,
-        //     signUpModalVisible: false,
-        // })
+        this.setState({
+            loginModalVisible: false,
+            signUpModalVisible: false,
+        })
     };
 
     signUp = async(values) =>{
@@ -148,7 +166,10 @@ class Login extends React.Component {
                         name="basic"
                         onFinish={this.LogIn}
                     >
-                        <Form.Item label="Email" name="email"
+                        <Form.Item label="Email"
+                                   onChange={this.setEmail}
+                                   name="email"
+                                   value={this.state.email}
                                    rules={[
                                        {
                                            type: 'email',
@@ -160,7 +181,10 @@ class Login extends React.Component {
                             <Input/>
                         </Form.Item>
 
-                        <Form.Item label="Password" name="password"
+                        <Form.Item label="Password"
+                                   name="password"
+                                   onChange={this.setPassword}
+                                   value={this.state.password}
                                    rules={[
                                        {
                                            required: true,
@@ -172,7 +196,9 @@ class Login extends React.Component {
                         </Form.Item>
 
                         <Col offset={18}>
-                            <Button shape="round" size='large' htmlType="submit">
+                            <Button shape="round" size='large'
+                                    // htmlType="submit"
+                                    onClick={this.LogIn}>
                                 Login
                             </Button>
                         </Col>

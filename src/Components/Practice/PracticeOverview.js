@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, Col, PageHeader, Card, Row, Spin, List, Progress} from 'antd';
+import {Button, Col, PageHeader, Card, Row, Spin, List, Progress, notification} from 'antd';
 import {
     LockTwoTone,
     UnlockTwoTone,
@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons'
 import {withRouter} from 'react-router';
 import {getCourses} from "../../Services/learningService";
+import {getQuestionByLevel} from "../../Services/PracticeService";
 
 const {Meta} = Card;
 const contentStyle = {
@@ -26,7 +27,8 @@ class OverviewPractice extends React.Component {
         super(props);
         this.state = {
             courseList: [],
-            loading: false
+            loading: false,
+            queByLevel:''
         };
     }
 
@@ -50,11 +52,32 @@ console.log("works")
         })
     }
 
-    viewQuestions =(quiz) =>{
+    getQuestionLevel = async(level) =>{
+        try{
+        var obj = await getQuestionByLevel();
+        var le =''
+        this.setState({
+            queByLevel:obj
+        })
+           for(let i=0;i<obj.levelCount;i++){
+               if(level===obj.levels[i].level){
+                   le = obj.levels[i];
+                   break;
+               }
+           }
+            return le;
+        }catch (e) {
+            notification.error({message:"Error!"})
+        }
+
+    }
+    viewQuestions =async(quiz) =>{
+         var level = await this.getQuestionLevel(quiz.level);
         var name = quiz.courseName.split(" ").join("")
         this.props.history.push({
             pathname: `/practice/${name}`,
-            state: quiz
+            state: quiz,
+            QByLevel : level
         });
     }
 
@@ -86,6 +109,7 @@ console.log("works")
                                                 item.status === 'unlocked' ? <UnlockTwoTone/> :
                                                     <CheckCircleTwoTone twoToneColor="#52c41a"/>}
                                             hoverable
+                                            onClick={()=>this.viewQuestions(item)}
                                             // cover={<img alt="example" style={{height:'150px'}} src="" />}
                                             title={<span>Practice Level {item.level}: {item.courseName}</span>}
                                         >

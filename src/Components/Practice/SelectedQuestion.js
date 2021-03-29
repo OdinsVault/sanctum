@@ -23,18 +23,22 @@ class Question extends React.Component {
         this.state = {
             course:'',
             question: '',
+            qL:'',
             selectedQuestion: '',
             loading: false,
             answerCode:''
         };
     }
 
-    getQuestion = async (question) => {
+    getQuestion = async (ques) => {
+
         this.setState({
             loading: true
         })
+        console.log(ques)
         try {
-            var question = await getQuestionById(question._id)
+            var question = await getQuestionById(ques._id);
+            console.log("returned",question)
             if (!question) {
                 notification.error({message: "Error", description: "Something went wrong please try again!"})
                 // this.props.history.goBack();
@@ -59,21 +63,22 @@ class Question extends React.Component {
     }
 
     async componentDidMount() {
-        if (!this.props.location.state) {
-            this.props.history.goBack();
+        if (!this.props.location.state || !this.props.location.course || !this.props.location.ques) {
+            this.props.history.push({
+               pathname: '/practice/overview'
+            });
         }
 
         var state = this.props.location.state;
         var course = this.props.location.course;
-console.log(course)
+        var question = this.props.location.ques;
         this.setState({
             question: state,
-            course: course
+            course: course,
+            qL:question
         })
 
-        this.getQuestion(state);
-
-        console.log(state)
+        this.getQuestion(question);
     }
 
     render() {
@@ -89,7 +94,7 @@ console.log(course)
                                 <Tabs defaultActiveKey="1" type="card">
                                     <TabPane tab="Problem" key="1">
                                         <Spin spinning={this.state.loading}>
-                                            {this.state.selectedQuestion?
+                                            {!this.state.selectedQuestion?
                                             (
                                             <Result
                                                 status="500"
@@ -103,51 +108,51 @@ console.log(course)
                                                 <h3>Description:</h3>
                                                 <div>
                                                     {this.state.selectedQuestion.description}
-                                                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                                    eiusmod
-                                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                                    veniam,
-                                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                                                    commodo
-                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-                                                    esse
-                                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                                                    cupidatat
-                                                    non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                    laborum."
+                                                    {/*"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do*/}
+                                                    {/*eiusmod*/}
+                                                    {/*tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim*/}
+                                                    {/*veniam,*/}
+                                                    {/*quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea*/}
+                                                    {/*commodo*/}
+                                                    {/*consequat. Duis aute irure dolor in reprehenderit in voluptate velit*/}
+                                                    {/*esse*/}
+                                                    {/*cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat*/}
+                                                    {/*cupidatat*/}
+                                                    {/*non proident, sunt in culpa qui officia deserunt mollit anim id est*/}
+                                                    {/*laborum."*/}
                                                 </div>
                                                 <br/>
                                                 <h3>Input Format:</h3>
                                                 <div>
-                                                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                                    eiusmod
-                                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                                    veniam,
-                                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                                                    commodo
-                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-                                                    esse
-                                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                                                    cupidatat
-                                                    non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                    laborum."
-                                                    {/*{this.state.selectedQuestion.inputs}*/}
+                                                    {/*"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do*/}
+                                                    {/*eiusmod*/}
+                                                    {/*tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim*/}
+                                                    {/*veniam,*/}
+                                                    {/*quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea*/}
+                                                    {/*commodo*/}
+                                                    {/*consequat. Duis aute irure dolor in reprehenderit in voluptate velit*/}
+                                                    {/*esse*/}
+                                                    {/*cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat*/}
+                                                    {/*cupidatat*/}
+                                                    {/*non proident, sunt in culpa qui officia deserunt mollit anim id est*/}
+                                                    {/*laborum."*/}
+                                                    {this.state.selectedQuestion.inputs}
                                                 </div>
                                                 <br/>
                                                 <h3>Expected Output:</h3>
                                                 <div>
-                                                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                                                    eiusmod
-                                                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                                    veniam,
-                                                    quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                                                    commodo
-                                                    consequat. Duis aute irure dolor in reprehenderit in voluptate velit
-                                                    esse
-                                                    cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                                                    cupidatat
-                                                    non proident, sunt in culpa qui officia deserunt mollit anim id est
-                                                    laborum."
+                                                    {/*"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do*/}
+                                                    {/*eiusmod*/}
+                                                    {/*tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim*/}
+                                                    {/*veniam,*/}
+                                                    {/*quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea*/}
+                                                    {/*commodo*/}
+                                                    {/*consequat. Duis aute irure dolor in reprehenderit in voluptate velit*/}
+                                                    {/*esse*/}
+                                                    {/*cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat*/}
+                                                    {/*cupidatat*/}
+                                                    {/*non proident, sunt in culpa qui officia deserunt mollit anim id est*/}
+                                                    {/*laborum."*/}
                                                     {this.state.selectedQuestion.outputs}
                                                 </div><br/><br/>
                                                 <h3>Code here:</h3>

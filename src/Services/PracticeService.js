@@ -22,6 +22,13 @@ export async function getQuestionList(user,quizID) {
 export async function getQuestionById (qId){
     const endpoint = `/questions/${qId}`;
     let api = await API();
-    // var response = await api.get(endpoint);
-    return "";
+    var response = await api.get(endpoint);
+    return response;
+}
+
+export async function getQuestionByLevel (){
+    const endpoint = `/questions/bylevel`;
+    let api = await API();
+    var response = await api.get(endpoint);
+    return response;
 }
