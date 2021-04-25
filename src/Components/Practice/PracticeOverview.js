@@ -33,14 +33,13 @@ class OverviewPractice extends React.Component {
     }
 
     getCourseList = async () => {
-console.log("works")
+
         this.setState({
             loading: true
         })
         var user = null; //get userId from localStorage
         try {
             var list = await getCourses(user);
-            console.log(list);
             this.setState({
                 courseList: list
             })
@@ -52,32 +51,12 @@ console.log("works")
         })
     }
 
-    getQuestionLevel = async(level) =>{
-        try{
-        var obj = await getQuestionByLevel();
-        var le =''
-        this.setState({
-            queByLevel:obj
-        })
-           for(let i=0;i<obj.levelCount;i++){
-               if(level===obj.levels[i].level){
-                   le = obj.levels[i];
-                   break;
-               }
-           }
-            return le;
-        }catch (e) {
-            notification.error({message:"Error!"})
-        }
-
-    }
     viewQuestions =async(quiz) =>{
-         var level = await this.getQuestionLevel(quiz.level);
+
         var name = quiz.courseName.split(" ").join("")
         this.props.history.push({
             pathname: `/practice/${name}`,
             state: quiz,
-            QByLevel : level
         });
     }
 
@@ -109,7 +88,7 @@ console.log("works")
                                                 item.status === 'unlocked' ? <UnlockTwoTone/> :
                                                     <CheckCircleTwoTone twoToneColor="#52c41a"/>}
                                             hoverable
-                                            onClick={()=>this.viewQuestions(item)}
+                                            onClick={()=>(item.status === "locked" ?'':this.viewQuestions(item))}
                                             // cover={<img alt="example" style={{height:'150px'}} src="" />}
                                             title={<span>Practice Level {item.level}: {item.courseName}</span>}
                                         >

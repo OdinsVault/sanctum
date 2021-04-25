@@ -1,8 +1,33 @@
 import React from 'react';
-import {Button, Col, PageHeader, Select, Form, Card, Space, Row, Divider, List, Carousel, Image} from 'antd';
+import {
+    Button,
+    Col,
+    PageHeader,
+    Select,
+    Form,
+    Card,
+    Space,
+    Row,
+    Divider,
+    List,
+    Carousel,
+    Image,
+    Spin,
+    notification, Modal
+} from 'antd';
 import {MinusCircleOutlined, BulbOutlined} from '@ant-design/icons';
 import {withRouter} from 'react-router';
+import {quotes} from "../../constant";
+import {getCourses} from "../../Services/learningService";
+import {getAllQuestions, getQuestionList} from "../../Services/PracticeService";
+import {getAllCompete} from "../../Services/CompeteService";
 
+import {IntlProvider, FormattedMessage, useIntl, injectIntl} from 'react-intl'
+
+
+const messagesInFrench = {
+    myMessage: "Aujourd'hui, c'est le {ts, date, ::yyyyMMdd}",
+}
 
 const contentStyle = {
     height: '260px',
@@ -17,27 +42,97 @@ class DashBoard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            courses: "",
+            courses: [],
             practicalList: "",
             competitionList: '',
-            todaysTip: ''
+            todaysTip: '',
+            dataLoading: true,
+            user:'',
+            visibleConfirmation:false
         };
     }
 
-    setComponents =()=> {
-        var user = JSON.parse(localStorage.getItem('usersession'));
+    setComponents =async ()=> {
+        this.setState({
+            dataLoading:true
+        })
+
+        try {
+
+            var getCoursesList = await getCourses(this.state.user);
+            var getPracticeList = await getAllQuestions();
+            var getCompetitions = await getAllCompete();
+
+            this.setState({
+                courses: getCoursesList,
+                practicalList: getPracticeList,
+                competitionList: getCompetitions,
+                dataLoading:false
+            })
+
+        }catch (e) {
+            notification.error({message:"Error",description:e.message})
+        }
+        this.setState({
+            dataLoading:false
+        })
+
+    }
+
+    goToLogin = () => {
+        this.props.history.push({
+            pathname: '/login',
+            state: ''
+        })
+    }
+
+    onCardMoreClick = (link) =>{
+        if (!this.state.user) {
+            this.setState({
+                visibleConfirmation:true
+            })
+        } else {
+
+            this.props.history.push({
+                pathname: `${link}`,
+                state: ''
+            })
+        }
+    }
+
+    handleCancel = () =>{
+        this.setState({
+            visibleConfirmation:false
+        })
+    }
+
+    setQuote = () =>{
+        let quoteNum = Math.floor((Math.random() * quotes.length) + 1);
+        this.setState({
+            todaysTip:quotes[quoteNum]
+        })
 
     }
 
     componentDidMount() {
-        this.setComponents()
+
+        var getUser = JSON.parse(localStorage.getItem('usersession'));
+        if (getUser) {
+            this.setState({
+                user: getUser
+            })
+        }
+        this.setComponents();
+        this.setQuote();
+
     }
 
     render() {
+        const {intl} = this.props
         return (
             <div>
                 <Card>
-                    <PageHeader className="site-page-header" title=""/>
+                    <PageHeader className="site-page-header" title={<FormattedMessage id="home" defaultMessage={"Home"} />}/>
                     <Carousel autoplay effect="fade">
                         <div>
                             <h3 style={contentStyle}><img style={{height: '260px', width: '100%'}}
@@ -55,61 +150,61 @@ class DashBoard extends React.Component {
                         </div>
                     </Carousel>
                     <Divider> <b><BulbOutlined/> Today's Tip</b></Divider>
-                    <div><span style={{fontSize: '18px', fontWeight: '12px'}}>"Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        consequat.
-                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                        pariatur.
-                        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim
-                        id est laborum."</span>
+                    <div><span style={{fontSize: '18px', fontWeight: '12px'}}>"{this.state.todaysTip}"</span>
                     </div>
                     <Divider orientation="left"> <b>Get Your Skills Certified</b></Divider>
                     <Row gutter={16}>
                         <Col span={8}>
-                            <Card title={<b><span>Learn</span></b>} extra={<a href="#">More</a>}>
-                                <List itemLayout="horizontal"
-                                      dataSource={this.state.courses}
-                                      renderItem={item => (
-                                          <List.Item>
-                                              <List.Item.Meta
-                                                  title={item.productName}
-                                              />
-                                          </List.Item>
-                                      )}
-                                />
+                            <Card title={<b><span>Learn</span></b>} extra={<a onClick={()=>this.onCardMoreClick("/courses/overview")}>More</a>}>
+                                <Spin spinning={this.state.dataLoading}>{
+                                    this.state.courses?this.state.courses.map((course)=>(
+                                        <Card.Grid key={course.courseId} style={{width:'50%',backgroundColor:'#fff9e0'}}>{course.courseName}</Card.Grid>
+                                    )):''
+                                    }</Spin>
                             </Card>
                         </Col>
                         <Col span={8}>
-                            <Card title={<b><span>Practice</span></b>} extra={<a href="#">More</a>}>
-                                <List itemLayout="horizontal"
-                                      dataSource={this.state.practicalList}
-                                      renderItem={item => (
-                                          <List.Item>
-                                              <List.Item.Meta
-                                                  title={item.pacticalName}
-                                              />
-                                          </List.Item>
-                                      )}
-                                />
+                            <Card  title={<b><span>Practice</span></b>} extra={<a onClick={()=>this.onCardMoreClick("/practice/overview")}>More</a>}>
+                                <Spin spinning={this.state.dataLoading}>{
+                                    this.state.practicalList?this.state.practicalList.questions.map((practicle)=>(
+                                            <Card.Grid
+                                                key={practicle._id} style={{width:'50%', backgroundColor:'#e3eeff'}}>{practicle.title}</Card.Grid>
+                                    )):''
+                                }</Spin>
+
                             </Card>
                         </Col>
                         <Col span={8}>
-                            <Card title={<b><span>Compete</span></b>} extra={<a href="#">More</a>}>
-                                <List itemLayout="horizontal"
-                                      dataSource={this.state.competitionList}
-                                      renderItem={item => (
-                                          <List.Item>
-                                              <List.Item.Meta
-                                                  title={item.competitionName}
-                                              />
-                                          </List.Item>
-                                      )}
-                                />
+                            <Card title={<b><span>Compete</span></b>} extra={<a onClick={()=>this.onCardMoreClick("/compete/overview")}>More</a>}>
+                                <Spin spinning={this.state.dataLoading}>
+                                    {/*<CustomScroll>*/}
+                                        {
+                                    this.state.competitionList?this.state.competitionList.questions.map((practicle)=>(
+
+                                        <Card.Grid
+                                            key={practicle._id} style={{width:'100%',backgroundColor:'#e3ffd9'}}>{practicle.title}</Card.Grid>
+                                    )):''
+                                }
+                                {/*</CustomScroll>*/}
+                            </Spin>
                             </Card>
                         </Col>
                     </Row>
                 </Card>
+
+
+                {/*///////////////////////////confirmation Modal///////////////////////////////*/}
+                <Modal
+                    title={"Please log in or sign up to continue"}
+                    visible={this.state.visibleConfirmation}
+                    okText={"Continue"}
+                    width={400}
+                    onOk={this.goToLogin}
+                    onCancel={this.handleCancel}
+                >
+                    <p>Continue to login?</p>
+                </Modal>
+
             </div>
         )
     }

@@ -16,6 +16,7 @@ export async function login(list){
 
 export function logout() {
     localStorage.removeItem('token');
+    // localStorage.removeItem('token');
 }
 
 

@@ -27,3 +27,23 @@ export async function getCourseDetails(cid){
     // var response = await api.get(endpoint,data);
     return course;
 }
+
+export async function getNextCourse(cid){
+    var course = ''
+    for(let i =0;i<courses.length;i++){
+        if(courseDetails[i].courseId===cid){
+            if(i+1 === courseDetails.length){
+                course=''
+            }
+            else{
+                course = courseDetails[i+1]
+            }
+            break;
+        }
+    }
+
+    // const endpoint = '';
+    // let api = await API();
+    // var response = await api.get(endpoint,data);
+    return course;
+}

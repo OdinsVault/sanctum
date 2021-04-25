@@ -1,16 +1,9 @@
 import React from 'react';
 import {Button, Col, PageHeader, Card, Row, Spin, List, Progress, notification,Badge} from 'antd';
-import {
-    LockTwoTone,
-    UnlockTwoTone,
-    CheckCircleTwoTone,
-    RightCircleTwoTone,
-    ReloadOutlined,
-    CloudSyncOutlined
-} from '@ant-design/icons'
+import {LockTwoTone, UnlockTwoTone, CheckCircleTwoTone, RightCircleTwoTone, ReloadOutlined, CloudSyncOutlined} from '@ant-design/icons'
 import {withRouter} from 'react-router';
 import {getCourses} from "../../Services/learningService";
-import {getQuestionList} from "../../Services/PracticeService";
+import {getQuestionByLevel, getQuestionList} from "../../Services/PracticeService";
 
 const {Meta} = Card;
 const contentStyle = {
@@ -41,6 +34,7 @@ class QuestionList extends React.Component {
         var user = null; //get userId from localStorage
         try {
             var list = await getQuestionList(user, state.quizId);
+            console.log("quizList",list);
             this.setState({
                 quizList: list
             })
@@ -54,31 +48,56 @@ class QuestionList extends React.Component {
 
     goToQuestion = (question) => {
         var qL = this.state.queByLevel.questions[0];
-        var questionName = question.title.split(" ").join("");
-        console.log("ql",qL);
+        var questionName = qL.title.split(" ").join("");
         this.props.history.push({
             pathname: `/question/${questionName}`,
-            state: question,
-            course:this.state.course,
-            ques:qL
+            state: "practice",
+            question:qL,
+            course:this.state.course
         });
+    }
+
+    getQuestionLevel = async(level) =>{
+        try{
+            var obj = await getQuestionByLevel();
+            var le =''
+            this.setState({
+                queByLevel:obj
+            })
+            for(let i=0;i<obj.levelCount;i++){
+                if(level===obj.levels[i].level){
+                    le = obj.levels[i];
+                    break;
+                }
+            }
+            return le;
+        }catch (e) {
+            notification.error({message:"Error!"})
+        }
+
+    }
+
+    goBack =() =>{
+        this.props.history.push({
+            pathname:'/practice/overview'
+        })
     }
 
     async componentDidMount() {
 
         var state = this.props.location.state;
+        var level = '';
         if (!state) {
             this.props.history.push({
                 pathname:'/practice/overview',
             });
         } else {
             await this.getQuizList(state);
+            level = await this.getQuestionLevel(state.level);
         }
-        var qLevels = this.props.location.QByLevel;
-        console.log("C", state);
         this.setState({
             course: state,
-            queByLevel:qLevels
+            queByLevel:level
         })
 
     }
@@ -90,9 +109,9 @@ class QuestionList extends React.Component {
                     <PageHeader className="site-page-header"
                                 title={this.state.course.courseName + " - " + "Practice Questions"}/>
                     <Row style={{marginBottom: '40px'}}>
-                        <Col offset={22}>
-                            <Button
-                                onClick={() => this.getQuizList(this.state.course)}><ReloadOutlined/> Refresh</Button>
+                        <Col offset={20}>
+                            <Button onClick={() => this.goBack()}>Back</Button>
+                            <Button onClick={() => this.getQuizList(this.state.course)}><ReloadOutlined/> Refresh</Button>
                         </Col>
                     </Row>
                     <div className="site-card-wrapper">

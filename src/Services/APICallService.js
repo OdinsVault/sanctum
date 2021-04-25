@@ -12,7 +12,6 @@ function parseError(errorResponse) {
             statuscode: errorResponse.status,
             cause: errorResponse.data
         });
-
     } else {
         return Promise.reject({
             cause: `Error occured in request.`
