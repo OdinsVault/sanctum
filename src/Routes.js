@@ -18,6 +18,9 @@ import Question from "./Components/Practice/SelectedQuestion";
 import OverviewCompete from "./Components/Compete/CompeteOverview";
 import Leaderboard from "./Components/LeaderBoad/Leaderboard";
 import ProfileView from "./Components/Profile/ProfileView";
+import SDKDownload from "./Components/Resources/SDKDownload";
+import configFileGeneration from "./Components/Resources/ConfigFileGen";
+import syntaxHighlighter from "./Components/Resources/syntaxHighlighter";
 
 
 // function TryPoke() {
@@ -91,6 +94,9 @@ const Routes = () => {
                 <PrivateRoute  path='/learn/documentation' component={Documentation}/>
                 <PrivateRoute  path='/learn/developerGuide' component={DevelopersGuide}/>
                 <PrivateRoute  path='/codeVisualizer' component={Visualizer}/>
+                <PrivateRoute  path='/sdkDownloads' component={SDKDownload}/>
+                <PrivateRoute  path='/configFileGen' component={configFileGeneration}/>
+                <PrivateRoute  path='/syntaxHighlighter' component={syntaxHighlighter}/>
                 <PrivateRoute  path='/leaderboard' component={Leaderboard}/>
                 <PrivateRoute  path='/profile' component={ProfileView}/>
                 <PrivateRoute path='/addUser' component={AddUser}/>

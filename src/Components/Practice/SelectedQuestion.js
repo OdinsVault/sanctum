@@ -55,7 +55,7 @@ class Question extends React.Component {
         })
         try {
             if(this.props.location.state==="compete"){
-                question = await getCompeteQuestionById(ques._id);
+                question = await getCompeteQuestionById(ques.questionId);
             }else{
                 question = await getQuestionById(ques.questionId);
             }
@@ -197,6 +197,7 @@ class Question extends React.Component {
             }
 
         } catch (e) {
+            console.log(e)
             notification.error({message: "Error!", description: e.message ? e.message : ""})
         }
 

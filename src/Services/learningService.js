@@ -1,28 +1,24 @@
+import {API} from "./APICallService"
 import {courseDetails, courses} from '../constant'
 
-export async function getCourses(user){
+export async function getCourses(){
 
     const endpoint = '/questions/overview';
     var header = getToken();
-    // let api = await API();
-    // var response = await api.get(endpoint,header);
-    return courses;
+    let api = await API();
+    var response = await api.get(endpoint,header);
+    console.log(response)
+    return response;
 }
 
-export async function getCourseDetails(cid){
+export async function getCourseDetails(level){
 
-    var course = ''
-    for(let i =0;i<courseDetails.length;i++){
-        if(courseDetails[i].courseId===cid){
-            course = courseDetails[i]
-            break;
-        }
-    }
-    const endpoint = '/questions/overview';
+
+    const endpoint = `/tutorial/${level}`;
     var header = getToken();
-    // let api = await API();
-    // var response = await api.get(endpoint,header);
-    return course;
+    let api = await API();
+    var response = await api.get(endpoint,header);
+    return response;
 }
 
 export async function getNextCourse(cid){

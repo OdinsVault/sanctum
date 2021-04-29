@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Col, PageHeader, Card, Row, Spin, List, notification, Badge} from 'antd';
 import {ReloadOutlined,RightCircleFilled,RightCircleTwoTone} from '@ant-design/icons'
 import {withRouter} from 'react-router';
-import {getQuestionByCategory} from "../../Services/CompeteService";
+import {getQuestionByCategory, getQuestionsOverview} from "../../Services/CompeteService";
 
 
 const {Meta} = Card;
@@ -39,13 +39,10 @@ class OverviewCompete extends React.Component {
             loading: true
         })
         try {
-            var list = await getQuestionByCategory();
+            var list = await getQuestionsOverview();
             this.setState({
                 questionList: list
             })
-            if(list){
-                this.setCategories(list)
-            }
 
         } catch (e) {
             notification.error({message:"Error!", description:e.message?e.message:"Error occurred while fetching data"})
@@ -55,17 +52,8 @@ class OverviewCompete extends React.Component {
         })
     }
 
-    setCategories = (list) =>{
-        var categoryList=[];
-        for(var i=0;i<list.categoryCount;i++){
-            categoryList.push(list.categories[i].category)
-        }
-        this.setState({
-            queCategories:categoryList
-        })
-    }
-
     goToQuestion =(question) =>{
+        console.log(question)
         var questionName = question.title.split(" ").join("");
         this.props.history.push({
             pathname: `/question/${questionName}`,
@@ -91,17 +79,17 @@ class OverviewCompete extends React.Component {
                     <div className="site-card-wrapper">
                         <Spin spinning={this.state.loading} tip="Loading courses...">
                             { this.state.questionList?
-                                (this.state.questionList.categories.map((category) => (
+                                (this.state.questionList.overview.map((category) => (
                                     <div>
                                     <h2 style={{color:'#e69815'}}>{category.category}&nbsp;&nbsp;<RightCircleFilled /> </h2>
                                 <List
                                         grid={{gutter: 16, column: 3}}
-                                        dataSource={category.questions}
+                                        dataSource={category.attemptsOverview}
                                         renderItem={item=> (
                                             <List.Item>
                                                 <Badge.Ribbon
-                                                    color={item.attempts>0?(item.status==="completed"?"#f2c53d":"#3d99f5"):'#29e34b'}
-                                                    text={item.attempts>0?(item.status==="completed"?"Completed":"Attempted"):"New"}>
+                                                    color={item.attempts>0?(item.passed?"#f2c53d":"#3d99f5"):'#29e34b'}
+                                                    text={item.attempts>0?(item.passed?"Completed":"Attempted"):"New"}>
                                                     <Card
                                                         headStyle={item.difficulty === "Easy" ? {backgroundColor: '#c8ffb8'} : item.difficulty === "Medium"?
                                                             {backgroundColor: '#faffb8'}:{backgroundColor: '#ffdaad'}}
@@ -110,11 +98,9 @@ class OverviewCompete extends React.Component {
                                                         onClick={() => this.goToQuestion(item)}
                                                     >
                                                         <Meta title={item.title} description={"Points: "+ item.pointsAllocated}/>
-                                                        {/*<Progress percent={(100 / item.questions) * item.completed} size="small"/>*/}
                                                         <Col offset={20} style={{paddingTop: '15px'}}>
                                                             <Button onClick={() => this.goToQuestion(item)}><RightCircleTwoTone/></Button>
                                                         </Col>
-                                                        {item.status === 'locked' ? "Complete previous to unlock this level!" : ""}
                                                     </Card>
                                                 </Badge.Ribbon>
                                             </List.Item>

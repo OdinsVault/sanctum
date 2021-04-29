@@ -62,7 +62,8 @@ class DashBoard extends React.Component {
             var getCompetitions;
 
             if(user){
-                getCoursesList = await getCourses(this.state.user);
+                getCoursesList = await getCourses();
+                console.log(getCoursesList)
                 getPracticeList = await getAllQuestions();
                 getCompetitions = await getAllCompete();
             }
@@ -138,18 +139,21 @@ class DashBoard extends React.Component {
                     <PageHeader className="site-page-header" title={<FormattedMessage id="home" defaultMessage={"Home"} />}/>
                     <Carousel autoplay effect="fade">
                         <div>
-                            <h3 style={contentStyle}><img style={{height: '260px', width: '100%'}}
-                                                          src={process.env.PUBLIC_URL + '/Images/Learn-1.jpeg'}/>
+                            <h3 style={contentStyle}><img style={{height: '400px', width: '100%'}}
+                                                          src={process.env.PUBLIC_URL + '/Images/learn_01.jpg'}/>
                             </h3>
                         </div>
                         <div>
-                            <h3 style={contentStyle}>2</h3>
+                            <h3 style={contentStyle}><img style={{height: '350px', width: '100%'}}
+                                                          src={process.env.PUBLIC_URL + '/Images/learn_02.jpg'}/></h3>
                         </div>
                         <div>
-                            <h3 style={contentStyle}>3</h3>
+                            <h3 style={contentStyle}><img style={{height: '350px', width: '100%'}}
+                                                          src={process.env.PUBLIC_URL + '/Images/learn_03.jpg'}/></h3>
                         </div>
                         <div>
-                            <h3 style={contentStyle}>4</h3>
+                            <h3 style={contentStyle}><img style={{height: '350px', width: '100%'}}
+                                                          src={process.env.PUBLIC_URL + '/Images/learn_04.jpg'}/></h3>
                         </div>
                     </Carousel>
                     <Divider> <b><BulbOutlined/> Today's Tip</b></Divider>
@@ -160,8 +164,8 @@ class DashBoard extends React.Component {
                         <Col span={8}>
                             <Card title={<b><span>Learn</span></b>} extra={<a onClick={()=>this.onCardMoreClick("/courses/overview")}>More</a>}>
                                 <Spin spinning={this.state.dataLoading}>{
-                                    this.state.courses?this.state.courses.map((course)=>(
-                                        <Card.Grid key={course.courseId} style={{width:'50%',backgroundColor:'#fff9e0'}}>{course.courseName}</Card.Grid>
+                                    this.state.courses?this.state.courses.overview.map((course)=>(
+                                        <Card.Grid key={course.level} style={{width:'50%',backgroundColor:'#fff9e0'}}>{course.category}</Card.Grid>
                                     )):'Learn Description'
                                     }</Spin>
                             </Card>

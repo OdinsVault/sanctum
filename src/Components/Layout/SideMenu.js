@@ -107,13 +107,13 @@ class SideMenu extends React.Component {
                     </SubMenu>
                     <SubMenu key='sub5' icon={< ShoppingOutlined/>} title="Resources">
                         <Menu.Item key="9">
-                            <Link>Download SDK</Link>
+                            <Link to="/sdkDownloads">Download SDK</Link>
                         </Menu.Item>
                         <Menu.Item key="10">
-                            <Link>Config File Generation</Link>
+                            <Link to="/configFileGen">Config File Generation</Link>
                         </Menu.Item>
                         <Menu.Item key="11">
-                            <Link>Syntax Highlighter Configs Download</Link>
+                            <Link to="/syntaxHighlighter">Syntax Highlighter Configs Download</Link>
                         </Menu.Item>
                     </SubMenu>
                 </Menu>

@@ -27,6 +27,7 @@ class OverviewPractice extends React.Component {
         super(props);
         this.state = {
             courseList: [],
+            currentUnlocked:0,
             loading: false,
             queByLevel:''
         };
@@ -40,6 +41,7 @@ class OverviewPractice extends React.Component {
         var user = null; //get userId from localStorage
         try {
             var list = await getCourses(user);
+            this.setLockedLevels(list);
             this.setState({
                 courseList: list
             })
@@ -51,9 +53,22 @@ class OverviewPractice extends React.Component {
         })
     }
 
+    setLockedLevels = (list) => {
+        var current =0;
+        for(let i=0;i<list.totalQuestionLevels;i++){
+            if(list.overview[i].levelCompleted===false){
+                current = list.overview[i].level;
+                break;
+            }
+        }
+        this.setState({
+            currentUnlocked:current
+        })
+    }
+
     viewQuestions =async(quiz) =>{
 
-        var name = quiz.courseName.split(" ").join("")
+        var name = quiz.category.split(" ").join("")
         this.props.history.push({
             pathname: `/practice/${name}`,
             state: quiz,
@@ -78,24 +93,24 @@ class OverviewPractice extends React.Component {
                         <Spin spinning={this.state.loading} tip="Loading courses...">
                             <List
                                 grid={{gutter: 16, column: 3}}
-                                dataSource={this.state.courseList}
+                                dataSource={this.state.courseList.overview}
                                 renderItem={item => (
                                     <List.Item>
                                         <Card
-                                            headStyle={item.status === 'locked' ? {backgroundColor: '#c7c7c7'} : {}}
-                                            bodyStyle={item.status === 'locked' ? {backgroundColor: '#ededed'} : {}}
-                                            extra={item.status === 'locked' ? <LockTwoTone twoToneColor={'grey'}/> :
-                                                item.status === 'unlocked' ? <UnlockTwoTone/> :
+                                            headStyle={item.level > this.state.currentUnlocked ? {backgroundColor: '#c7c7c7'} : {}}
+                                            bodyStyle={item.level > this.state.currentUnlocked ? {backgroundColor: '#ededed'} : {}}
+                                            extra={item.level > this.state.currentUnlocked? <LockTwoTone twoToneColor={'grey'}/> :
+                                                item.level === this.state.currentUnlocked ? <UnlockTwoTone/> :
                                                     <CheckCircleTwoTone twoToneColor="#52c41a"/>}
                                             hoverable
-                                            onClick={()=>(item.status === "locked" ?'':this.viewQuestions(item))}
+                                            onClick={()=>(item.level > this.state.currentUnlocked?'':this.viewQuestions(item))}
                                             // cover={<img alt="example" style={{height:'150px'}} src="" />}
-                                            title={<span>Practice Level {item.level}: {item.courseName}</span>}
+                                            title={<span>Practice Level {item.level}: {item.category}</span>}
                                         >
                                             <Meta title={item.description} description="Your progress"/>
-                                            <Progress percent={(100 / item.questions) * item.completed} size="small"/>
+                                            <Progress percent={Math.round((100 / item.questions) * item.completed)} size="small"/>
                                             <Col offset={20} style={{paddingTop: '15px'}}>
-                                                {item.status === "locked" ? '' : <Button onClick={()=>this.viewQuestions(item)}><RightCircleTwoTone/></Button>}
+                                                {item.status === "locked" ? '' : <Button onClick={()=>(item.level > this.state.currentUnlocked ? '' :this.viewQuestions(item))}><RightCircleTwoTone/></Button>}
                                             </Col>
                                             {item.status === 'locked' ? "Complete previous to unlock this level!" : ""}
                                         </Card>

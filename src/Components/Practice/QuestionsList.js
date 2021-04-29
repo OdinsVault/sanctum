@@ -103,7 +103,7 @@ class QuestionList extends React.Component {
             <div>
                 <Card>
                     <PageHeader className="site-page-header"
-                                title={this.state.course.courseName + " - " + "Practice Questions"}/>
+                                title={this.state.course.category + " - " + "Practice Questions"}/>
                     <Row style={{marginBottom: '40px'}}>
                         <Col offset={20}>
                             <Button onClick={() => this.goBack()}>Back</Button>
