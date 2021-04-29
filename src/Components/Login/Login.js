@@ -33,32 +33,37 @@ class Login extends React.Component {
         this.state = {
             value: null,
             userName: '',
-            email:'',
-            password:'',
+            email: '',
+            password: '',
             loginModalVisible: false,
+            loginLoading: false,
             signUpModalVisible: false,
+            signUpLoading: false
         };
     }
 
-    setEmail = (e) =>{
+    setEmail = (e) => {
         let mail = e.target.value
         this.setState({
-            email:mail
+            email: mail
         })
     }
 
-    setPassword = (e) =>{
+    setPassword = (e) => {
         let pw = e.target.value
         this.setState({
-            password:pw
+            password: pw
         })
     }
 
 
     LogIn = async () => {
+        this.setState({
+            loginLoading: true
+        })
         let values = {
-            email:this.state.email,
-            password:this.state.password
+            email: this.state.email,
+            password: this.state.password
         }
         try {
             var session = await login(values)
@@ -100,29 +105,38 @@ class Login extends React.Component {
 
         this.setState({
             loginModalVisible: false,
+            loginLoading: false,
             signUpModalVisible: false,
         })
     };
 
-    signUp = async(values) =>{
-        // console.log(values);
+    signUp = async (values) => {
+        this.setState({
+            signUpLoading: true
+        })
         var user = {
             fname: values.fname,
-            lname: values.lname,
+            lname: values.lname ? values.lname : '',
             email: values.email,
             password: values.password,
-            dob: values.dob,
-            institute: values.institute,
+            dob: values.dob ? values.dob : '',
+            institute: values.institute ? values.institute : '',
             xp: values.xp
         }
-        try{
+        try {
             var response = await signup(user);
-            if(response){
-                notification.success({message:"Success!" ,description:'Please login to continue.'})
+            if (response) {
+                notification.success({message: "Success!", description: 'Please login to continue.'})
             }
-        }catch (error){
-            notification.error({message: 'Error!', description: (error.cause ? error.cause : "")});
+        } catch (error) {
+            console.log(error.cause)
+            // notification.error({message: 'Error!', description: (error.cause ? error.cause.error.message : "")});
         }
+
+        this.setState({
+            signUpLoading:false,
+            signUpModalVisible:false
+        })
 
     }
 
@@ -196,8 +210,8 @@ class Login extends React.Component {
                         </Form.Item>
 
                         <Col offset={18}>
-                            <Button shape="round" size='large'
-                                    // htmlType="submit"
+                            <Button shape="round" size='large' loading={this.state.loginLoading}
+                                // htmlType="submit"
                                     onClick={this.LogIn}>
                                 Login
                             </Button>
@@ -239,12 +253,12 @@ class Login extends React.Component {
                             <Input/>
                         </Form.Item>
                         <Form.Item label="Last Name" name="lname"
-                                   // rules={[
-                                   //     {
-                                   //         required: true,
-                                   //         message: 'Please enter your last name!',
-                                   //     },
-                                   // ]}
+                                   rules={[
+                                       {
+                                           required: true,
+                                           message: 'Please enter your last name!',
+                                       },
+                                   ]}
                         >
                             <Input/>
                         </Form.Item>
@@ -259,13 +273,26 @@ class Login extends React.Component {
                         >
                             <Input/>
                         </Form.Item>
-                        <Form.Item label="Date of Birth" name="dob">
+                        <Form.Item label="Date of Birth" name="dob"
+                                   rules={[
+                                       {
+                                           required: true,
+                                           message: 'Please input your date of birth!',
+                                       },
+                                   ]}
+                        >
                             <DatePicker
                                 format="YYYY-MM-DD"
                                 disabledDate={disabledDate}
                             />
                         </Form.Item>
-                        <Form.Item label="Institute" name="institute">
+                        <Form.Item label="Institute" name="institute"
+                                   rules={[
+                                       {
+                                           required: true,
+                                           message: 'Please enter your institute/organization!',
+                                       },
+                                   ]}>
                             <Input/>
                         </Form.Item>
                         <Form.Item name="xp" label="Experience"
@@ -274,7 +301,7 @@ class Login extends React.Component {
                                            required: true,
                                            message: 'Please select your level of expertise!'
                                        }
-                                       ]}>
+                                   ]}>
                             <Select
                                 placeholder="Level of experience in programming"
                                 onChange={this.onGenderChange}
@@ -323,7 +350,7 @@ class Login extends React.Component {
                             <Input.Password/>
                         </Form.Item>
                         <Col offset={18}>
-                            <Button shape="round" size='large' htmlType="submit">
+                            <Button shape="round" size='large' htmlType="submit" loading={this.state.signUpLoading}>
                                 Sign Up
                             </Button>
                         </Col>

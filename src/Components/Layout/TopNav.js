@@ -1,6 +1,6 @@
 import React, {Component, useContext} from 'react';
 import {createHashHistory} from 'history';
-import {ConfigProvider, Layout, Menu, Dropdown, Badge, Select} from 'antd';
+import {ConfigProvider, Layout, Menu, Dropdown, Badge, Select, Button} from 'antd';
 import {
     UserOutlined,
     MenuUnfoldOutlined,
@@ -9,10 +9,10 @@ import {
     TrophyTwoTone, FundTwoTone, CrownTwoTone
 } from '@ant-design/icons';
 import {Context} from "../../ConfigProvider";
-// import { Logout } from '../../Services/AuthService';
 import './TopNav.css';
 import {logout} from "../../Services/UserLoginService";
 import {Link} from "react-router-dom";
+import {withRouter} from "react-router";
 
 const {Header} = Layout;
 const {Option} = Select;
@@ -29,22 +29,33 @@ class TopNav extends Component {
     }
 
     componentDidMount() {
-        var usersession = localStorage.getItem('usersession');
+        var usersession = localStorage.getItem('usersession'); //simply_usersession
+        if(usersession){
         var userSessionObj = JSON.parse(usersession);
-        console.log(userSessionObj);
         var user = userSessionObj.User
         this.setState({
             username: user.fname,
             role: userSessionObj.Role[0],
             user: user
         });
+        }
     }
 
-    LogoutClick = e => {
+    LogInClick = () =>{
+        this.props.history.push({
+            pathname: `/login`,
+            state: ''
+        })
+    }
+
+    LogoutClick = async(e) => {
         if (e.key === 'logout') {
-            logout();
+            await logout();
+            // localStorage.removeItem('token');
+            // localStorage.removeItem('usersession');
             const history = createHashHistory();
-            history.go("/simply/login");
+            history.go("/simply/dashboard");
+
         }
     };
 
@@ -98,10 +109,11 @@ class TopNav extends Component {
                             </Select>
                             </span>
                         <span id="top-user-menu">
+                            {this.state.user?
                             <Dropdown.Button overlay={this.getUserMenu()} placement="bottomCenter"
                                              icon={<UserOutlined/>}>
                                  {`${this.state.username} `}
-                            </Dropdown.Button>
+                            </Dropdown.Button>:<Button onClick={this.LogInClick}>Sign In/Up</Button>}
                         </span>
                     </div>
                 </Header>
@@ -112,7 +124,7 @@ class TopNav extends Component {
 }
 
 TopNav.contextType = Context;
-export default TopNav
+export default withRouter(TopNav)
 
 
 const menu = (

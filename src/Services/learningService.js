@@ -1,14 +1,11 @@
-import {API} from "./APICallService";
-import {courses,courseDetails} from '../constant'
+import {courseDetails, courses} from '../constant'
 
 export async function getCourses(user){
 
-    // const endpoint = '';
-    // let params = {
-    //     userId:user.userId
-    // }
+    const endpoint = '/questions/overview';
+    var header = getToken();
     // let api = await API();
-    // var response = await api.get(endpoint,user);
+    // var response = await api.get(endpoint,header);
     return courses;
 }
 
@@ -21,10 +18,10 @@ export async function getCourseDetails(cid){
             break;
         }
     }
-
-    // const endpoint = '';
+    const endpoint = '/questions/overview';
+    var header = getToken();
     // let api = await API();
-    // var response = await api.get(endpoint,data);
+    // var response = await api.get(endpoint,header);
     return course;
 }
 
@@ -43,7 +40,18 @@ export async function getNextCourse(cid){
     }
 
     // const endpoint = '';
+
     // let api = await API();
     // var response = await api.get(endpoint,data);
     return course;
 }
+
+function getToken (){
+    var token = localStorage.getItem('token');
+    const options = {
+        headers: {'AUTHORIZATION':`Bearer ${token}`}
+    }
+    return options;
+}
+
+

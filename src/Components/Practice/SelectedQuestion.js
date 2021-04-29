@@ -8,7 +8,9 @@ import {SettingTwoTone, CheckCircleTwoTone, CloseCircleTwoTone} from '@ant-desig
 //Editor imports
 import AceEditor from "react-ace"
 import "ace-builds/src-noconflict/snippets/javascript";
+import "ace-builds/src-noconflict/snippets/java";
 import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/theme-github";
 
@@ -34,7 +36,7 @@ class Question extends React.Component {
             qL: '', //selected question sent from previous page
             selectedQuestion: '',  //question with all the details
             loading: false,
-            answerCode: '',
+            answerCode: CODE_ON_LOAD,
             mainClass: '',
             runLoading: false, runCaseResult: '', runCasePassed: false, runCaseFailed: false,
             submitLoading: false, submitCaseResult: '', submitCasePassed: false, submitCaseFailed: false,
@@ -54,9 +56,8 @@ class Question extends React.Component {
         try {
             if(this.props.location.state==="compete"){
                 question = await getCompeteQuestionById(ques._id);
-                console.log(question)
             }else{
-                question = await getQuestionById(ques._id);
+                question = await getQuestionById(ques.questionId);
             }
             if (!question) {
                 notification.error({message: "Error", description: "Something went wrong please try again!"})
@@ -103,7 +104,6 @@ class Question extends React.Component {
 
         var submission = {
             answer: this.state.answerCode ? this.state.answerCode : "",
-            mainClass: this.state.mainClass ? this.state.mainClass : ""
         }
 
         this.setState({
@@ -113,13 +113,14 @@ class Question extends React.Component {
             compileError: false
         })
         try {
-            if (!submission.answer || !submission.mainClass) {
+            if (!submission.answer) {
                 notification.warn({
                     message: 'Warning!',
-                    description: 'Cannot run if main class or answer code is empty'
+                    description: 'Cannot run if the answer code is empty'
                 })
             }else {
                 var success = await runPracticeAnswer(this.state.selectedQuestion._id, submission)
+                console.log(success)
                 //should handle already answered
                 if (success) {
 
@@ -145,6 +146,7 @@ class Question extends React.Component {
                 }
             }
         } catch (e) {
+            console.log(e)
             notification.error({message: "Error Code Execution!", description: e.message ? e.message : ""})
         }
         this.setState({
@@ -154,8 +156,7 @@ class Question extends React.Component {
     submitCode = async () => {
 
         var submission = {
-            answer: this.state.answerCode ? this.state.answerCode : "",
-            mainClass: this.state.mainClass ? this.state.mainClass : ""
+            answer: this.state.answerCode ? this.state.answerCode : ""
         }
         this.setState({
             submitLoading: true,
@@ -164,10 +165,10 @@ class Question extends React.Component {
             compileError: false
         })
         try {
-            if (!submission.answer || !submission.mainClass) {
+            if (!submission.answer) {
                 notification.warn({
                     message: 'Warning!',
-                    description: 'Cannot submit if main class or answer code is empty'
+                    description: 'Cannot submit if the answer code is empty'
                 })
             } else {
                 var success = await submitPracticeAnswer(this.state.selectedQuestion._id, submission)
@@ -207,12 +208,11 @@ class Question extends React.Component {
     sendCodeToVisualizer =() =>{
         var code = {
             answerCode:this.state.answerCode,
-            mainClass: this.state.mainClass
         }
-        if(!code.answerCode||!code.mainClass){
+        if(!code.answerCode){
             notification.warn({
                 message: 'Warning!',
-                description: 'Cannot submit if main class or answer code is empty'})
+                description: 'Cannot submit if the answer code is empty'})
         }else{
             this.props.history.push({
                 pathname:'/codeVisualizer',
@@ -237,16 +237,16 @@ class Question extends React.Component {
     }
 
     async componentDidMount() {
+
         if (!this.props.location.question || !this.props.location.state ) {
             this.props.history.push({
                 pathname: '/practice/overview'
             });
         }
 
-
-        var question = this.props.location.question;
-        var course = this.props.location.course?this.props.location.course:'';
-        var prev = this.props.location.state
+        var question = this.props.location.question; //selected question
+        var course = this.props.location.course?this.props.location.course:''; //practice course
+        var prev = this.props.location.state   //previous is 'practice' or 'compete'
 
         this.setState({
             locState:prev,
@@ -318,19 +318,20 @@ class Question extends React.Component {
                                                                 </Row>
                                                             </Panel>
                                                         </Collapse>
-                                                        <Input type={"text"} placeholder={"Enter Main Class"}
-                                                               value={this.state.mainClass}
-                                                               onChange={(e) => {
-                                                                   this.setState({mainClass: e.target.value})
-                                                               }}
-                                                        />
+                                                        {/*<Input type={"text"} placeholder={"Enter Main Class"}*/}
+                                                        {/*       value={this.state.mainClass}*/}
+                                                        {/*       onChange={(e) => {*/}
+                                                        {/*           this.setState({mainClass: e.target.value})*/}
+                                                        {/*       }}*/}
+                                                        {/*/>*/}
                                                         <AceEditor
-                                                            mode="javascript"
+                                                            mode="java"
                                                             theme={this.state.editorTheme}
                                                             placeholder="Your Simply code here"
                                                             width={'900px'}
                                                             showPrintMargin={false}
                                                             fontSize={this.state.editorFontSize}
+                                                            value={this.state.answerCode}
                                                             onChange={this.setCode}
                                                             name="UNIQUE_ID_OF_DIV"
                                                             editorProps={{$blockScrolling: true}}
@@ -435,12 +436,6 @@ class Question extends React.Component {
                                                 )}
                                         </Spin>
                                     </TabPane>
-                                    {/*<TabPane tab="Visualizer" key="3">*/}
-                                    {/*    visualize your code*/}
-                                    {/*</TabPane>*/}
-                                    {/*<TabPane tab="Submissions" key="2" disabled>*/}
-                                    {/*    No submissions*/}
-                                    {/*</TabPane>*/}
                                 </Tabs>
                             </Col>
                             <Col offset={1} span={5}>
@@ -464,5 +459,7 @@ class Question extends React.Component {
 }
 
 export default withRouter(Question);
+
+const CODE_ON_LOAD = `class Main{\n\rpublic static void main(String[] args){\n\r//your code here\n\r}\n\r}`
 
 

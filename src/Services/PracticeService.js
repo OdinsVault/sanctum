@@ -1,22 +1,11 @@
 import {API} from "./APICallService";
-import {quizzes,practiceSubReponseSuccess} from "../constant";
 
-export async function getQuestionList(user,quizID) {
+export async function getQuestionList(level) {
 
-    var questions = [];
-    for (let i = 0; i < quizzes.length; i++) {
-    if(quizzes[i].quizId===quizID){
-        return quizzes[i]
-    }
-    }
-    //  const endpoint = '';
-    //  var data = {
-    // userId:user.userId,
-    //     quizId:quizID
-    //  }
-    //  let api = await API();
-    //  var response = await api.get(endpoint,data);
-    // return response
+     const endpoint = `/questions/overview/${level}`;
+    let header = getToken();
+     let api = await API();
+    return await api.get(endpoint, header)
 }
 
 export async function getQuestionById (qId){
@@ -40,22 +29,37 @@ export  async function getAllQuestions (){
     return response;
 }
 
-export async function runPracticeAnswer (qid,code,mClass){
-    // const endpoint = `/answer/practice/${qid}`;
-    // let body = {
-    //     answer:code,
-    //     mainClass:mClass
-    // }
-    // let api = await API();
-    // var response = await api.post(endpoint,body);
-    return true;
+export async function runPracticeAnswer (qid,code){
+    const endpoint = `/answer/practice-run/${qid}`;
+    let body = {
+        answer:code.answer,
+    }
+    let header = getToken();
+    let api = await API();
+    return  await api.post(endpoint,body,header);
+    // return true;
 }
 
-export async function submitPracticeAnswer (qid,submission){
+export async function submitPracticeAnswer (qid,code){
     const endpoint = `/answer/practice/${qid}`;
+    let body = {
+        answer:code.answer,
+    }
+    let header = getToken();
     let api = await API();
-    // var response = await api.post(endpoint,submission);
-    return practiceSubReponseSuccess;
+    return await api.post(endpoint,body,header);
+    // return practiceSubReponseSuccess;
 }
+
+
+
+function getToken (){
+    var token = localStorage.getItem('token');
+    const options = {
+        headers: {'AUTHORIZATION':`Bearer ${token}`}
+    }
+    return options;
+}
+
 
 

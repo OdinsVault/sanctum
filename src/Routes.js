@@ -34,8 +34,8 @@ import ProfileView from "./Components/Profile/ProfileView";
 function CheckLogOnStatus() {
     let token = localStorage.getItem('token');
     // let validTime = localStorage.getItem('loggedInData');
-
-    if (token) {
+    // console.log("CheckLogOnStatus",token)
+    if(token) {
         // TryPoke();
         return true;
     } else {
@@ -56,10 +56,10 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
     return (
         <Route {...rest} render={(props) => (
-            (true)
+            (CheckLogOnStatus)
                 ? (<SiteLayout><Component {...props} /></SiteLayout>)
                 : (<Redirect to={{
-                    pathname: '/login',
+                    pathname: '/dashboard',
                     state: { from: props.location }
                 }} />)
         )} />);
@@ -96,7 +96,7 @@ const Routes = () => {
                 <PrivateRoute path='/addUser' component={AddUser}/>
                 <PrivateRoute path= '/manageUser' component={ManageUser}/>
                 <PrivateRoute exact path="/" component={DashBoard} />
-                <Route exact path="/" component={App} />
+                <Route exact path="/" component={DashBoard} />
       
             </Switch>
         </BrowserRouter>

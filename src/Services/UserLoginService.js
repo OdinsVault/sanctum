@@ -15,8 +15,10 @@ export async function login(list){
 }
 
 export function logout() {
+    console.log("Logout");
     localStorage.removeItem('token');
-    // localStorage.removeItem('token');
+    localStorage.removeItem('usersession');
+
 }
 
 

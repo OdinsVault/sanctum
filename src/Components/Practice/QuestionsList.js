@@ -33,7 +33,7 @@ class QuestionList extends React.Component {
         })
         var user = null; //get userId from localStorage
         try {
-            var list = await getQuestionList(user, state.quizId);
+            var list = await getQuestionList(state.level);
             console.log("quizList",list);
             this.setState({
                 quizList: list
@@ -46,36 +46,36 @@ class QuestionList extends React.Component {
         })
     }
 
-    goToQuestion = (question) => {
-        var qL = this.state.queByLevel.questions[0];
-        var questionName = qL.title.split(" ").join("");
+    goToQuestion = (selectedQuestion) => {
+        console.log("goto",selectedQuestion);
+        var questionName = selectedQuestion.title.split(" ").join("");
         this.props.history.push({
             pathname: `/question/${questionName}`,
             state: "practice",
-            question:qL,
+            question:selectedQuestion,
             course:this.state.course
         });
     }
 
-    getQuestionLevel = async(level) =>{
-        try{
-            var obj = await getQuestionByLevel();
-            var le =''
-            this.setState({
-                queByLevel:obj
-            })
-            for(let i=0;i<obj.levelCount;i++){
-                if(level===obj.levels[i].level){
-                    le = obj.levels[i];
-                    break;
-                }
-            }
-            return le;
-        }catch (e) {
-            notification.error({message:"Error!"})
-        }
-
-    }
+    // getQuestionLevel = async(level) =>{
+    //     try{
+    //         var obj = await getQuestionByLevel();
+    //         var le =''
+    //         this.setState({
+    //             queByLevel:obj
+    //         })
+    //         for(let i=0;i<obj.levelCount;i++){
+    //             if(level===obj.levels[i].level){
+    //                 le = obj.levels[i];
+    //                 break;
+    //             }
+    //         }
+    //         return le;
+    //     }catch (e) {
+    //         notification.error({message:"Error!"})
+    //     }
+    //
+    // }
 
     goBack =() =>{
         this.props.history.push({
@@ -86,20 +86,16 @@ class QuestionList extends React.Component {
     async componentDidMount() {
 
         var state = this.props.location.state;
-        var level = '';
         if (!state) {
             this.props.history.push({
                 pathname:'/practice/overview',
             });
         } else {
-            await this.getQuizList(state);
-            level = await this.getQuestionLevel(state.level);
+            this.setState({
+                course: state
+            })
+            await this.getQuizList(state); //get questions related to  selected level
         }
-        this.setState({
-            course: state,
-            queByLevel:level
-        })
-
     }
 
     render() {
@@ -118,12 +114,12 @@ class QuestionList extends React.Component {
                         <Spin spinning={this.state.loading} tip="Loading courses...">
                             <List
                                 grid={{gutter: 16, column: 3}}
-                                dataSource={this.state.quizList.questionList}
+                                dataSource={this.state.quizList.attemptsOverview}
                                 renderItem={item => (
                                     <List.Item>
                                         <Badge.Ribbon
-                                            color={item.attempts>0?(item.status==="completed"?"#f2c53d":"#3d99f5"):'#29e34b'}
-                                            text={item.attempts>0?(item.status==="completed"?"Completed":"Attempted"):"New"}>
+                                            color={item.attempts>0?(item.passed==="completed"?"#f2c53d":"#3d99f5"):'#29e34b'}
+                                            text={item.attempts>0?(item.passed==="completed"?"Completed":"Attempted"):"New"}>
                                         <Card
                                             headStyle={item.difficulty === "Easy" ? {backgroundColor: '#c8ffb8'} : item.difficulty === "Medium"?
                                                 {backgroundColor: '#faffb8'}:{backgroundColor: '#ffdaad'}}
@@ -131,12 +127,11 @@ class QuestionList extends React.Component {
                                             title={<span style={{fontSize:'13px'}}>Difficulty : {item.difficulty}</span>}
                                             onClick={() => this.goToQuestion(item)}
                                         >
-                                            <Meta title={item.title} description={"Marks: "}/>
+                                            <Meta title={item.title} description={"Points: "+item.pointsAllocated}/>
                                             {/*<Progress percent={(100 / item.questions) * item.completed} size="small"/>*/}
                                             <Col offset={20} style={{paddingTop: '15px'}}>
                                                     <Button onClick={() => this.goToQuestion(item)}><RightCircleTwoTone/></Button>
                                             </Col>
-                                            {item.status === 'locked' ? "Complete previous to unlock this level!" : ""}
                                         </Card>
                                         </Badge.Ribbon>
                                     </List.Item>

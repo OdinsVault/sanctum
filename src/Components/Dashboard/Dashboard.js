@@ -42,8 +42,8 @@ class DashBoard extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            courses: [],
-            practicalList: "",
+            courses: '',
+            practicalList: '',
             competitionList: '',
             todaysTip: '',
             dataLoading: true,
@@ -52,17 +52,20 @@ class DashBoard extends React.Component {
         };
     }
 
-    setComponents =async ()=> {
+    setComponents =async (user)=> {
         this.setState({
             dataLoading:true
         })
-
         try {
+            var getCoursesList ;
+            var getPracticeList ;
+            var getCompetitions;
 
-            var getCoursesList = await getCourses(this.state.user);
-            var getPracticeList = await getAllQuestions();
-            var getCompetitions = await getAllCompete();
-
+            if(user){
+                getCoursesList = await getCourses(this.state.user);
+                getPracticeList = await getAllQuestions();
+                getCompetitions = await getAllCompete();
+            }
             this.setState({
                 courses: getCoursesList,
                 practicalList: getPracticeList,
@@ -114,15 +117,15 @@ class DashBoard extends React.Component {
 
     }
 
-    componentDidMount() {
+    async componentDidMount() {
 
-        var getUser = JSON.parse(localStorage.getItem('usersession'));
+        var getUser = JSON.parse(localStorage.getItem('usersession')); //simply_usersession
         if (getUser) {
             this.setState({
                 user: getUser
             })
         }
-        this.setComponents();
+        this.setComponents(getUser);
         this.setQuote();
 
     }
@@ -159,33 +162,27 @@ class DashBoard extends React.Component {
                                 <Spin spinning={this.state.dataLoading}>{
                                     this.state.courses?this.state.courses.map((course)=>(
                                         <Card.Grid key={course.courseId} style={{width:'50%',backgroundColor:'#fff9e0'}}>{course.courseName}</Card.Grid>
-                                    )):''
+                                    )):'Learn Description'
                                     }</Spin>
                             </Card>
                         </Col>
                         <Col span={8}>
                             <Card  title={<b><span>Practice</span></b>} extra={<a onClick={()=>this.onCardMoreClick("/practice/overview")}>More</a>}>
-                                <Spin spinning={this.state.dataLoading}>{
-                                    this.state.practicalList?this.state.practicalList.questions.map((practicle)=>(
-                                            <Card.Grid
-                                                key={practicle._id} style={{width:'50%', backgroundColor:'#e3eeff'}}>{practicle.title}</Card.Grid>
-                                    )):''
+                                <Spin spinning={this.state.dataLoading}>
+                                    {this.state.practicalList? this.state.practicalList.questions.map((practicle)=>(
+                                            <Card.Grid key={practicle._id} style={{width:'50%', backgroundColor:'#e3eeff'}}>{practicle.title}</Card.Grid>
+                                    )):'Practice Description'
                                 }</Spin>
 
                             </Card>
                         </Col>
                         <Col span={8}>
                             <Card title={<b><span>Compete</span></b>} extra={<a onClick={()=>this.onCardMoreClick("/compete/overview")}>More</a>}>
-                                <Spin spinning={this.state.dataLoading}>
-                                    {/*<CustomScroll>*/}
-                                        {
+                                <Spin spinning={this.state.dataLoading}>{
                                     this.state.competitionList?this.state.competitionList.questions.map((practicle)=>(
-
-                                        <Card.Grid
-                                            key={practicle._id} style={{width:'100%',backgroundColor:'#e3ffd9'}}>{practicle.title}</Card.Grid>
-                                    )):''
+                                        <Card.Grid key={practicle._id} style={{width:'100%',backgroundColor:'#e3ffd9'}}>{practicle.title}</Card.Grid>
+                                    )):'Competitions Description'
                                 }
-                                {/*</CustomScroll>*/}
                             </Spin>
                             </Card>
                         </Col>

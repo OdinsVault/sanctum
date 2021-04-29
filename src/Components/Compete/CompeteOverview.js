@@ -38,7 +38,6 @@ class OverviewCompete extends React.Component {
         this.setState({
             loading: true
         })
-        var user = null; //get userId from localStorage
         try {
             var list = await getQuestionByCategory();
             this.setState({
@@ -67,7 +66,6 @@ class OverviewCompete extends React.Component {
     }
 
     goToQuestion =(question) =>{
-
         var questionName = question.title.split(" ").join("");
         this.props.history.push({
             pathname: `/question/${questionName}`,

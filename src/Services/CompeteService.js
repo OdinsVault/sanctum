@@ -5,20 +5,24 @@ import {getByCategory} from "../constant";
 export async function getAllCompete (){
     const endpoint = `/competequestion`;
     let api = await API();
-    var response = await api.get(endpoint);
-    return response;
+    return await api.get(endpoint);
+
 }
 
 export async function getQuestionByCategory (){
     const endpoint = `/competequestion/bycategory`;
     let api = await API();
-    var response = await api.get(endpoint);
-    return getByCategory;
+    return await api.get(endpoint);
 }
 
 export async function getCompeteQuestionById (qId){
     const endpoint = `/competequestion/${qId}`;
     let api = await API();
-    var response = await api.get(endpoint);
-    return response;
+    return await api.get(endpoint);
+
 }
+
+
+// const options = {
+//     headers: {'AUTHORIZATION':`Bearer ${token}`}
+// }

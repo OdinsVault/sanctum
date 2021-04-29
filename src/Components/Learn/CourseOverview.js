@@ -37,9 +37,8 @@ class OverviewCourse extends React.Component {
         this.setState({
             loading: true
         })
-        var user = null; //get userId from localStorage
         try {
-            var list = await getCourses(user);
+            var list = await getCourses();
             this.setState({
                 courseList: list
             })

@@ -93,6 +93,7 @@ class CourseDetails extends React.Component {
 
     async componentDidMount() {
         var course = this.props.location.state
+        console.log(course);
         this.setState({course:course})
         await this.getCourseDetails(course);
 
@@ -117,7 +118,6 @@ class CourseDetails extends React.Component {
                             <Button onClick={this.goToPrevious}><LeftCircleOutlined /> Back</Button>
                             <Button disabled={false} style={{color:'green'}} onClick={this.goToPractice}><ExperimentOutlined />Practice</Button>
                             <Button disabled={false} onClick={this.goToNextCourse}><RightCircleOutlined /> Next</Button>
-
                         </Col>
                     </Row>
                 </Card>
