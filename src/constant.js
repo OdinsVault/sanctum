@@ -351,7 +351,7 @@ const quizzes = [
 
 const practiceSubReponseSuccess =
     {
-        "message": "Practice question answer passed",
+        "message": "Practice question Already answered",
         "consoleResult": {
             "answer": "class Code {\r\n    public static void main(String[] args) {\r\n        System.out.println(\"Java runs\");\r\n for(int i=0; i < args.length; i++) {System.out.print(args[i]);}\r\n    }\r\n}",
             "testResults": [
@@ -362,7 +362,7 @@ const practiceSubReponseSuccess =
                         "title": "Test case 1 title",
                         "description": "Test case 1 decription"
                     },
-                    "status": 0,
+                    "status": -1,
                     "stdout": "Java runs\n123",
                     "stderr": null
                 },
@@ -373,7 +373,7 @@ const practiceSubReponseSuccess =
                         "title": "Test case 2 title",
                         "description": "Test case 2 decription"
                     },
-                    "status": 0,
+                    "status": -1,
                     "stdout": "Java runs\n12345",
                     "stderr": null
                 }
@@ -383,7 +383,7 @@ const practiceSubReponseSuccess =
                 "stdout": "",
                 "stderr": null
             },
-            "passed": true
+            "passed": false
         },
         "updatedUser": {
             "attempts": {

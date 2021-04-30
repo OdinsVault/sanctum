@@ -1,5 +1,5 @@
 import {API} from "./APICallService";
-import {getByCategory} from "../constant";
+import {getByCategory, practiceSubReponseSuccess} from "../constant";
 
 
 export async function getAllCompete (){
@@ -30,6 +30,23 @@ export async function getCompeteQuestionById (qId){
     let header = getToken();
     let api = await API();
     return await api.get(endpoint,header);
+
+}
+export async function runCompeteAnswer (qId,submission){
+    const endpoint = `/answer/compete-run/${qId}`;
+    let header = getToken();
+    let api = await API();
+    return practiceSubReponseSuccess;
+
+    // return await api.post(endpoint,submission,header);
+
+}
+export async function submitCompeteAnswer (qId,submission){
+    const endpoint = `/answer/compete/${qId}`;
+    let header = getToken();
+    let api = await API();
+    return practiceSubReponseSuccess;
+    // return await api.post(endpoint,header);
 
 }
 

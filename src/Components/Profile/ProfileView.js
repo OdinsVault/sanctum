@@ -49,16 +49,6 @@ class ProfileView extends React.Component {
         };
     }
 
-    goToQuestion = (question) => {
-
-        var questionName = question.title.split(" ").join("");
-        this.props.history.push({
-            pathname: `/question/${questionName}`,
-            state: "compete",
-            question: question,
-        });
-    }
-
     submitUserDetails = async () => {
 
         this.setState({
@@ -66,8 +56,6 @@ class ProfileView extends React.Component {
             isEditEnabled: false,
             confirmationVisible: false
         })
-
-        var token = localStorage.getItem('token');
         var sendUser = {
             fname: this.state.updatedUser.fname ? this.state.updatedUser.fname : this.state.user.fname,
             lname: this.state.updatedUser.lname ? this.state.updatedUser.lname : this.state.user.lname,
@@ -79,12 +67,14 @@ class ProfileView extends React.Component {
         }
 
         try {
-            var getUser = await updateUser(sendUser, token);
+            var getUser = await updateUser(sendUser);
+            console.log(getUser);
             if (getUser) {
                 this.setState({
-                    user: getUser
+                    user: getUser.result
                 })
             }
+            notification.success({message:"Success",description:getUser.message?getUser.message:"User updated successfully!"})
             //if password changed log out
         } catch (e) {
             notification.error({message: "Error", description: e.message ? e.message : "Error updating user!"})

@@ -118,8 +118,8 @@ class QuestionList extends React.Component {
                                 renderItem={item => (
                                     <List.Item>
                                         <Badge.Ribbon
-                                            color={item.attempts>0?(item.passed==="completed"?"#f2c53d":"#3d99f5"):'#29e34b'}
-                                            text={item.attempts>0?(item.passed==="completed"?"Completed":"Attempted"):"New"}>
+                                            color={item.attempts>0?(item.passed?"#f2c53d":"#3d99f5"):'#29e34b'}
+                                            text={item.attempts>0?(item.passed?"Completed":"Attempted"):"New"}>
                                         <Card
                                             headStyle={item.difficulty === "Easy" ? {backgroundColor: '#c8ffb8'} : item.difficulty === "Medium"?
                                                 {backgroundColor: '#faffb8'}:{backgroundColor: '#ffdaad'}}
@@ -136,7 +136,6 @@ class QuestionList extends React.Component {
                                         </Badge.Ribbon>
                                     </List.Item>
                                 )}
-
                             />
                         </Spin>
                     </div>

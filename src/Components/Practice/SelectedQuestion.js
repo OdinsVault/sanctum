@@ -2,7 +2,25 @@ import React from 'react';
 import {withRouter} from 'react-router';
 
 //style imports
-import {Button, Col, PageHeader, Card, Row, Tabs, Descriptions, notification, Spin, Result, Input, Collapse, Switch, Slider, Typography, List, Progress} from 'antd';
+import {
+    Button,
+    Col,
+    PageHeader,
+    Card,
+    Row,
+    Tabs,
+    Descriptions,
+    notification,
+    Spin,
+    Result,
+    Input,
+    Collapse,
+    Switch,
+    Slider,
+    Typography,
+    List,
+    Progress
+} from 'antd';
 import {SettingTwoTone, CheckCircleTwoTone, CloseCircleTwoTone} from '@ant-design/icons';
 
 //Editor imports
@@ -16,7 +34,7 @@ import "ace-builds/src-noconflict/theme-github";
 
 //Service imports
 import {getQuestionById, runPracticeAnswer, submitPracticeAnswer} from "../../Services/PracticeService";
-import {getCompeteQuestionById} from "../../Services/CompeteService";
+import {getCompeteQuestionById, runCompeteAnswer, submitCompeteAnswer} from "../../Services/CompeteService";
 
 const {Meta} = Card;
 const {TabPane} = Tabs;
@@ -30,11 +48,11 @@ class Question extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            locState:'', //previous page
+            locState: '',                   //previous page
             course: '',
-            question: '', //should be removed
-            qL: '', //selected question sent from previous page
-            selectedQuestion: '',  //question with all the details
+            question: '',                   //should be removed
+            qL: '',                         //selected question sent from previous page
+            selectedQuestion: '',           //question with all the details
             loading: false,
             answerCode: CODE_ON_LOAD,
             mainClass: '',
@@ -48,15 +66,15 @@ class Question extends React.Component {
 
     getQuestion = async (ques) => {
 
-        var question=''
+        var question = ''
 
         this.setState({
             loading: true
         })
         try {
-            if(this.props.location.state==="compete"){
+            if (this.props.location.state === "compete") {
                 question = await getCompeteQuestionById(ques.questionId);
-            }else{
+            } else {
                 question = await getQuestionById(ques.questionId);
             }
             if (!question) {
@@ -110,6 +128,8 @@ class Question extends React.Component {
             runLoading: true,
             runCasePassed: false,
             runCaseFailed: false,
+            submitCasePassed: false,
+            submitCaseFailed: false,
             compileError: false
         })
         try {
@@ -118,35 +138,44 @@ class Question extends React.Component {
                     message: 'Warning!',
                     description: 'Cannot run if the answer code is empty'
                 })
-            }else {
-                var success = await runPracticeAnswer(this.state.selectedQuestion._id, submission)
-                console.log(success)
-                //should handle already answered
+            } else {
+                var success;
+                if (this.props.location.state === "compete") {
+                    success = await runCompeteAnswer(this.state.selectedQuestion._id, submission)
+                } else {
+                    success = await runPracticeAnswer(this.state.selectedQuestion._id, submission)
+                }
                 if (success) {
-
                     this.setState({
                         runCaseResult: success
                     })
 
-                    if (!success.consoleResult.passed) {
-                        if (success.consoleResult.compilerResult.status === (-1)) {
-                            this.setState({
-                                compileError: true
-                            })
+                    let alreadyAnswered = !success.consoleResult //check if question already passed
+                    if (alreadyAnswered) {
+                        notification.info({message: success.message})
+                    } else {
+                        if (!success.consoleResult.passed) {
+                            if (success.consoleResult.compilerResult.status === (-1)) {
+                                this.setState({
+                                    compileError: true
+                                })
+                                notification.error({message:"Failed", description:"Compile errors"})
+                            } else {
+                                this.setState({
+                                    runCaseFailed: true
+                                })
+                                notification.error({message:"Failed", description:"Test case failed"})
+                            }
                         } else {
                             this.setState({
-                                runCaseFailed: true
+                                runCasePassed: true
                             })
+                            notification.info({message: success.message})
                         }
-                    } else {
-                        this.setState({
-                            runCasePassed: true
-                        })
                     }
                 }
             }
         } catch (e) {
-            console.log(e)
             notification.error({message: "Error Code Execution!", description: e.message ? e.message : ""})
         }
         this.setState({
@@ -162,6 +191,8 @@ class Question extends React.Component {
             submitLoading: true,
             submitCasePassed: false,
             submitCaseFailed: false,
+            runCasePassed: false,
+            runCaseFailed: false,
             compileError: false
         })
         try {
@@ -170,34 +201,48 @@ class Question extends React.Component {
                     message: 'Warning!',
                     description: 'Cannot submit if the answer code is empty'
                 })
-            } else {
-                var success = await submitPracticeAnswer(this.state.selectedQuestion._id, submission)
-                if (success) {
+            } else if (this.state.course) {
 
+            } else {
+                var success;
+                if (this.props.location.state === "compete") {
+                    success = await submitCompeteAnswer(this.state.selectedQuestion._id, submission)
+                } else {
+                    success = await submitPracticeAnswer(this.state.selectedQuestion._id, submission)
+                }
+                if (success) {
                     this.setState({
                         submitCaseResult: success
                     })
 
-                    if (!success.consoleResult.passed) {
-                        if (success.consoleResult.compilerResult.status === (-1)) {
-                            this.setState({
-                                compileError: true
-                            })
+                    let alreadyAnswered = !success.consoleResult //check if question already passed
+
+                    if (alreadyAnswered) {
+                        notification.info({message: success.message})
+                    } else {
+                        if (!success.consoleResult.passed) { //if failed
+                            if (success.consoleResult.compilerResult.status === (-1)) {
+                                this.setState({
+                                    compileError: true //if compile error
+                                })
+                                notification.error({message:"Failed", description:"Compile errors"})
+                            } else {
+                                this.setState({
+                                    submitCaseFailed: true //if test cases failed
+                                })
+                                notification.error({message:"Failed", description:"Test case failed"})
+                            }
                         } else {
                             this.setState({
-                                submitCaseFailed: true
+                                submitCasePassed: true
                             })
+                            notification.success({message:"Success",description:success.message})
                         }
-                    } else {
-                        this.setState({
-                            submitCasePassed: true
-                        })
                     }
                 }
-            }
 
+            }
         } catch (e) {
-            console.log(e)
             notification.error({message: "Error!", description: e.message ? e.message : ""})
         }
 
@@ -206,55 +251,55 @@ class Question extends React.Component {
         })
     }
 
-    sendCodeToVisualizer =() =>{
+    sendCodeToVisualizer = () => {
         var code = {
-            answerCode:this.state.answerCode,
+            answerCode: this.state.answerCode,
         }
-        if(!code.answerCode){
+        if (!code.answerCode) {
             notification.warn({
                 message: 'Warning!',
-                description: 'Cannot submit if the answer code is empty'})
-        }else{
+                description: 'Cannot submit if the answer code is empty'
+            })
+        } else {
             this.props.history.push({
-                pathname:'/codeVisualizer',
+                pathname: '/codeVisualizer',
                 state: code
             })
         }
     }
 
-    goBack = () =>{
-        if(this.state.locState==="compete"){
+    goBack = () => {
+        if (this.state.locState === "compete") {
             this.props.history.push({
                 pathname: `/compete/overview`,
-                state:this.state.course
+                state: this.state.course
             });
-        }else{
-            var name = this.state.course.courseName.split(" ").join("")
+        } else {
+            var name = this.state.course.category.split(" ").join("")
             this.props.history.push({
                 pathname: `/practice/${name}`,
-                state:this.state.course
+                state: this.state.course
             });
         }
     }
 
     async componentDidMount() {
 
-        if (!this.props.location.question || !this.props.location.state ) {
+        if (!this.props.location.question || !this.props.location.state) {
             this.props.history.push({
                 pathname: '/practice/overview'
             });
+        } else {
+            var question = this.props.location.question; //selected question
+            var course = this.props.location.course ? this.props.location.course : ''; //practice course
+            var prev = this.props.location.state   //previous is 'practice' or 'compete'
+            this.setState({
+                locState: prev,
+                course: course,
+                qL: question
+            })
+            await this.getQuestion(question);
         }
-
-        var question = this.props.location.question; //selected question
-        var course = this.props.location.course?this.props.location.course:''; //practice course
-        var prev = this.props.location.state   //previous is 'practice' or 'compete'
-
-        this.setState({
-            locState:prev,
-            course: course,
-            qL: question
-        })
-         await this.getQuestion(question);
     }
 
     render() {
@@ -263,7 +308,7 @@ class Question extends React.Component {
 
                 <Card title={<PageHeader className="site-page-header"
                                          title={this.state.selectedQuestion.title}/>}
-                      extra={ <Button onClick={()=>this.goBack()}>Back</Button>}>
+                      extra={<Button onClick={() => this.goBack()}>Back</Button>}>
 
                     <div className="site-card-wrapper">
                         <Row>
@@ -277,7 +322,6 @@ class Question extends React.Component {
                                                         status="500"
                                                         title="500"
                                                         subTitle="Sorry, something went wrong."
-                                                        // extra={<Button type="primary">Back Home</Button>}
                                                     />
                                                 )
                                                 : (
@@ -319,12 +363,6 @@ class Question extends React.Component {
                                                                 </Row>
                                                             </Panel>
                                                         </Collapse>
-                                                        {/*<Input type={"text"} placeholder={"Enter Main Class"}*/}
-                                                        {/*       value={this.state.mainClass}*/}
-                                                        {/*       onChange={(e) => {*/}
-                                                        {/*           this.setState({mainClass: e.target.value})*/}
-                                                        {/*       }}*/}
-                                                        {/*/>*/}
                                                         <AceEditor
                                                             mode="java"
                                                             theme={this.state.editorTheme}
@@ -359,13 +397,15 @@ class Question extends React.Component {
                                                                     Code</b></Button>
                                                             </Col>
                                                             <Col offset={1}>
-                                                                <Button onClick={()=>this.sendCodeToVisualizer()}><b>Visualizer</b></Button>
+                                                                <Button
+                                                                    onClick={() => this.sendCodeToVisualizer()}><b>Visualizer</b></Button>
                                                             </Col>
 
                                                         </Row>
                                                         <br/><br/>
                                                         <h3>Results: </h3>
-                                                        {this.state.runLoading || this.state.submitLoading ? (<Spin tip="Loading..."/>) : ''}
+                                                        {this.state.runLoading || this.state.submitLoading ? (
+                                                            <Spin tip="Loading..."/>) : ''}
                                                         <div className="result">
                                                             {
                                                                 this.state.runCasePassed ? (
@@ -409,9 +449,15 @@ class Question extends React.Component {
                                                                         size="default"
                                                                         header={
                                                                             <div>
-                                                                                {this.state.submitCasePassed?
-                                                                                    (<Col offset={11}><Progress type="circle" percent={100} width={50} format={() => 'Done'}/></Col>):
-                                                                                    (<Col offset={11}><Progress type="circle" percent={60} status="exception" width={50} format={() => 'Failed'}/></Col>)
+                                                                                {this.state.submitCasePassed ?
+                                                                                    (<Col offset={11}><Progress
+                                                                                        type="circle" percent={100}
+                                                                                        width={50}
+                                                                                        format={() => 'Done'}/></Col>) :
+                                                                                    (<Col offset={11}><Progress
+                                                                                        type="circle" percent={60}
+                                                                                        status="exception" width={50}
+                                                                                        format={() => 'Failed'}/></Col>)
                                                                                 }
                                                                             </div>}
                                                                         bordered
@@ -419,8 +465,10 @@ class Question extends React.Component {
                                                                         renderItem={item =>
                                                                             <List.Item>
                                                                                 {item.status === 0 ?
-                                                                                    (<CheckCircleTwoTone twoToneColor="#52c41a"/>) :
-                                                                                    (<CloseCircleTwoTone twoToneColor="#f0133c"/>)}
+                                                                                    (<CheckCircleTwoTone
+                                                                                        twoToneColor="#52c41a"/>) :
+                                                                                    (<CloseCircleTwoTone
+                                                                                        twoToneColor="#f0133c"/>)}
                                                                                 {item.testCase.title}
                                                                             </List.Item>}
                                                                     />) : ''
@@ -442,12 +490,15 @@ class Question extends React.Component {
                             <Col offset={1} span={5}>
                                 <Card>
                                     <Descriptions title={this.state.selectedQuestion.title} size={'small'} column={1}>
-                                        <Descriptions.Item label="Level"> {this.state.selectedQuestion.level}</Descriptions.Item><br/>
+                                        {this.state.locState !=='compete'?<Descriptions.Item
+                                            label="Level"> {this.state.selectedQuestion.level}</Descriptions.Item>:''}
+                                            <br/>
                                         <Descriptions.Item
                                             label="Category">{this.state.selectedQuestion.category}</Descriptions.Item><br/>
                                         <Descriptions.Item
                                             label="Difficulty"> {this.state.selectedQuestion.difficulty}</Descriptions.Item><br/>
-                                        <Descriptions.Item label="Points">{this.state.selectedQuestion.pointsAllocated}</Descriptions.Item><br/>
+                                        <Descriptions.Item
+                                            label="Points">{this.state.selectedQuestion.pointsAllocated}</Descriptions.Item><br/>
                                     </Descriptions>
                                 </Card>
                             </Col>
