@@ -1,18 +1,18 @@
-import React, {Component, useContext} from 'react';
-import {createHashHistory} from 'history';
-import {ConfigProvider, Layout, Menu, Dropdown, Badge, Select, Button} from 'antd';
-import {
-    UserOutlined,
-    MenuUnfoldOutlined,
-    MenuFoldOutlined,
-    PoweroffOutlined, NotificationOutlined,
-    TrophyTwoTone, FundTwoTone, CrownTwoTone
-} from '@ant-design/icons';
-import {Context} from "../../ConfigProvider";
-import './TopNav.css';
-import {logout} from "../../Services/UserLoginService";
+import React, {Component} from 'react';
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router";
+import {Context} from "../../ConfigProvider";
+import {createHashHistory} from 'history';
+
+//services
+import {logout} from "../../Services/UserLoginService";
+
+//css
+import {ConfigProvider, Layout, Menu, Dropdown, Badge, Select, Button} from 'antd';
+import {UserOutlined, MenuUnfoldOutlined, MenuFoldOutlined, PoweroffOutlined, NotificationOutlined,
+    TrophyTwoTone, FundTwoTone, CrownTwoTone} from '@ant-design/icons';
+import './TopNav.css';
+
 
 const {Header} = Layout;
 const {Option} = Select;
@@ -51,11 +51,8 @@ class TopNav extends Component {
     LogoutClick = async(e) => {
         if (e.key === 'logout') {
             await logout();
-            // localStorage.removeItem('token');
-            // localStorage.removeItem('usersession');
             const history = createHashHistory();
             history.go("/simply/dashboard");
-
         }
     };
 
@@ -68,10 +65,10 @@ class TopNav extends Component {
                 <Menu.Item key="score" icon={<FundTwoTone/>}>
                     Score: {this.state.user.score}
                 </Menu.Item>
-                <Menu.Item key="score" icon={<CrownTwoTone/>}>
+                <Menu.Item key="leaderboard" icon={<CrownTwoTone/>}>
                     <Link to='/leaderboard'> Leaderboards</Link>
                 </Menu.Item>
-                <Menu.Item key="logout" icon={<UserOutlined/>}>
+                <Menu.Item key="profile" icon={<UserOutlined/>}>
                     <Link to='/profile'> My Profile</Link>
                 </Menu.Item>
                 <Menu.Item key="logout" onClick={this.LogoutClick} icon={<PoweroffOutlined/>}>
@@ -81,7 +78,6 @@ class TopNav extends Component {
     }
 
     render() {
-        // console.log(this.context);
         const {locale, selectLang} = this.context;
         return (
             <ConfigProvider locale={this.state.locale}>
@@ -125,14 +121,3 @@ class TopNav extends Component {
 
 TopNav.contextType = Context;
 export default withRouter(TopNav)
-
-
-const menu = (
-    <Menu>
-        <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="http://www.alipay.com/">
-                You have notifications
-            </a>
-        </Menu.Item>
-    </Menu>
-);

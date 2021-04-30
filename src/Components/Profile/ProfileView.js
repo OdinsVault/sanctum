@@ -1,6 +1,5 @@
 import React from 'react';
-import {
-    Button, Col, PageHeader, Card, Row, Spin, List, notification, Badge, Descriptions, Form, Input, Checkbox,
+import {Button, Col, PageHeader, Card, Row, Spin, List, notification, Descriptions, Form, Input, Checkbox,
     Modal, DatePicker, Divider, Skeleton, Select, Rate
 } from 'antd';
 import {EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
@@ -224,7 +223,13 @@ class ProfileView extends React.Component {
                                                     </Select>
                                                 </Form.Item>
 
-                                                <Form.Item {...layout} name="institute" label="Institute/Organization">
+                                                <Form.Item {...layout} name="institute" label="Institute/Organization"
+                                                rules={[
+                                                    {
+                                                        required:true,
+                                                        message:"Enter your institute/organization name"
+                                                    }
+                                                ]}>
                                                     <Input disabled={!this.state.isEditEnabled}/>
                                                 </Form.Item>
                                             </Col>

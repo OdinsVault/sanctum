@@ -9,26 +9,29 @@ export async function  addNewUser(user){
     return true;
 }
 
-export async function  getUser(token){
+export async function  getUser(){
 
     const endpoint = '/user'
-    // const options = {
-    //     headers: {'AUTHORIZATION':`${token}`}
-    // }
-    // let api = await API();
-    // return api.get(endpoint,options);
-    return user;
+    const options = getToken()
+    let api = await API();
+    return  await api.get(endpoint,options);
 }
 
-export async function  updateUser(user,token){
+export async function  updateUser(user){
 
     const endpoint = '/user'
+    const options = getToken();
+    let api = await API();
+    return await api.put(endpoint,user,options);
+}
+
+
+function getToken (){
+    var token = localStorage.getItem('token');
     const options = {
         headers: {'AUTHORIZATION':`Bearer ${token}`}
     }
-    let api = await API();
-    // return api.put(endpoint,user,options);
-    return user;
+    return options;
 }
 
 

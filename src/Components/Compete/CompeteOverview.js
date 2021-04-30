@@ -1,19 +1,14 @@
 import React from 'react';
-import {Button, Col, PageHeader, Card, Row, Spin, List, notification, Badge} from 'antd';
-import {ReloadOutlined,RightCircleFilled,RightCircleTwoTone} from '@ant-design/icons'
 import {withRouter} from 'react-router';
-import {getQuestionByCategory, getQuestionsOverview} from "../../Services/CompeteService";
 
+//SERVICES
+import {getQuestionsOverview} from "../../Services/CompeteService";
+
+//CSS
+import {Button, Col, PageHeader, Card, Row, Spin, List, notification, Badge} from 'antd';
+import {ReloadOutlined, RightCircleFilled, RightCircleTwoTone} from '@ant-design/icons'
 
 const {Meta} = Card;
-
-const contentStyle = {
-    height: '260px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-};
 
 class OverviewCompete extends React.Component {
 
@@ -22,19 +17,11 @@ class OverviewCompete extends React.Component {
         this.state = {
             courseList: [],
             loading: false,
-            questionList:'',
-            queLevel:'All',
-            queCategories:[]
+            questionList: ''
         };
     }
 
-    selectQuestionLevel = (level)=>{
-            this.setState({
-                queLevel:level
-            })
-    }
-
-    getQuestionList = async () =>{
+    getQuestionList = async () => {
         this.setState({
             loading: true
         })
@@ -45,20 +32,23 @@ class OverviewCompete extends React.Component {
             })
 
         } catch (e) {
-            notification.error({message:"Error!", description:e.message?e.message:"Error occurred while fetching data"})
+            notification.error({
+                message: "Error!",
+                description: e.message ? e.message : "Error occurred while fetching data"
+            })
         }
         this.setState({
             loading: false
         })
     }
 
-    goToQuestion =(question) =>{
+    goToQuestion = (question) => {
         console.log(question)
         var questionName = question.title.split(" ").join("");
         this.props.history.push({
             pathname: `/question/${questionName}`,
             state: "compete",
-            question:question,
+            question: question,
         });
     }
 
@@ -78,39 +68,42 @@ class OverviewCompete extends React.Component {
                     </Row>
                     <div className="site-card-wrapper">
                         <Spin spinning={this.state.loading} tip="Loading courses...">
-                            { this.state.questionList?
+                            {this.state.questionList ?
                                 (this.state.questionList.overview.map((category) => (
-                                    <div>
-                                    <h2 style={{color:'#e69815'}}>{category.category}&nbsp;&nbsp;<RightCircleFilled /> </h2>
-                                <List
-                                        grid={{gutter: 16, column: 3}}
-                                        dataSource={category.attemptsOverview}
-                                        renderItem={item=> (
-                                            <List.Item>
-                                                <Badge.Ribbon
-                                                    color={item.attempts>0?(item.passed?"#f2c53d":"#3d99f5"):'#29e34b'}
-                                                    text={item.attempts>0?(item.passed?"Completed":"Attempted"):"New"}>
-                                                    <Card
-                                                        headStyle={item.difficulty === "Easy" ? {backgroundColor: '#c8ffb8'} : item.difficulty === "Medium"?
-                                                            {backgroundColor: '#faffb8'}:{backgroundColor: '#ffdaad'}}
-                                                        hoverable
-                                                        title={<span style={{fontSize:'13px'}}>Difficulty : {item.difficulty}</span>}
-                                                        onClick={() => this.goToQuestion(item)}
-                                                    >
-                                                        <Meta title={item.title} description={"Points: "+ item.pointsAllocated}/>
-                                                        <Col offset={20} style={{paddingTop: '15px'}}>
-                                                            <Button onClick={() => this.goToQuestion(item)}><RightCircleTwoTone/></Button>
-                                                        </Col>
-                                                    </Card>
-                                                </Badge.Ribbon>
-                                            </List.Item>
-                                        )}
-
-                            /></div>
+                                        <div>
+                                            <h2 style={{color: '#e69815'}}>{category.category}&nbsp;&nbsp;
+                                                <RightCircleFilled/></h2>
+                                            <List
+                                                grid={{gutter: 16, column: 3}}
+                                                dataSource={category.attemptsOverview}
+                                                renderItem={item => (
+                                                    <List.Item>
+                                                        <Badge.Ribbon
+                                                            color={item.attempts > 0 ? (item.passed ? "#f2c53d" : "#3d99f5") : '#29e34b'}
+                                                            text={item.attempts > 0 ? (item.passed ? "Completed" : "Attempted") : "New"}
+                                                        >
+                                                            <Card
+                                                                headStyle={item.difficulty === "Easy" ? {backgroundColor: '#c8ffb8'} : item.difficulty === "Medium" ?
+                                                                    {backgroundColor: '#faffb8'} : {backgroundColor: '#ffdaad'}}
+                                                                hoverable
+                                                                title={<span
+                                                                    style={{fontSize: '13px'}}>Difficulty : {item.difficulty}</span>}
+                                                                onClick={() => this.goToQuestion(item)}
+                                                            >
+                                                                <Meta title={item.title}
+                                                                      description={"Points: " + item.pointsAllocated}/>
+                                                                <Col offset={20} style={{paddingTop: '15px'}}>
+                                                                    <Button
+                                                                        onClick={() => this.goToQuestion(item)}><RightCircleTwoTone/></Button>
+                                                                </Col>
+                                                            </Card>
+                                                        </Badge.Ribbon>
+                                                    </List.Item>
+                                                )}/>
+                                        </div>
                                     ))
-                                ):''
+                                ) : ''
                             }
-
                         </Spin>
                     </div>
                 </Card>
