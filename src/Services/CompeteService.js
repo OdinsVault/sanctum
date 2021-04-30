@@ -36,17 +36,14 @@ export async function runCompeteAnswer (qId,submission){
     const endpoint = `/answer/compete-run/${qId}`;
     let header = getToken();
     let api = await API();
-    return practiceSubReponseSuccess;
-
-    // return await api.post(endpoint,submission,header);
+    return await api.post(endpoint,submission,header);
 
 }
 export async function submitCompeteAnswer (qId,submission){
     const endpoint = `/answer/compete/${qId}`;
     let header = getToken();
     let api = await API();
-    return practiceSubReponseSuccess;
-    // return await api.post(endpoint,header);
+    return await api.post(endpoint,header);
 
 }
 

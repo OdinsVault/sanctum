@@ -1,10 +1,13 @@
 import axios from 'axios';
+import {notification} from "antd";
 
 
 function parseError(errorResponse) {
     if (errorResponse && errorResponse.config && errorResponse.status) {
 
         if (401 === errorResponse.status) {
+            console.log(errorResponse);
+            notification.error({message:errorResponse.data})
             window.location.href = "/login";
         }
 
@@ -29,11 +32,7 @@ function parseBody(response) {
 }
 
 function fetchBaseURL() {
-    // return fetch('./config.json')
-        // .then(response => response.json())
-        // .then(data => {
             return 'https://simply-server.herokuapp.com/v1';
-        // });
 }
 
 export async function API() {
@@ -47,39 +46,10 @@ export async function API() {
 
     let instance = axios.create();
 
-    // // Do something before request is sent
-    // instance.interceptors.request.use((config) => {
-    //
-    //         // Debug Info
-    //         // console.log(localStorage.getItem('token'));
-    //         // console.log(localStorage.getItem('loggedInData'));
-    //         //
-    //
-    //         var authTicket = localStorage.getItem('token');
-    //         if (authTicket != null) {
-    //             config.headers = { 'TicketHeader': authTicket };
-    //         }
-    //
-    //         var routeIndex = _.findIndex(global_loader_skip_list, function (o) { return (config.url).includes(o); });
-    //         if (routeIndex < 0) {
-    //             document.body.classList.add('loading-indicator');
-    //         }
-    //
-    //         return config;
-    //
-    //     },
-    //     error => {
-    //         return Promise.reject(error)
-    //     });
-
     // Process the response and get return value
     instance.interceptors.response.use((response) => {
-
-        // document.body.classList.remove('loading-indicator');
-
         return parseBody(response);
     }, error => {
-        // document.body.classList.remove('loading-indicator');
         if (error.response) {
             return parseError(error.response);
         } else {
