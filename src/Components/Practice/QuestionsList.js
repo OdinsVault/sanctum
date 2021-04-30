@@ -1,18 +1,15 @@
 import React from 'react';
-import {Button, Col, PageHeader, Card, Row, Spin, List, Progress, notification,Badge} from 'antd';
-import {LockTwoTone, UnlockTwoTone, CheckCircleTwoTone, RightCircleTwoTone, ReloadOutlined, CloudSyncOutlined} from '@ant-design/icons'
 import {withRouter} from 'react-router';
-import {getCourses} from "../../Services/learningService";
-import {getQuestionByLevel, getQuestionList} from "../../Services/PracticeService";
+
+//SERVICES
+import {getQuestionList} from "../../Services/PracticeService";
+
+//STYLES
+import {Button, Col, PageHeader, Card, Row, Spin, List, notification, Badge} from 'antd';
+import {RightCircleTwoTone, ReloadOutlined} from '@ant-design/icons';
+import {CheckLogOnStatus} from "../../Services/UserLoginService";
 
 const {Meta} = Card;
-const contentStyle = {
-    height: '260px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-};
 
 class QuestionList extends React.Component {
 
@@ -22,7 +19,7 @@ class QuestionList extends React.Component {
             course: '',
             quizList: [],
             loading: false,
-            queByLevel:''
+            queByLevel: ''
         };
     }
 
@@ -31,15 +28,13 @@ class QuestionList extends React.Component {
         this.setState({
             loading: true
         })
-        var user = null; //get userId from localStorage
         try {
             var list = await getQuestionList(state.level);
-            console.log("quizList",list);
             this.setState({
                 quizList: list
             })
         } catch (e) {
-
+            notification.error({message: 'Error!', description: e.message ? e.message : ''})
         }
         this.setState({
             loading: false
@@ -47,54 +42,41 @@ class QuestionList extends React.Component {
     }
 
     goToQuestion = (selectedQuestion) => {
-        console.log("goto",selectedQuestion);
         var questionName = selectedQuestion.title.split(" ").join("");
         this.props.history.push({
             pathname: `/question/${questionName}`,
             state: "practice",
-            question:selectedQuestion,
-            course:this.state.course
+            question: selectedQuestion,
+            course: this.state.course
         });
     }
 
-    // getQuestionLevel = async(level) =>{
-    //     try{
-    //         var obj = await getQuestionByLevel();
-    //         var le =''
-    //         this.setState({
-    //             queByLevel:obj
-    //         })
-    //         for(let i=0;i<obj.levelCount;i++){
-    //             if(level===obj.levels[i].level){
-    //                 le = obj.levels[i];
-    //                 break;
-    //             }
-    //         }
-    //         return le;
-    //     }catch (e) {
-    //         notification.error({message:"Error!"})
-    //     }
-    //
-    // }
-
-    goBack =() =>{
+    goBack = () => {
         this.props.history.push({
-            pathname:'/practice/overview'
+            pathname: '/practice/overview'
         })
     }
 
     async componentDidMount() {
 
-        var state = this.props.location.state;
-        if (!state) {
-            this.props.history.push({
-                pathname:'/practice/overview',
-            });
+        let loggedIn = CheckLogOnStatus();
+        if (loggedIn) {
+            var state = this.props.location.state;
+            if (!state) {
+                this.props.history.push({
+                    pathname: '/practice/overview',
+                });
+            } else {
+                this.setState({
+                    course: state
+                })
+                await this.getQuizList(state); //get questions related to  selected level
+            }
         } else {
-            this.setState({
-                course: state
-            })
-            await this.getQuizList(state); //get questions related to  selected level
+            this.props.history.push({
+                pathname: `/dashboard`,
+                state: ''
+            });
         }
     }
 
@@ -107,7 +89,8 @@ class QuestionList extends React.Component {
                     <Row style={{marginBottom: '40px'}}>
                         <Col offset={20}>
                             <Button onClick={() => this.goBack()}>Back</Button>
-                            <Button onClick={() => this.getQuizList(this.state.course)}><ReloadOutlined/> Refresh</Button>
+                            <Button
+                                onClick={() => this.getQuizList(this.state.course)}><ReloadOutlined/> Refresh</Button>
                         </Col>
                     </Row>
                     <div className="site-card-wrapper">
@@ -118,21 +101,23 @@ class QuestionList extends React.Component {
                                 renderItem={item => (
                                     <List.Item>
                                         <Badge.Ribbon
-                                            color={item.attempts>0?(item.passed?"#f2c53d":"#3d99f5"):'#29e34b'}
-                                            text={item.attempts>0?(item.passed?"Completed":"Attempted"):"New"}>
-                                        <Card
-                                            headStyle={item.difficulty === "Easy" ? {backgroundColor: '#c8ffb8'} : item.difficulty === "Medium"?
-                                                {backgroundColor: '#faffb8'}:{backgroundColor: '#ffdaad'}}
-                                            hoverable
-                                            title={<span style={{fontSize:'13px'}}>Difficulty : {item.difficulty}</span>}
-                                            onClick={() => this.goToQuestion(item)}
-                                        >
-                                            <Meta title={item.title} description={"Points: "+item.pointsAllocated}/>
-                                            {/*<Progress percent={(100 / item.questions) * item.completed} size="small"/>*/}
-                                            <Col offset={20} style={{paddingTop: '15px'}}>
-                                                    <Button onClick={() => this.goToQuestion(item)}><RightCircleTwoTone/></Button>
-                                            </Col>
-                                        </Card>
+                                            color={item.attempts > 0 ? (item.passed ? "#f2c53d" : "#3d99f5") : '#29e34b'}
+                                            text={item.attempts > 0 ? (item.passed ? "Completed" : "Attempted") : "New"}>
+                                            <Card
+                                                headStyle={item.difficulty === "Easy" ? {backgroundColor: '#c8ffb8'} : item.difficulty === "Medium" ?
+                                                    {backgroundColor: '#faffb8'} : {backgroundColor: '#ffdaad'}}
+                                                hoverable
+                                                title={<span
+                                                    style={{fontSize: '13px'}}>Difficulty : {item.difficulty}</span>}
+                                                onClick={() => this.goToQuestion(item)}
+                                            >
+                                                <Meta title={item.title}
+                                                      description={"Points: " + item.pointsAllocated}/>
+                                                <Col offset={20} style={{paddingTop: '15px'}}>
+                                                    <Button
+                                                        onClick={() => this.goToQuestion(item)}><RightCircleTwoTone/></Button>
+                                                </Col>
+                                            </Card>
                                         </Badge.Ribbon>
                                     </List.Item>
                                 )}

@@ -1,6 +1,8 @@
 import React from 'react';
-import { PageHeader, Card} from 'antd';
 import {withRouter} from 'react-router';
+
+//STYLES
+import { PageHeader, Card} from 'antd';
 
 class configFileGeneration extends React.Component {
 

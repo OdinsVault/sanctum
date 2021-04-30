@@ -1,10 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import {Button, Col, PageHeader, Card, Row, Spin, List, Progress, notification} from 'antd';
-import {LeftCircleOutlined, ExperimentOutlined, RightCircleOutlined} from '@ant-design/icons'
 import {withRouter} from 'react-router';
-import {getCourseDetails, getCourses, getNextCourse} from "../../Services/learningService";
-import ReactHtmlParser, {processNodes, convertNodeToElement, htmlparser2} from 'react-html-parser';
+import {Context} from "../../ConfigProvider";
+import ReactHtmlParser from 'react-html-parser';
+
+//SERVICES
+import {getCourseDetails, getCourses} from "../../Services/learningService";
+
+//STYLES
+import {Button, Col, PageHeader, Card, Row, Spin, notification} from 'antd';
+import {LeftCircleOutlined, ExperimentOutlined, RightCircleOutlined} from '@ant-design/icons'
+import {CheckLogOnStatus} from "../../Services/UserLoginService";
 
 class CourseDetails extends React.Component {
 
@@ -21,7 +26,6 @@ class CourseDetails extends React.Component {
     getCourseDetails = async (courseSelected) => {
         try {
             var course = await getCourseDetails(courseSelected.level);
-            console.log("works", course)
             if (!course) {
                 notification.error({message: "Error!", description: "Something went wrong please try again!"})
             } else {
@@ -36,6 +40,10 @@ class CourseDetails extends React.Component {
     }
 
     goToPractice = () => {
+
+        const {setMenuKey} = this.context;
+        setMenuKey('3');
+
         var courseName = this.state.course.category.split(" ").join("")
         this.props.history.push({
             pathname: `/practice/${courseName}`,
@@ -47,11 +55,11 @@ class CourseDetails extends React.Component {
     getCourseOverview = async (requiredCourseLevel) => { //to get next or previous course overview
         try {
             var list = await getCourses();
-            for(let i=0;i<list.overview.length;i++){
-                if(list.overview[i].level===requiredCourseLevel){
+            for (let i = 0; i < list.overview.length; i++) {
+                if (list.overview[i].level === requiredCourseLevel) {
                     this.setState({
                         courseList: list,
-                        course:list.overview[i]
+                        course: list.overview[i]
                     })
                     return list.overview[i];
                 }
@@ -61,11 +69,7 @@ class CourseDetails extends React.Component {
         }
     }
 
-    goToPrevious = async() => {
-        // this.props.history.push({
-        //     pathname: '/courses/overview',
-        //     state: ''
-        // })
+    goToPrevious = async () => {
 
         this.setState({
             loading: true
@@ -85,13 +89,12 @@ class CourseDetails extends React.Component {
         this.setState({
             loading: true
         })
-        console.log(this.state.selectedCourse.nextTutorialLevel)
         if (!this.state.course.levelCompleted) {
             notification.warning({message: "Locked !", description: "Complete practice to unclock"})
         } else {
             try {
                 var nextCourse = await this.getCourseOverview(this.state.selectedCourse.nextTutorialLevel);
-                 await this.getCourseDetails(nextCourse);
+                await this.getCourseDetails(nextCourse);
             } catch (e) {
                 notification.error({message: "Error!", description: e.message ? e.message : ''})
             }
@@ -102,25 +105,35 @@ class CourseDetails extends React.Component {
     }
 
     async componentDidMount() {
-        this.setState({
-            loading: true
-        })
-        var course = this.props.location.state
-        console.log("details", course);
-        this.setState({course: course})
-        await this.getCourseDetails(course);
-        this.setState({
-            loading: false
-        })
 
+        let loggedIn = CheckLogOnStatus();
+        if (loggedIn) {
+            this.setState({
+                loading: true
+            })
+            var course = this.props.location.state
+            this.setState({course: course})
+
+            await this.getCourseDetails(course);
+            this.setState({
+                loading: false
+            })
+
+        } else {
+            this.props.history.push({
+                pathname: `/dashboard`,
+                state: ''
+            });
+        }
     }
 
     render() {
+
         return (
             <div>
                 <Card>
                     <PageHeader className="site-page-header" title={this.state.course.title}
-                                extra={"Level "+this.state.course.level+": "+this.state.course.category}/>
+                                extra={"Level " + this.state.course.level + ": " + this.state.course.category}/>
                     <div className="site-card-wrapper">
                         <Spin spinning={this.state.loading}>
                             <div className="content">
@@ -133,10 +146,12 @@ class CourseDetails extends React.Component {
                     </div>
                     <Row style={{marginBottom: '40px'}}>
                         <Col offset={18}>
-                            <Button disabled={!this.state.selectedCourse.previousTutorialLevel} onClick={this.goToPrevious}><LeftCircleOutlined/> Back</Button>
+                            <Button disabled={!this.state.selectedCourse.previousTutorialLevel}
+                                    onClick={this.goToPrevious}><LeftCircleOutlined/> Back</Button>
                             <Button disabled={false} style={{color: 'green'}}
                                     onClick={this.goToPractice}><ExperimentOutlined/>Practice</Button>
-                            <Button disabled={!this.state.selectedCourse.nextTutorialLevel} onClick={this.goToNextCourse}><RightCircleOutlined/> Next</Button>
+                            <Button disabled={!this.state.selectedCourse.nextTutorialLevel}
+                                    onClick={this.goToNextCourse}><RightCircleOutlined/> Next</Button>
                         </Col>
                     </Row>
                 </Card>
@@ -145,6 +160,7 @@ class CourseDetails extends React.Component {
     }
 }
 
+CourseDetails.contextType = Context;
 export default withRouter(CourseDetails);
 
 

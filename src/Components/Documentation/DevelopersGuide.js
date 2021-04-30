@@ -1,17 +1,10 @@
 import React from 'react';
-import {PageHeader, Card, Anchor, Col, Row, Space} from 'antd';
-import {MinusCircleOutlined, BulbOutlined} from '@ant-design/icons';
 import {withRouter} from 'react-router';
 
-const {Link} = Anchor;
+//STYLES
+import {PageHeader, Card, Anchor, Col, Row} from 'antd';
 
-const contentStyle = {
-    height: '260px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-};
+const {Link} = Anchor;
 
 class DevelopGuide extends React.Component {
 
@@ -34,9 +27,15 @@ class DevelopGuide extends React.Component {
                         <Col span={20}>
                             <div id="how_to">
                                 <h3>How to Read This Guide</h3>
-                                <p>This is the first chapter in a step-by-step guide about main React concepts. You can find a list of all its chapters in the navigation sidebar. If you’re reading this from a mobile device, you can access the navigation by pressing the button in the bottom right corner of your screen.
+                                <p>This is the first chapter in a step-by-step guide about main React concepts. You can
+                                    find a list of all its chapters in the navigation sidebar. If you’re reading this
+                                    from a mobile device, you can access the navigation by pressing the button in the
+                                    bottom right corner of your screen.
 
-                                    Every chapter in this guide builds on the knowledge introduced in earlier chapters. You can learn most of React by reading the “Main Concepts” guide chapters in the order they appear in the sidebar. For example, “Introducing JSX” is the next chapter after this one.</p>
+                                    Every chapter in this guide builds on the knowledge introduced in earlier chapters.
+                                    You can learn most of React by reading the “Main Concepts” guide chapters in the
+                                    order they appear in the sidebar. For example, “Introducing JSX” is the next chapter
+                                    after this one.</p>
                             </div>
                             <br/> <br/>
                             <div id="Try_Simply">
@@ -84,7 +83,8 @@ class DevelopGuide extends React.Component {
 
                                 If you prefer to learn by doing, start with our practical tutorial.
                                 If you prefer to learn concepts step by step, start with our guide to main concepts.
-                                Like any unfamiliar technology, Simply does have a learning curve. With practice and some
+                                Like any unfamiliar technology, Simply does have a learning curve. With practice and
+                                some
                                 patience, you will get the hang of it.
                             </div>
                             <br/>
@@ -99,7 +99,8 @@ class DevelopGuide extends React.Component {
 
                                 <h3>Simply for Beginners</h3>
                                 If you feel that the Simply documentation goes at a faster pace than you’re comfortable
-                                with, check out this overview of Simply by Tania Rascia. It introduces the most important
+                                with, check out this overview of Simply by Tania Rascia. It introduces the most
+                                important
                                 Simply concepts in a detailed, beginner-friendly way. Once you’re done, give the
                                 documentation another try!
                             </div>

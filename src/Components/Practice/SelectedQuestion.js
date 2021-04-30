@@ -1,40 +1,25 @@
 import React from 'react';
 import {withRouter} from 'react-router';
+import {Context} from "../../ConfigProvider";
 
-//style imports
-import {
-    Button,
-    Col,
-    PageHeader,
-    Card,
-    Row,
-    Tabs,
-    Descriptions,
-    notification,
-    Spin,
-    Result,
-    Input,
-    Collapse,
-    Switch,
-    Slider,
-    Typography,
-    List,
-    Progress
-} from 'antd';
-import {SettingTwoTone, CheckCircleTwoTone, CloseCircleTwoTone} from '@ant-design/icons';
-
-//Editor imports
+//EDITOR
 import AceEditor from "react-ace"
-import "ace-builds/src-noconflict/snippets/javascript";
 import "ace-builds/src-noconflict/snippets/java";
-import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/theme-github";
 
-//Service imports
+//SERVICES
 import {getQuestionById, runPracticeAnswer, submitPracticeAnswer} from "../../Services/PracticeService";
 import {getCompeteQuestionById, runCompeteAnswer, submitCompeteAnswer} from "../../Services/CompeteService";
+
+//STYLES
+import {Button, Col, PageHeader, Card, Row, Tabs, Descriptions, notification,
+    Spin, Result, Input, Collapse, Switch, Slider, Typography, List, Progress
+} from 'antd';
+import {SettingTwoTone, CheckCircleTwoTone, CloseCircleTwoTone} from '@ant-design/icons';
+import {CheckLogOnStatus} from "../../Services/UserLoginService";
+
 
 const {Meta} = Card;
 const {TabPane} = Tabs;
@@ -252,6 +237,7 @@ class Question extends React.Component {
     }
 
     sendCodeToVisualizer = () => {
+
         var code = {
             answerCode: this.state.answerCode,
         }
@@ -261,6 +247,10 @@ class Question extends React.Component {
                 description: 'Cannot submit if the answer code is empty'
             })
         } else {
+
+            const {setMenuKey} = this.context;
+            setMenuKey('5');
+
             this.props.history.push({
                 pathname: '/codeVisualizer',
                 state: code
@@ -284,22 +274,30 @@ class Question extends React.Component {
     }
 
     async componentDidMount() {
-
-        if (!this.props.location.question || !this.props.location.state) {
-            this.props.history.push({
-                pathname: '/practice/overview'
-            });
+        let loggedIn = CheckLogOnStatus();
+        if (loggedIn) {
+            if (!this.props.location.question || !this.props.location.state) {
+                this.props.history.push({
+                    pathname: '/practice/overview'
+                });
+            } else {
+                var question = this.props.location.question; //selected question
+                var course = this.props.location.course ? this.props.location.course : ''; //practice course
+                var prev = this.props.location.state   //previous is 'practice' or 'compete'
+                this.setState({
+                    locState: prev,
+                    course: course,
+                    qL: question
+                })
+                await this.getQuestion(question);
+            }
         } else {
-            var question = this.props.location.question; //selected question
-            var course = this.props.location.course ? this.props.location.course : ''; //practice course
-            var prev = this.props.location.state   //previous is 'practice' or 'compete'
-            this.setState({
-                locState: prev,
-                course: course,
-                qL: question
-            })
-            await this.getQuestion(question);
+            this.props.history.push({
+                pathname: `/dashboard`,
+                state: ''
+            });
         }
+
     }
 
     render() {
@@ -414,10 +412,10 @@ class Question extends React.Component {
                                                                         title="Test case Passed!"
                                                                     >
                                                                         <div className="desc">
-                                                                            <Paragraph>
-                                                                                Your output:
-                                                                                {/*{this.state.runCaseResult.consoleResult.stdout?this.state.runCaseResult.consoleResult.stdout:''}*/}
-                                                                            </Paragraph>
+                                                                            {/*<Paragraph>*/}
+                                                                            {/*    Your output:*/}
+                                                                            {/*    /!*{this.state.runCaseResult.consoleResult.stdout?this.state.runCaseResult.consoleResult.stdout:''}*!/*/}
+                                                                            {/*</Paragraph>*/}
                                                                             <Paragraph>
                                                                                 Testcase output
                                                                                 : {this.state.selectedQuestion.outputs}
@@ -432,10 +430,10 @@ class Question extends React.Component {
                                                                         title="Test case failed!"
                                                                     >
                                                                         <div className="desc">
-                                                                            <Paragraph>
-                                                                                Your output:
-                                                                                {/*{this.state.runCaseResult.consoleResult.stdout?this.state.runCaseResult.consoleResult.stdout:''}*/}
-                                                                            </Paragraph>
+                                                                            {/*<Paragraph>*/}
+                                                                            {/*    Your output:*/}
+                                                                            {/*    /!*{this.state.runCaseResult.consoleResult.stdout?this.state.runCaseResult.consoleResult.stdout:''}*!/*/}
+                                                                            {/*</Paragraph>*/}
                                                                             <Paragraph>
                                                                                 Expected output
                                                                                 : {this.state.selectedQuestion.outputs}
@@ -510,6 +508,7 @@ class Question extends React.Component {
     }
 }
 
+Question.contextType = Context;
 export default withRouter(Question);
 
 const CODE_ON_LOAD = `class Main{\n\rpublic static void main(String[] args){\n\r//your code here\n\r}\n\r}`

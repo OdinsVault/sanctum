@@ -1,16 +1,20 @@
 import React from 'react';
-import {Form, Input, Button, Select, Col, Card, Row, notification, Modal, DatePicker} from 'antd';
 import {withRouter} from 'react-router';
-import {getUserDetails, login, signup} from "../../Services/UserLoginService";
-import './Login.css';
-import {Header} from "antd/es/layout/layout";
 import jwt_decode from "jwt-decode";
 import moment from 'moment';
+
+//SERVICES
+import {getUserDetails, login, signup} from "../../Services/UserLoginService";
+
+//STYLES
+import {Form, Input, Button, Select, Col, Row, notification, Modal, DatePicker} from 'antd';
+import './Login.css';
+import {Context} from "../../ConfigProvider";
+
 
 var _ = require('underscore');
 
 const {Option} = Select;
-const {Meta} = Card;
 
 const layout = {
     labelCol: {
@@ -18,12 +22,6 @@ const layout = {
     },
     wrapperCol: {
         span: 16,
-    },
-};
-const tailLayout = {
-    wrapperCol: {
-        offset: 20,
-        span: 4,
     },
 };
 
@@ -84,7 +82,7 @@ class Login extends React.Component {
                 } catch (error) {
                     notification.error({
                         message: 'Error!',
-                        description: (error.cause ? error.cause : "Error getting user details!")
+                        description: (error.message ? error.message : "Error getting user details!")
                     });
                 }
             }
@@ -92,6 +90,7 @@ class Login extends React.Component {
             localStorage.setItem('usersession', JSON.stringify(usersession));
 
             if ((session.token !== null) || (session.token !== undefined)) {
+
                 this.props.history.push({
                     pathname: "/dashboard",
                     user: usersession
@@ -100,7 +99,7 @@ class Login extends React.Component {
                 this.props.history.goBack();
             }
         } catch (error) {
-            notification.error({message: 'Error!', description: (error.cause ? error.cause : "")});
+            notification.error({message: 'Error!', description: (error.message ? error.message : "")});
         }
 
         this.setState({
@@ -129,13 +128,12 @@ class Login extends React.Component {
                 notification.success({message: "Success!", description: 'Please login to continue.'})
             }
         } catch (error) {
-            console.log(error.cause)
-            // notification.error({message: 'Error!', description: (error.cause ? error.cause.error.message : "")});
+            notification.error({message: 'Error!', description: (error.message ? error.message : "")});
         }
 
         this.setState({
-            signUpLoading:false,
-            signUpModalVisible:false
+            signUpLoading: false,
+            signUpModalVisible: false
         })
 
     }
@@ -167,12 +165,11 @@ class Login extends React.Component {
                     centered
                     bodyStyle={{backgroundColor: '#eee6fc'}}
                     visible={this.state.loginModalVisible}
-                    // onOk={() => this.setModal2Visible(false)}
                     onCancel={() => this.setState({loginModalVisible: false})}
                     footer={[
-                        <Button key="submit" shape="round" disabled>
-                            Forgot Password
-                        </Button>,
+                        // <Button key="submit" shape="round" disabled>
+                        //     Forgot Password
+                        // </Button>,
                     ]}
                 >
                     <Form
@@ -227,13 +224,9 @@ class Login extends React.Component {
                     centered
                     bodyStyle={{backgroundColor: '#e8f0ff'}}
                     visible={this.state.signUpModalVisible}
-                    // onOk={() => this.setModal2Visible(false)}
                     onCancel={() => this.setState({signUpModalVisible: false})}
                     footer={[
                         <span style={{color: '#7fa3eb'}}><b>Continue your journey with Simply...!</b></span>,
-                        // <Button key="submit" shape="round" disabled>
-                        //     Forgot Password
-                        // </Button>,
                     ]}
                 >
                     <Form
@@ -361,6 +354,8 @@ class Login extends React.Component {
         );
     }
 }
+
+Login.contextType = Context;
 
 function disabledDate(current) {
     // Can not select days after today

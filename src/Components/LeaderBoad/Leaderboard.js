@@ -1,22 +1,16 @@
 import React from 'react';
 import {withRouter} from "react-router";
-import {
-    Badge,
-    Button,
-    Card,
-    Col,
-    List,
-    PageHeader,
-    Row,
-    Spin,
-    Input,
-    AutoComplete,
-    Pagination,
-    Avatar,
-    notification
-} from "antd";
-import {ReloadOutlined, RightCircleFilled, RightCircleTwoTone} from "@ant-design/icons";
+
+//SERVICES
 import {getRankings} from "../../Services/LeaderboardService";
+import {CheckLogOnStatus} from "../../Services/UserLoginService";
+
+//STYLES
+import {
+    Button, Card, Col, List, PageHeader,
+    Row, Spin, Input, Avatar, notification
+} from "antd";
+import {ReloadOutlined} from "@ant-design/icons";
 
 const {Search} = Input;
 
@@ -56,7 +50,16 @@ class Leaderboard extends React.Component {
     }
 
     async componentDidMount() {
-        await this.getLeaderboardList(0, 10);
+        let loggedIn = CheckLogOnStatus();
+        if (loggedIn) {
+            await this.getLeaderboardList(0, 10);
+            ;
+        } else {
+            this.props.history.push({
+                pathname: `/dashboard`,
+                state: ''
+            });
+        }
     }
 
     render() {
@@ -66,7 +69,7 @@ class Leaderboard extends React.Component {
                     <PageHeader className="site-page-header" title="Leaderboard"/>
                     <Row style={{marginBottom: '40px'}}>
                         <Col offset={22}>
-                            <Button onClick={this.getQuestionList}><ReloadOutlined/> Refresh</Button>
+                            <Button onClick={()=>this.getLeaderboardList(0,10)}><ReloadOutlined/> Refresh</Button>
                         </Col>
                     </Row>
                     <Card title={"Search"}>
@@ -81,8 +84,8 @@ class Leaderboard extends React.Component {
                             </Col>
                             <Col offset={2} span={16}>
                                 <Input.Group compact>
-                                    <Input style={{ width: '25%' }} placeholder={"By institue"}  />
-                                    <Input style={{ width: '25%' }} placeholder={"By score"}  />
+                                    <Input style={{width: '25%'}} placeholder={"By institue"}/>
+                                    <Input style={{width: '25%'}} placeholder={"By score"}/>
                                     <Button type='primary'>Search</Button>
                                 </Input.Group>
                             </Col>
@@ -98,6 +101,12 @@ class Leaderboard extends React.Component {
                                 <List
                                     itemLayout="horizontal"
                                     dataSource={this.state.rankList.results}
+                                    pagination={{
+                                        onChange: page => {
+                                            this.getLeaderboardList(page,10);
+                                        },
+                                        pageSize: 10,
+                                    }}
                                     renderItem={item => (
                                         <List.Item>
                                             <List.Item.Meta
@@ -112,7 +121,8 @@ class Leaderboard extends React.Component {
                                                 description={
                                                     <div>
                                                         <Row>
-                                                            <Col span={6}>Score: &nbsp;{item.score}</Col><Col offset={2}>Institute: &nbsp;{item.institute}</Col>
+                                                            <Col span={6}>Score: &nbsp;{item.score}</Col><Col
+                                                            offset={2}>Institute: &nbsp;{item.institute}</Col>
                                                         </Row>
                                                     </div>
                                                 }
@@ -130,7 +140,3 @@ class Leaderboard extends React.Component {
 }
 
 export default withRouter(Leaderboard);
-
-const options = [
-    "apple", "bottle", "nose"
-]

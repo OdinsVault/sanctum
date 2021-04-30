@@ -1,6 +1,6 @@
 import React from 'react';
 import {PageHeader, Card, Spin, Collapse, Row, Col, Switch, Slider, Button, Divider} from 'antd';
-import {SettingTwoTone,SlidersFilled } from "@ant-design/icons";
+import {SettingTwoTone, SlidersFilled} from "@ant-design/icons";
 import {withRouter} from 'react-router';
 
 //Editor imports
@@ -9,6 +9,7 @@ import "ace-builds/src-noconflict/snippets/java";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/theme-solarized_light";
+import {CheckLogOnStatus} from "../../Services/UserLoginService";
 
 const {Panel} = Collapse;
 
@@ -51,22 +52,29 @@ class Visualizer extends React.Component {
 
     onVisualizeClick = () => {
         this.setState({
-            isVisualizerLoading:true
+            isVisualizerLoading: true
         })
-        console.log("Wroks");
     }
 
     async componentDidMount() {
-        this.setState({
-            codeLoading: true
-        })
-        var state = await this.props.location.state
-        if (state) {
-            await this.setCode(state.answerCode)
+        let loggedIn = CheckLogOnStatus();
+        if (loggedIn) {
+            this.setState({
+                codeLoading: true
+            })
+            var state = await this.props.location.state
+            if (state) {
+                await this.setCode(state.answerCode)
+            }
+            this.setState({
+                codeLoading: false
+            })
+        } else {
+            this.props.history.push({
+                pathname: `/dashboard`,
+                state: ''
+            });
         }
-        this.setState({
-            codeLoading: false
-        })
     }
 
     render() {
@@ -118,7 +126,7 @@ class Visualizer extends React.Component {
                         <Col offset={20}>
                             <Button type={'primary'} onClick={this.onVisualizeClick}
                                     loading={this.state.isVisualizerLoading}
-                                    shape="round" icon={<SlidersFilled />} size={"large"}>Visualize</Button>
+                                    shape="round" icon={<SlidersFilled/>} size={"large"}>Visualize</Button>
                         </Col>
                         <Divider/>
                         {/*////////////Add visualizer below here///////////////*/}

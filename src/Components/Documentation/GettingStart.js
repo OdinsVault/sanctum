@@ -1,17 +1,11 @@
 import React from 'react';
-import {PageHeader, Card, Anchor, Col, Row, Space} from 'antd';
-import {MinusCircleOutlined, BulbOutlined} from '@ant-design/icons';
 import {withRouter} from 'react-router';
+
+//STYLES
+import {PageHeader, Card, Anchor, Col, Row, Space} from 'antd';
 
 const {Link} = Anchor;
 
-const contentStyle = {
-    height: '260px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-};
 
 class GettingStart extends React.Component {
 
@@ -32,11 +26,12 @@ class GettingStart extends React.Component {
                     <PageHeader className="site-page-header" title="Getting start with Simply"/>
                     <Row>
                         <Col span={20}>
-<div id="getting_start">
-                            <p>This page is an overview of the Simply documentation and related resources.
-                                Simply is a JavaScript library for building user interfaces. Learn what Simply is all
-                                about on our homepage or in the tutorial.</p>
-</div>
+                            <div id="getting_start">
+                                <p>This page is an overview of the Simply documentation and related resources.
+                                    Simply is a JavaScript library for building user interfaces. Learn what Simply is
+                                    all
+                                    about on our homepage or in the tutorial.</p>
+                            </div>
                             <br/> <br/>
                             <div id="Try_Simply">
                                 <h3> Try Simply</h3>
@@ -83,7 +78,8 @@ class GettingStart extends React.Component {
 
                                 If you prefer to learn by doing, start with our practical tutorial.
                                 If you prefer to learn concepts step by step, start with our guide to main concepts.
-                                Like any unfamiliar technology, Simply does have a learning curve. With practice and some
+                                Like any unfamiliar technology, Simply does have a learning curve. With practice and
+                                some
                                 patience, you will get the hang of it.
                             </div>
                             <br/>
@@ -98,7 +94,8 @@ class GettingStart extends React.Component {
 
                                 <h3>Simply for Beginners</h3>
                                 If you feel that the Simply documentation goes at a faster pace than you’re comfortable
-                                with, check out this overview of Simply by Tania Rascia. It introduces the most important
+                                with, check out this overview of Simply by Tania Rascia. It introduces the most
+                                important
                                 Simply concepts in a detailed, beginner-friendly way. Once you’re done, give the
                                 documentation another try!
                             </div>

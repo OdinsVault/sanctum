@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component,} from 'react';
 import {Link} from "react-router-dom";
 import {withRouter} from "react-router";
 import {Context} from "../../ConfigProvider";
@@ -12,7 +12,6 @@ import {ConfigProvider, Layout, Menu, Dropdown, Badge, Select, Button} from 'ant
 import {UserOutlined, MenuUnfoldOutlined, MenuFoldOutlined, PoweroffOutlined, NotificationOutlined,
     TrophyTwoTone, FundTwoTone, CrownTwoTone} from '@ant-design/icons';
 import './TopNav.css';
-
 
 const {Header} = Layout;
 const {Option} = Select;
@@ -29,7 +28,7 @@ class TopNav extends Component {
     }
 
     componentDidMount() {
-        var usersession = localStorage.getItem('usersession'); //simply_usersession
+        var usersession = localStorage.getItem('usersession');
         if(usersession){
         var userSessionObj = JSON.parse(usersession);
         var user = userSessionObj.User
@@ -50,9 +49,9 @@ class TopNav extends Component {
 
     LogoutClick = async(e) => {
         if (e.key === 'logout') {
-            await logout();
-            const history = createHashHistory();
-            history.go("/simply/dashboard");
+            logout();
+            const history =  createHashHistory();
+            history.go('/dashboard')
         }
     };
 
@@ -80,8 +79,7 @@ class TopNav extends Component {
     render() {
         const {locale, selectLang} = this.context;
         return (
-            <ConfigProvider locale={this.state.locale}>
-                <Header className="site-layout-background">
+                <Header className="site-layout-background" >
 
                     {React.createElement(this.props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                         className: 'trigger',
@@ -113,7 +111,6 @@ class TopNav extends Component {
                         </span>
                     </div>
                 </Header>
-            </ConfigProvider>
         );
     };
 

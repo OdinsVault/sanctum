@@ -37,7 +37,6 @@ export async function runPracticeAnswer (qid,code){
     let header = getToken();
     let api = await API();
     return  await api.post(endpoint,body,header);
-    // return true;
 }
 
 export async function submitPracticeAnswer (qid,code){
@@ -48,7 +47,6 @@ export async function submitPracticeAnswer (qid,code){
     let header = getToken();
     let api = await API();
     return await api.post(endpoint,body,header);
-    // return practiceSubReponseSuccess;
 }
 
 

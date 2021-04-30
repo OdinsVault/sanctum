@@ -1,13 +1,18 @@
 import React from 'react';
-import {Button, Col, PageHeader, Card, Row, Spin, List, notification, Descriptions, Form, Input, Checkbox,
-    Modal, DatePicker, Divider, Skeleton, Select, Rate
-} from 'antd';
-import {EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons'
 import {withRouter} from 'react-router';
 import moment from "moment";
-import {getUser, updateUser} from "../../Services/UserService";
 
-const {confirm} = Modal;
+//SERVICES
+import {getUser, updateUser} from "../../Services/UserService";
+import {CheckLogOnStatus} from "../../Services/UserLoginService";
+
+//STYLES
+import {
+    Button, Col, PageHeader, Card, Row, Spin, List, notification, Descriptions, Form, Input, Checkbox,
+    Modal, DatePicker, Divider, Skeleton, Select, Rate
+} from 'antd';
+import {EditOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
+
 
 const layout = {
     labelCol: {
@@ -68,13 +73,15 @@ class ProfileView extends React.Component {
 
         try {
             var getUser = await updateUser(sendUser);
-            console.log(getUser);
             if (getUser) {
                 this.setState({
                     user: getUser.result
                 })
             }
-            notification.success({message:"Success",description:getUser.message?getUser.message:"User updated successfully!"})
+            notification.success({
+                message: "Success",
+                description: getUser.message ? getUser.message : "User updated successfully!"
+            })
             //if password changed log out
         } catch (e) {
             notification.error({message: "Error", description: e.message ? e.message : "Error updating user!"})
@@ -125,7 +132,15 @@ class ProfileView extends React.Component {
     }
 
     async componentDidMount() {
-        await this.getUserDetails();
+        let loggedIn = CheckLogOnStatus();
+        if (loggedIn) {
+            await this.getUserDetails();
+        } else {
+            this.props.history.push({
+                pathname: `/dashboard`,
+                state: ''
+            });
+        }
     }
 
     render() {
@@ -214,12 +229,12 @@ class ProfileView extends React.Component {
                                                 </Form.Item>
 
                                                 <Form.Item {...layout} name="institute" label="Institute/Organization"
-                                                rules={[
-                                                    {
-                                                        required:true,
-                                                        message:"Enter your institute/organization name"
-                                                    }
-                                                ]}>
+                                                           rules={[
+                                                               {
+                                                                   required: true,
+                                                                   message: "Enter your institute/organization name"
+                                                               }
+                                                           ]}>
                                                     <Input disabled={!this.state.isEditEnabled}/>
                                                 </Form.Item>
                                             </Col>

@@ -1,25 +1,37 @@
 import axios from 'axios';
-import {notification} from "antd";
 
+import {notification} from "antd";
+import {logout} from "./UserLoginService";
 
 function parseError(errorResponse) {
     if (errorResponse && errorResponse.config && errorResponse.status) {
 
-        if (401 === errorResponse.status) {
-            console.log(errorResponse);
-            notification.error({message:errorResponse.data})
-            window.location.href = "/login";
+        if (401 === errorResponse.status) {   //if unauthorized
+            let tokenExpire = !!errorResponse.data.error
+            if (tokenExpire) {  //if token expired
+                let token = localStorage.getItem("token");
+                if (token) {
+                    if (errorResponse.data.error.name === "TokenExpiredError") {
+                        notification.error({
+                            message: errorResponse.data.message,
+                            description: errorResponse.data.error.name
+                        })
+                        logout();
+                        setTimeout(window.location.href = "/login", 5000)
+                    }
+                }
+            }
         }
 
         return Promise.reject({
-            statuscode: errorResponse.status,
-            cause: errorResponse.data
-        });
-    } else {
-        return Promise.reject({
-            cause: `Error occured in request.`
+            status: errorResponse.status,
+            message: errorResponse.data.message
         });
     }
+
+    return Promise.reject({
+        message: `Error occured in request.`
+    });
 
 }
 

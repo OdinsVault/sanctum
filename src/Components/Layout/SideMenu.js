@@ -1,15 +1,16 @@
-import {Layout, Menu, Modal} from 'antd';
-// import Sider from 'antd/lib/layout/Sider';
-import {Link} from 'react-router-dom';
-import {HomeOutlined, LaptopOutlined, FolderOpenOutlined, HighlightOutlined, NotificationOutlined, ShoppingOutlined,
-    ExperimentOutlined, GiftOutlined, CodeOutlined, TrophyOutlined, ExclamationCircleOutlined} from '@ant-design/icons';
 import React from 'react';
-import {user} from "../../constant";
+import {Link} from 'react-router-dom';
 import {withRouter} from "react-router";
+import {Context} from "../../ConfigProvider";
+
+//STYLES
+import {Menu, Modal} from 'antd';
+import {
+    HomeOutlined, FolderOpenOutlined, HighlightOutlined, ShoppingOutlined,
+    ExperimentOutlined, CodeOutlined, TrophyOutlined
+} from '@ant-design/icons';
 
 const {SubMenu} = Menu;
-const {Sider} = Layout;
-const {confirm} = Modal;
 
 class SideMenu extends React.Component {
     constructor(props) {
@@ -17,13 +18,13 @@ class SideMenu extends React.Component {
         this.state = {
             collapsed: false,
             user: '',
-            visibleConfirmation:false
+            selectedKey: '',
+            visibleConfirmation: false
         };
 
     }
 
     onCollapse = collapsed => {
-        console.log(collapsed);
         this.setState({collapsed});
     };
 
@@ -34,9 +35,9 @@ class SideMenu extends React.Component {
         })
     }
 
-    handleCancel = () =>{
+    handleCancel = () => {
         this.setState({
-            visibleConfirmation:false
+            visibleConfirmation: false
         })
     }
 
@@ -45,17 +46,18 @@ class SideMenu extends React.Component {
         if (item.key == 2 || item.key == 3 || item.key == 4 || item.key == 5) {
             if (!this.state.user) {
                 this.setState({
-                    visibleConfirmation:true
+                    visibleConfirmation: true
                 })
             } else {
                 var path = item.item.props.link;
                 this.props.history.push({
                     pathname: `${path}`,
-                    state: ''
+                    state: '',
                 })
             }
         }
     }
+
 
     componentDidMount() {
         var getUser = JSON.parse(localStorage.getItem('usersession'));
@@ -67,32 +69,30 @@ class SideMenu extends React.Component {
     }
 
     render() {
-        const {collapsed} = this.state;
-        return (
+        const {setMenuKey, sideMenuKey} = this.context;
+        return(
             <div>
                 <Menu
                     mode="inline"
                     theme="dark"
                     onClick={this.onMenuClick}
-                    // style={{backgroundColor:'orange'}}
-                    // defaultSelectedKeys={['1']}
-                    // defaultOpenKeys={['sub1']}
-                    // style={{ height: '100%', borderRight: 0 }}
+                    onSelect={(e) => setMenuKey(e.key)}
+                    selectedKeys={[sideMenuKey]}
                 >
                     <Menu.Item key="1" icon={<HomeOutlined/>}>
                         <Link to="/dashboard">Dashboard</Link>
                     </Menu.Item>
                     <Menu.Item link={"/courses/overview"} key='2' icon={< HighlightOutlined/>}>
-                        <Link >Learn</Link>
+                        <Link>Learn</Link>
                     </Menu.Item>
                     <Menu.Item link={"/practice/overview"} key="3" icon={<ExperimentOutlined/>}>
-                        <Link >Practice</Link>
+                        <Link>Practice</Link>
                     </Menu.Item>
                     <Menu.Item link={"/compete/overview"} icon={<TrophyOutlined/>} key="4">
-                        <Link >Compete</Link>
+                        <Link>Compete</Link>
                     </Menu.Item>
                     <Menu.Item link={"/codeVisualizer"} icon={<CodeOutlined/>} key="5">
-                        <Link >Code Visializer</Link>
+                        <Link>Code Visializer</Link>
                     </Menu.Item>
                     <SubMenu key="sub4" icon={< FolderOpenOutlined/>} title="Docs">
                         <Menu.Item key="6">
@@ -136,6 +136,7 @@ class SideMenu extends React.Component {
 
 }
 
+SideMenu.contextType = Context;
 export default withRouter(SideMenu)
 
 

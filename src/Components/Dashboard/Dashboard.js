@@ -8,7 +8,7 @@ import {getAllQuestions} from "../../Services/PracticeService";
 import {getAllCompete} from "../../Services/CompeteService";
 import {quotes} from "../../constant";
 
-//CSS
+//STYLES
 import {Col, PageHeader, Card, Row, Divider, Carousel, Spin, notification, Modal} from 'antd';
 import {BulbOutlined} from '@ant-design/icons';
 
@@ -40,14 +40,13 @@ class DashBoard extends React.Component {
             dataLoading: true
         })
         try {
-            var getCoursesList;
-            var getPracticeList;
-            var getCompetitions;
-
             if (user) {
-                getCoursesList = await getCourses();
-                getPracticeList = await getAllQuestions();
-                getCompetitions = await getAllCompete();
+                var [getCoursesList, getPracticeList, getCompetitions] = await Promise.all([
+                    getCourses(),
+                    getAllQuestions(),
+                    getAllCompete()
+                ]);
+
             }
             this.setState({
                 courses: getCoursesList,

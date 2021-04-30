@@ -4,9 +4,10 @@ import {withRouter} from 'react-router';
 //SERVICES
 import {getQuestionsOverview} from "../../Services/CompeteService";
 
-//CSS
+//STYLES
 import {Button, Col, PageHeader, Card, Row, Spin, List, notification, Badge} from 'antd';
 import {ReloadOutlined, RightCircleFilled, RightCircleTwoTone} from '@ant-design/icons'
+import {CheckLogOnStatus} from "../../Services/UserLoginService";
 
 const {Meta} = Card;
 
@@ -43,7 +44,7 @@ class OverviewCompete extends React.Component {
     }
 
     goToQuestion = (question) => {
-        console.log(question)
+
         var questionName = question.title.split(" ").join("");
         this.props.history.push({
             pathname: `/question/${questionName}`,
@@ -53,7 +54,15 @@ class OverviewCompete extends React.Component {
     }
 
     async componentDidMount() {
-        await this.getQuestionList();
+        let loggedIn = CheckLogOnStatus();
+        if (loggedIn) {
+            await this.getQuestionList();
+        } else {
+            this.props.history.push({
+                pathname: `/dashboard`,
+                state: ''
+            });
+        }
     }
 
     render() {
@@ -67,7 +76,7 @@ class OverviewCompete extends React.Component {
                         </Col>
                     </Row>
                     <div className="site-card-wrapper">
-                        <Spin spinning={this.state.loading} tip="Loading courses...">
+                        <Spin spinning={this.state.loading} tip="Loading quizzes...">
                             {this.state.questionList ?
                                 (this.state.questionList.overview.map((category) => (
                                         <div>

@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Switch, Route, Redirect, BrowserRouter, useHistory } from 'react-router-dom';
-import App from './App';
 import DashBoard from './Components/Dashboard/Dashboard';
 import SiteLayout from './Components/Layout/Layout';
 import Login from './Components/Login/Login';
@@ -21,25 +20,13 @@ import ProfileView from "./Components/Profile/ProfileView";
 import SDKDownload from "./Components/Resources/SDKDownload";
 import configFileGeneration from "./Components/Resources/ConfigFileGen";
 import syntaxHighlighter from "./Components/Resources/syntaxHighlighter";
+import {logout} from "./Services/UserLoginService";
+import { notification} from "antd";
 
-
-// function TryPoke() {
-//     // Do a POKE and update the ticket
-//     PokeSession().then(session => {
-//         localStorage.setItem("token", session.token);
-//         localStorage.setItem("loggedInData", session.validTo);
-//     }).catch(err => {
-//         localStorage.removeItem('token');
-//         localStorage.removeItem('loggedInData');
-//     });
-// }
 
 function CheckLogOnStatus() {
     let token = localStorage.getItem('token');
-    // let validTime = localStorage.getItem('loggedInData');
-    // console.log("CheckLogOnStatus",token)
     if(token) {
-        // TryPoke();
         return true;
     } else {
         return false;
@@ -48,14 +35,22 @@ function CheckLogOnStatus() {
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
 
-    // const history = useHistory();
+    const history = useHistory();
 
-    // useEffect(() => {
-    //     const timer = setTimeout(() => {
-    //         history.push('/login', { directLogin: false });
-    //     }, (1000 * 60 * 14));
-    //     return () => clearTimeout(timer);
-    // }, []);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            logout();
+            history.push('/login', { directLogin: false });
+            notification.info({message:'Token expired!',description:'Login to continue'})
+        }, (1000 * 60 * 59));
+        return () => clearTimeout(timer);
+    }, []);
+
+    // const [auth,setAuth] = useState(null);
+    // useEffect(()=>{
+    //     const isLoggedIn = CheckLogOnStatus();
+    //     setAuth(isLoggedIn);
+    // },[auth]);
 
     return (
         <Route {...rest} render={(props) => (
@@ -70,14 +65,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
 
 const Routes = () => {
 
-    // console.log('Application running in ' + process.env.NODE_ENV + ' mode');
     let basePath = "/simply";
-
-    // if (!process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-    //     basePath = "/"
-    // } else {
-    //     basePath = "/DIPS-ANC/ANCDMClient"
-    // }
 
     return (
         <BrowserRouter basename={basePath} >
