@@ -186,9 +186,7 @@ class Question extends React.Component {
                     message: 'Warning!',
                     description: 'Cannot submit if the answer code is empty'
                 })
-            } else if (this.state.course) {
-
-            } else {
+            }  else {
                 var success;
                 if (this.props.location.state === "compete") {
                     success = await submitCompeteAnswer(this.state.selectedQuestion._id, submission)

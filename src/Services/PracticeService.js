@@ -39,14 +39,11 @@ export async function runPracticeAnswer (qid,code){
     return  await api.post(endpoint,body,header);
 }
 
-export async function submitPracticeAnswer (qid,code){
+export async function submitPracticeAnswer (qid,submission){
     const endpoint = `/answer/practice/${qid}`;
-    let body = {
-        answer:code.answer,
-    }
     let header = getToken();
     let api = await API();
-    return await api.post(endpoint,body,header);
+    return await api.post(endpoint,submission,header);
 }
 
 
