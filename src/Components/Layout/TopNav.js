@@ -9,8 +9,10 @@ import {logout} from "../../Services/UserLoginService";
 
 //css
 import {ConfigProvider, Layout, Menu, Dropdown, Badge, Select, Button} from 'antd';
-import {UserOutlined, MenuUnfoldOutlined, MenuFoldOutlined, PoweroffOutlined, NotificationOutlined,
-    TrophyTwoTone, FundTwoTone, CrownTwoTone} from '@ant-design/icons';
+import {
+    UserOutlined, MenuUnfoldOutlined, MenuFoldOutlined, PoweroffOutlined, NotificationOutlined,
+    TrophyTwoTone, FundTwoTone, CrownTwoTone
+} from '@ant-design/icons';
 import './TopNav.css';
 
 const {Header} = Layout;
@@ -29,33 +31,42 @@ class TopNav extends Component {
 
     componentDidMount() {
         var usersession = localStorage.getItem('usersession');
-        if(usersession){
-        var userSessionObj = JSON.parse(usersession);
-        var user = userSessionObj.User
-        this.setState({
-            username: user.fname,
-            role: userSessionObj.Role[0],
-            user: user
-        });
+        if (usersession) {
+            var userSessionObj = JSON.parse(usersession);
+            if (userSessionObj.Role[0] === 'admin') {
+                this.setState({
+                    username: userSessionObj.User,
+                    role: userSessionObj.Role[0],
+                    user: userSessionObj.Email
+                });
+            } else {
+                var user = userSessionObj.User
+                this.setState({
+                    username: user.fname,
+                    role: userSessionObj.Role[0],
+                    user: user
+                });
+            }
         }
     }
 
-    LogInClick = () =>{
+    LogInClick = () => {
         this.props.history.push({
             pathname: `/login`,
             state: ''
         })
     }
 
-    LogoutClick = async(e) => {
+    LogoutClick = async (e) => {
         if (e.key === 'logout') {
             logout();
-            const history =  createHashHistory();
+            const history = createHashHistory();
             history.go('/dashboard')
         }
     };
 
     getUserMenu = () => {
+        if(this.state.role==='user'){
         return (
             <Menu>
                 <Menu.Item key="rank" icon={<TrophyTwoTone/>}>
@@ -73,44 +84,52 @@ class TopNav extends Component {
                 <Menu.Item key="logout" onClick={this.LogoutClick} icon={<PoweroffOutlined/>}>
                     LogOut
                 </Menu.Item>
-            </Menu>);
+            </Menu>)
+        }
+        return (
+            <Menu>
+                <Menu.Item key="logout" onClick={this.LogoutClick} icon={<PoweroffOutlined/>}>
+                    LogOut
+                </Menu.Item>
+            </Menu>
+        );
     }
 
     render() {
         const {locale, selectLang} = this.context;
         return (
-                <Header className="site-layout-background" >
+            <Header className="site-layout-background">
 
-                    {React.createElement(this.props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                        className: 'trigger',
-                        onClick: this.props.onCollapse,
-                    })}
+                {React.createElement(this.props.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+                    className: 'trigger',
+                    onClick: this.props.onCollapse,
+                })}
 
-                    <span role="img" style={{color: 'white', fontSize: '18px', fontWeight: '4px'}}>
+                <span role="img" style={{color: 'white', fontSize: '18px', fontWeight: '4px'}}>
                           {/*<img alt={"Welcome"} style={{height:'50px',width:'150px'}} src={'http://localhost:3000/simplyLogo.png'}/>*/}
-                        Logo Here
+                    Logo Here
                     </span>
 
-                    <span className="top-hosp-name">
+                <span className="top-hosp-name">
                       <img alt={"Welcome"} style={{height: '60px', width: '100px'}}
                            src={'https://ui-simply.herokuapp.com/simplyLogo.png'}/>
                     </span>
-                    <div className="top-right-side">
+                <div className="top-right-side">
                         <span>
-                            <Select  style={{ width: 120 }} defaultValue={locale} onChange={selectLang}>
+                            <Select style={{width: 120}} defaultValue={locale} onChange={selectLang}>
                                 <Option value="en-US">English</Option>
                                 <Option value="sn">සිංහල</Option>
                             </Select>
                             </span>
-                        <span id="top-user-menu">
-                            {this.state.user?
-                            <Dropdown.Button overlay={this.getUserMenu()} placement="bottomCenter"
-                                             icon={<UserOutlined/>}>
-                                 {`${this.state.username} `}
-                            </Dropdown.Button>:<Button onClick={this.LogInClick}>Sign In/Up</Button>}
+                    <span id="top-user-menu">
+                            {this.state.user ?
+                                <Dropdown.Button overlay={this.getUserMenu()} placement="bottomCenter"
+                                                 icon={<UserOutlined/>}>
+                                    {`${this.state.username} `}
+                                </Dropdown.Button> : <Button onClick={this.LogInClick}>Sign In/Up</Button>}
                         </span>
-                    </div>
-                </Header>
+                </div>
+            </Header>
         );
     };
 
