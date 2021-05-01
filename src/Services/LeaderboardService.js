@@ -7,6 +7,24 @@ export async function getRankings(page,limit) {
     return response;
 }
 
+export async function getFiltered(filter) {
+    let endpoint = `/leaderboard/filter?s=${filter.score}&i=${filter.institute}`;    
+    const api = await API();
+    return api.get(endpoint);
+}
+
+export async function getUserAutocomplete(query) {
+    const endpoint = `/user/autocomplete?search=${query}`;
+    const api = await API();
+    return api.get(endpoint);
+}
+
+export async function searchUser(userId) {
+    const endpoint = `/leaderboard/${userId}`;
+    const api = await API();
+    return api.get(endpoint);
+}
+
 function getToken (){
     var token = localStorage.getItem('token');
     const options = {

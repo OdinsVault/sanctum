@@ -2,18 +2,15 @@ import React from 'react';
 import {withRouter} from "react-router";
 
 //SERVICES
-import {getRankings} from "../../Services/LeaderboardService";
+import {getRankings, getUserAutocomplete, getFiltered, searchUser} from "../../Services/LeaderboardService";
 import {CheckLogOnStatus} from "../../Services/UserLoginService";
 
 //STYLES
 import {
     Button, Card, Col, List, PageHeader,
-    Row, Spin, Input, Avatar, notification
+    Row, Spin, Input, Avatar, notification, AutoComplete
 } from "antd";
 import {ReloadOutlined} from "@ant-design/icons";
-
-const {Search} = Input;
-
 class Leaderboard extends React.Component {
     constructor(props) {
         super(props);
@@ -21,12 +18,57 @@ class Leaderboard extends React.Component {
             loading: false,
             total: 0, //total number of users per page,
             userList: [1, 2, 3, 4, 5, 6, 7, 8],
-            rankList: ''
+            rankList: '',
+            filter: { institute: '', score: '' },
+            userAutoCompleteOptions: [],
+            throttleTime: null
         }
     }
 
-    handleSearch = () => {
+    handleSearch = async (value) => {
+        this.setState({loading: true});
+        try {
+            const selectedOp = this.state.userAutoCompleteOptions.find(op => op.value === value);
+            if (selectedOp) {
+                const filteredRankings = await searchUser(selectedOp.id);
+                this.setState({rankList: {results: [filteredRankings]}, filter: {institute: '', score: ''}});
+            }
+        } catch (e) {
+            notification.error({
+                message: "Error!",
+                description: e.message ? e.message : 'Cannot retrieve data at the moment'
+            });
+        }
+        this.setState({loading: false});
+    }
+    // getUserAutoCompletion = async (value) => {
+    //     if (value === '') return;
+    //     try {
+    //         const {results} = await getUserAutocomplete(value);
+    //         this.setState({
+    //             userAutoCompleteOptions: results
+    //                 .map(r => ({key: r.email, value: r.fname, id: r._id}))
+    //             });
+    //     } catch (e) {
+    //         console.error(e);
+    //     }
+    // }
+    getUserAutoCompletion = async (value) => {
+        if (!value) return;
+        if (this.state.throttleTime !== null) return;
 
+        try {
+            const {results} = await getUserAutocomplete(value);
+            this.setState({
+                userAutoCompleteOptions: results
+                    .map(r => ({key: r.email, value: r.fname, id: r._id}))
+                });
+        } catch (e) {
+            console.error(e);
+        }
+
+        const timer = setTimeout(() => this.setState({throttleTime: null}), 800);
+        this.setState({throttleTime: timer});
     }
 
     getLeaderboardList = async (page, limit) => {
@@ -49,6 +91,25 @@ class Leaderboard extends React.Component {
         })
     }
 
+    getFilteredRanks = async () => {
+        this.setState({loading: true});
+        try {
+            const filteredRankings = await getFiltered(this.state.filter);
+            this.setState({rankList: filteredRankings});
+        } catch (e) {
+            notification.error({
+                message: "Error!",
+                description: e.message ? e.message : 'Cannot retrieve data at the moment'
+            });
+        }
+        this.setState({loading: false});
+    }
+
+    refreshLeaderboard = async () => {
+        this.setState((state) => ({filter: {...state.filter, score: '', institute: ''}}));
+        this.getLeaderboardList(0,10);
+    }
+
     async componentDidMount() {
         let loggedIn = CheckLogOnStatus();
         if (loggedIn) {
@@ -69,29 +130,26 @@ class Leaderboard extends React.Component {
                     <PageHeader className="site-page-header" title="Leaderboard"/>
                     <Row style={{marginBottom: '40px'}}>
                         <Col offset={22}>
-                            <Button onClick={()=>this.getLeaderboardList(0,10)}><ReloadOutlined/> Refresh</Button>
+                            <Button onClick={this.refreshLeaderboard}><ReloadOutlined/> Refresh</Button>
                         </Col>
                     </Row>
                     <Card title={"Search"}>
                         <Row>
-                            {/*<AutoComplete*/}
-                            {/*    options={options}*/}
-                            {/*    onSelect={(e) => console.log(e)}*/}
-                            {/*    onSearch={this.handleSearch}*/}
-                            {/*>*/}
-                            <Col span={6}>
-                                <Search placeholder="Search by user" allowClear style={{width: 300}} enterButton/>
-                            </Col>
+                            <AutoComplete
+                                style={{ width: 300 }}
+                                placeholder="Search user"
+                                allowClear
+                                options={this.state.userAutoCompleteOptions}
+                                onSelect={this.handleSearch}
+                                onSearch={this.getUserAutoCompletion}
+                            />
                             <Col offset={2} span={16}>
                                 <Input.Group compact>
-                                    <Input style={{width: '25%'}} placeholder={"By institue"}/>
-                                    <Input style={{width: '25%'}} placeholder={"By score"}/>
-                                    <Button type='primary'>Search</Button>
+                                    <Input style={{width: '25%'}} value={this.state.filter.institute} onChange={(e) => this.setState((state) => ({filter: {...state.filter, institute: e.target.value}}))} placeholder={"By institute"}/>
+                                    <Input style={{width: '25%'}} value={this.state.filter.score} onChange={(e) => this.setState((state) => ({filter: {...state.filter, score: e.target.value}}))} placeholder={"By score"}/>
+                                    <Button type='primary' onClick={this.getFilteredRanks}>Search</Button>
                                 </Input.Group>
                             </Col>
-
-                            {/*/*</AutoComplete>*!/*/}
-
                         </Row>
                     </Card>
                     <div className="site-card-wrapper">
