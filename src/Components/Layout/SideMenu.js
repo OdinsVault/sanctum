@@ -7,7 +7,7 @@ import {Context} from "../../ConfigProvider";
 import {Menu, Modal} from 'antd';
 import {
     HomeOutlined, FolderOpenOutlined, HighlightOutlined, ShoppingOutlined,
-    ExperimentOutlined, CodeOutlined, TrophyOutlined
+    ExperimentOutlined, CodeOutlined, TrophyOutlined, SettingOutlined
 } from '@ant-design/icons';
 
 const {SubMenu} = Menu;
@@ -18,6 +18,7 @@ class SideMenu extends React.Component {
         this.state = {
             collapsed: false,
             user: '',
+            role: '',
             selectedKey: '',
             visibleConfirmation: false
         };
@@ -60,17 +61,21 @@ class SideMenu extends React.Component {
 
 
     componentDidMount() {
-        var getUser = JSON.parse(localStorage.getItem('usersession'));
-        if (getUser) {
+
+        var usersession = localStorage.getItem('usersession');
+        if (usersession) {
+            var userSessionObj = JSON.parse(usersession);
+            var user = userSessionObj.User
             this.setState({
-                user: getUser
-            })
+                role: userSessionObj.Role[0],
+                user: user
+            });
         }
     }
 
     render() {
         const {setMenuKey, sideMenuKey} = this.context;
-        return(
+        return (
             <div>
                 <Menu
                     mode="inline"
@@ -82,19 +87,39 @@ class SideMenu extends React.Component {
                     <Menu.Item key="1" icon={<HomeOutlined/>}>
                         <Link to="/dashboard">Dashboard</Link>
                     </Menu.Item>
-                    <Menu.Item link={"/courses/overview"} key='2' icon={< HighlightOutlined/>}>
+                    {this.state.role === 'admin' ? (
+                        <SubMenu key='sub6' icon={<SettingOutlined/>} title="Settings">
+                            <SubMenu key="sub7" title="Courses">
+                                <Menu.Item key="12"><Link to={"/admin/addNewCourse"}>Add New</Link></Menu.Item>
+                                <Menu.Item key="13"><Link>Edit/Delete</Link></Menu.Item>
+                            </SubMenu>
+                            <SubMenu key="sub8" title="Practice">
+                                <Menu.Item key="14"><Link>Add New</Link></Menu.Item>
+                                <Menu.Item key="15"><Link>Edit/Delete</Link></Menu.Item>
+                            </SubMenu>
+                            <SubMenu key="sub9" title="Compete">
+                                <Menu.Item key="16"><Link>Add New</Link></Menu.Item>
+                                <Menu.Item key="17"><Link>Edit/Delete</Link></Menu.Item>
+                            </SubMenu>
+                        </SubMenu>) : ''}
+                    <Menu.Item link={"/courses/overview"} key='2' icon={< HighlightOutlined/>}
+                               disabled={this.state.role === 'admin'}>
                         <Link>Learn</Link>
                     </Menu.Item>
-                    <Menu.Item link={"/practice/overview"} key="3" icon={<ExperimentOutlined/>}>
+                    <Menu.Item link={"/practice/overview"} key="3" icon={<ExperimentOutlined/>}
+                               disabled={this.state.role === 'admin'}>
                         <Link>Practice</Link>
                     </Menu.Item>
-                    <Menu.Item link={"/compete/overview"} icon={<TrophyOutlined/>} key="4">
+                    <Menu.Item link={"/compete/overview"} icon={<TrophyOutlined/>} key="4"
+                               disabled={this.state.role === 'admin'}>
                         <Link>Compete</Link>
                     </Menu.Item>
-                    <Menu.Item link={"/codeVisualizer"} icon={<CodeOutlined/>} key="5">
+                    <Menu.Item link={"/codeVisualizer"} icon={<CodeOutlined/>} key="5"
+                               disabled={this.state.role === 'admin'}>
                         <Link>Code Visializer</Link>
                     </Menu.Item>
-                    <SubMenu key="sub4" icon={< FolderOpenOutlined/>} title="Docs">
+                    <SubMenu key="sub4" icon={< FolderOpenOutlined/>} title="Docs"
+                             disabled={this.state.role === 'admin'}>
                         <Menu.Item key="6">
                             <Link to="/learn/gettingStart">Getting Start with Simply</Link>
                         </Menu.Item>
@@ -105,7 +130,8 @@ class SideMenu extends React.Component {
                             <Link to="/learn/developerGuide">Developers Guide</Link>
                         </Menu.Item>
                     </SubMenu>
-                    <SubMenu key='sub5' icon={< ShoppingOutlined/>} title="Resources">
+                    <SubMenu key='sub5' icon={< ShoppingOutlined/>} title="Resources"
+                             disabled={this.state.role === 'admin'}>
                         <Menu.Item key="9">
                             <Link to="/sdkDownloads">Download SDK</Link>
                         </Menu.Item>

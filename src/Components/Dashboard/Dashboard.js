@@ -29,7 +29,7 @@ class DashBoard extends React.Component {
             practicalList: '',
             competitionList: '',
             todaysTip: '',
-            dataLoading: true,
+            dataLoading: false,
             user: '',
             visibleConfirmation: false
         };
@@ -39,24 +39,26 @@ class DashBoard extends React.Component {
         this.setState({
             dataLoading: true
         })
-        try {
-            if (user) {
-                var [getCoursesList, getPracticeList, getCompetitions] = await Promise.all([
-                    getCourses(),
-                    getAllQuestions(),
-                    getAllCompete()
-                ]);
+        if (user.Role[0] === 'user') {
+            try {
+                if (user) {
+                    var [getCoursesList, getPracticeList, getCompetitions] = await Promise.all([
+                        getCourses(),
+                        getAllQuestions(),
+                        getAllCompete()
+                    ]);
 
+                }
+                this.setState({
+                    courses: getCoursesList,
+                    practicalList: getPracticeList,
+                    competitionList: getCompetitions,
+                    dataLoading: false
+                })
+
+            } catch (e) {
+                notification.error({message: "Error", description: e.message})
             }
-            this.setState({
-                courses: getCoursesList,
-                practicalList: getPracticeList,
-                competitionList: getCompetitions,
-                dataLoading: false
-            })
-
-        } catch (e) {
-            notification.error({message: "Error", description: e.message})
         }
         this.setState({
             dataLoading: false
@@ -77,11 +79,12 @@ class DashBoard extends React.Component {
                 visibleConfirmation: true
             })
         } else {
-
-            this.props.history.push({
-                pathname: `${link}`,
-                state: ''
-            })
+            if (this.state.user.Role[0] === 'user') {
+                this.props.history.push({
+                    pathname: `${link}`,
+                    state: ''
+                })
+            }
         }
     }
 
@@ -106,8 +109,8 @@ class DashBoard extends React.Component {
             this.setState({
                 user: getUser
             })
+            this.setComponents(getUser);
         }
-        this.setComponents(getUser);
         this.setQuote();
 
     }

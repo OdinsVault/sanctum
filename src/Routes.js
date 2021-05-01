@@ -20,8 +20,10 @@ import ProfileView from "./Components/Profile/ProfileView";
 import SDKDownload from "./Components/Resources/SDKDownload";
 import configFileGeneration from "./Components/Resources/ConfigFileGen";
 import syntaxHighlighter from "./Components/Resources/syntaxHighlighter";
+import AdminLogin from "./Components/Admin/Login/AdminLogin";
 import {logout} from "./Services/UserLoginService";
 import { notification} from "antd";
+import AddNewTutorial from "./Components/Admin/CourseSettings/AddTutorial";
 
 
 function CheckLogOnStatus() {
@@ -87,8 +89,11 @@ const Routes = () => {
                 <PrivateRoute  path='/syntaxHighlighter' component={syntaxHighlighter}/>
                 <PrivateRoute  path='/leaderboard' component={Leaderboard}/>
                 <PrivateRoute  path='/profile' component={ProfileView}/>
-                <PrivateRoute path='/addUser' component={AddUser}/>
-                <PrivateRoute path= '/manageUser' component={ManageUser}/>
+
+                {/*Admin routes*/}
+                <Route path='/admin/login' component={AdminLogin}/>
+                <PrivateRoute path= '/admin/addNewCourse' component={AddNewTutorial}/>
+
                 <PrivateRoute exact path="/" component={DashBoard} />
                 <Route exact path="/" component={DashBoard} />
       
