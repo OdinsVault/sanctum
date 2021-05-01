@@ -109,7 +109,7 @@ class OverviewPractice extends React.Component {
                                             onClick={() => (item.level > this.state.currentUnlocked ? '' : this.viewQuestions(item))}
                                             title={<span>Practice Level {item.level}: {item.category}</span>}
                                         >
-                                            <Meta title={item.description} description="Your progress"/>
+                                            <Meta description="Your progress"/>
                                             <Progress percent={Math.round((100 / item.questions) * item.completed)}
                                                       size="small"/>
                                             <Col offset={20} style={{paddingTop: '15px'}}>

@@ -31,7 +31,7 @@ class SiteLayout extends React.Component {
     render() {
 
         return (
-            <Layout>
+            <Layout className="outer-layout-wrapper">
                 <Sider trigger={null} collapsible collapsed={this.state.collapsed}>
                     <div className="logo">
                         <h4 style={{color: 'white', fontWeight: 'bold'}}>

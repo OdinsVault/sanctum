@@ -108,9 +108,9 @@ class OverviewCourse extends React.Component {
                                                     <CheckCircleTwoTone twoToneColor="#52c41a"/>}
                                             hoverable
                                             onClick={() => (item.level > this.state.currentUnlocked ? '' : this.goToCourse(item))}
-                                            title={<span>Level {item.level}: {item.category}</span>}
+                                            title={<span>Level {item.level}: {item.title}</span>}
                                         >
-                                            <Meta title={item.title} description="Your progress"/>
+                                            <Meta description="Your progress"/>
                                             <Progress percent={Math.round((100 / item.questions) * item.completed)}
                                                       size="small"/>
                                             <Col offset={20} style={{paddingTop: '15px'}}>

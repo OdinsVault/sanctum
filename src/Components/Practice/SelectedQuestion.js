@@ -8,6 +8,7 @@ import "ace-builds/src-noconflict/snippets/java";
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/ext-language_tools";
 
 //SERVICES
 import {getQuestionById, runPracticeAnswer, submitPracticeAnswer} from "../../Services/PracticeService";
@@ -271,6 +272,84 @@ class Question extends React.Component {
         }
     }
 
+    getResults = () => {
+        if (this.state.compileError) { // compilation errors
+            if (this.state.runCaseResult) {
+                return (<Result
+                    status="warning"
+                    title="Code execution failed!"
+                    subTitle="Cannot compile your code!">
+                        <Paragraph>
+                           <b>stdout:</b>  <br/>
+                           {this.state.runCaseResult.consoleResult.compilerResult.stdout?this.state.runCaseResult.consoleResult.compilerResult.stdout:''}
+                        </Paragraph>
+                        <Paragraph>
+                           <b>stderr:</b> <br/> 
+                           {this.state.runCaseResult.consoleResult.compilerResult.stderr?this.state.runCaseResult.consoleResult.compilerResult.stderr:''}
+                        </Paragraph>
+                    </Result>)
+            } else if (this.state.submitCaseResult) {
+                return (<Result
+                    status="warning"
+                    title="Code execution failed!"
+                    subTitle="Cannot compile your code!">
+                        <Paragraph>
+                           <b>stdout:</b> <br/>
+                           {this.state.submitCaseResult.consoleResult.compilerResult.stdout?this.state.submitCaseResult.consoleResult.compilerResult.stdout:''}
+                        </Paragraph>
+                        <Paragraph>
+                           <b>stderr:</b> <br/>
+                           {this.state.submitCaseResult.consoleResult.compilerResult.stderr?this.state.submitCaseResult.consoleResult.compilerResult.stderr:''}
+                        </Paragraph>
+                    </Result>)
+            }
+        } else { // no compilation errors
+            if (this.state.submitCasePassed || this.state.submitCaseFailed) { // list of testcases when submitted
+                return (<List
+                    size="default"
+                    header={
+                        <div>
+                            {this.state.submitCasePassed ?
+                                (<Col offset={11}><Progress
+                                    type="circle" percent={100}
+                                    width={50}
+                                    format={() => 'Done'}/></Col>) :
+                                (<Col offset={11}><Progress
+                                    type="circle" percent={60}
+                                    status="exception" width={50}
+                                    format={() => 'Failed'}/></Col>)
+                            }
+                        </div>}
+                    bordered
+                    dataSource={this.state.submitCaseResult.consoleResult.testResults}
+                    renderItem={item =>
+                        <List.Item>
+                            {item.status === 0 ?
+                                (<CheckCircleTwoTone
+                                    twoToneColor="#52c41a"/>) :
+                                (<CloseCircleTwoTone
+                                    twoToneColor="#f0133c"/>)}
+                            {item.testCase.title}
+                        </List.Item>}
+                />)
+            } else if (this.state.runCaseFailed || this.state.runCasePassed) {
+                return (<Result
+                    status={this.state.runCasePassed?'success':'error'}
+                    title={this.state.runCasePassed?'Test case Passed!':'Test case failed!'}>
+                    <div className="desc">
+                        <Paragraph>
+                            <b>Your output:</b> <br/>
+                            {this.state.runCaseResult.consoleResult.testResults.stdout?this.state.runCaseResult.consoleResult.testResults.stdout:''}
+                        </Paragraph>
+                        <Paragraph>
+                            <b>Testcase output:</b> <br/> {this.state.selectedQuestion.outputs}
+                        </Paragraph>
+                    </div>
+                </Result>)
+            } else return null;
+        }
+    }
+
     async componentDidMount() {
         let loggedIn = CheckLogOnStatus();
         if (loggedIn) {
@@ -328,14 +407,14 @@ class Question extends React.Component {
                                                         </div>
                                                         <br/>
                                                         <h3>Input Format:</h3>
-                                                        <div>
+                                                        <div style={{whiteSpace: 'pre-wrap'}}>
 
-                                                            {this.state.selectedQuestion.inputs}
+                                                            "{this.state.selectedQuestion.inputs}"
                                                         </div>
                                                         <br/>
                                                         <h3>Expected Output:</h3>
-                                                        <div>
-                                                            {this.state.selectedQuestion.outputs}
+                                                        <div style={{whiteSpace: 'pre-wrap'}}>
+                                                            "{this.state.selectedQuestion.outputs}"
                                                         </div>
                                                         <br/><br/>
                                                         <Collapse
@@ -399,83 +478,14 @@ class Question extends React.Component {
 
                                                         </Row>
                                                         <br/><br/>
-                                                        <h3>Results: </h3>
+                                                        {
+                                                            this.state.runCaseResult || this.state.submitCaseResult ?
+                                                            <h3>Results: </h3> : ''
+                                                        }
                                                         {this.state.runLoading || this.state.submitLoading ? (
                                                             <Spin tip="Loading..."/>) : ''}
                                                         <div className="result">
-                                                            {
-                                                                this.state.runCasePassed ? (
-                                                                    <Result
-                                                                        status="success"
-                                                                        title="Test case Passed!"
-                                                                    >
-                                                                        <div className="desc">
-                                                                            {/*<Paragraph>*/}
-                                                                            {/*    Your output:*/}
-                                                                            {/*    /!*{this.state.runCaseResult.consoleResult.stdout?this.state.runCaseResult.consoleResult.stdout:''}*!/*/}
-                                                                            {/*</Paragraph>*/}
-                                                                            <Paragraph>
-                                                                                Testcase output
-                                                                                : {this.state.selectedQuestion.outputs}
-                                                                            </Paragraph>
-                                                                        </div>
-                                                                    </Result>) : ''
-                                                            }
-                                                            {
-                                                                this.state.runCaseFailed ? (
-                                                                    <Result
-                                                                        status="error"
-                                                                        title="Test case failed!"
-                                                                    >
-                                                                        <div className="desc">
-                                                                            {/*<Paragraph>*/}
-                                                                            {/*    Your output:*/}
-                                                                            {/*    /!*{this.state.runCaseResult.consoleResult.stdout?this.state.runCaseResult.consoleResult.stdout:''}*!/*/}
-                                                                            {/*</Paragraph>*/}
-                                                                            <Paragraph>
-                                                                                Expected output
-                                                                                : {this.state.selectedQuestion.outputs}
-                                                                            </Paragraph>
-                                                                        </div>
-                                                                    </Result>) : ''
-                                                            }
-                                                            {
-                                                                this.state.submitCasePassed || this.state.submitCaseFailed ?
-                                                                    (<List
-                                                                        size="default"
-                                                                        header={
-                                                                            <div>
-                                                                                {this.state.submitCasePassed ?
-                                                                                    (<Col offset={11}><Progress
-                                                                                        type="circle" percent={100}
-                                                                                        width={50}
-                                                                                        format={() => 'Done'}/></Col>) :
-                                                                                    (<Col offset={11}><Progress
-                                                                                        type="circle" percent={60}
-                                                                                        status="exception" width={50}
-                                                                                        format={() => 'Failed'}/></Col>)
-                                                                                }
-                                                                            </div>}
-                                                                        bordered
-                                                                        dataSource={this.state.submitCaseResult.consoleResult.testResults}
-                                                                        renderItem={item =>
-                                                                            <List.Item>
-                                                                                {item.status === 0 ?
-                                                                                    (<CheckCircleTwoTone
-                                                                                        twoToneColor="#52c41a"/>) :
-                                                                                    (<CloseCircleTwoTone
-                                                                                        twoToneColor="#f0133c"/>)}
-                                                                                {item.testCase.title}
-                                                                            </List.Item>}
-                                                                    />) : ''
-                                                            }
-                                                            {
-                                                                this.state.compileError ?
-                                                                    (<Result
-                                                                        status="warning"
-                                                                        title="Code execution failed!"
-                                                                        subTitle="Cannot compile your code!"/>) : ''
-                                                            }
+                                                            {this.getResults()}
                                                         </div>
                                                     </div>
                                                 )}
