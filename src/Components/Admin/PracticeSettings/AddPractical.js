@@ -260,7 +260,7 @@ class AddNewPractical extends React.Component {
                           fieldKey={[fieldKey, 'title']}
                           rules={[{ required: true, message: 'Missing title' }]}
                         >
-                          <Input placeholder="Inputs"/>
+                          <Input placeholder="Title"/>
                         </Form.Item>
                         <Form.Item
                           {...restField}

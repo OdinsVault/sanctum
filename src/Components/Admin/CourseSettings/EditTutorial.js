@@ -190,7 +190,7 @@ class EditTutorial extends React.Component {
               </Col>
               <Col offset={1}>
                 <Button shape="round" icon={<SearchOutlined/>} disabled={!this.state.selectedLevel}
-                        onClick={() => this.searchCourse()}>Search</Button>
+                        onClick={() => this.searchCourse()}>View</Button>
               </Col>
             </Row>
           </Card>

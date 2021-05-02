@@ -28,8 +28,8 @@ export async function getCompeteQuestionById (qId){
     let header = getToken();
     let api = await API();
     return await api.get(endpoint,header);
-
 }
+
 export async function runCompeteAnswer (qId,submission){
     const endpoint = `/answer/compete-run/${qId}`;
     let header = getToken();

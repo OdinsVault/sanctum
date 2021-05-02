@@ -27,6 +27,8 @@ import AddNewTutorial from "./Components/Admin/CourseSettings/AddTutorial";
 import EditTutorial from './Components/Admin/CourseSettings/EditTutorial'
 import AddNewPractical from './Components/Admin/PracticeSettings/AddPractical'
 import EditPractical from './Components/Admin/PracticeSettings/EditPractical'
+import AddCompeteQuestion from './Components/Admin/CompeteSettings/AddCompete'
+import EditCompeteQuestion from './Components/Admin/CompeteSettings/EditCompete'
 
 
 function CheckLogOnStatus() {
@@ -99,6 +101,8 @@ const Routes = () => {
                 <PrivateRoute path= '/admin/editCourse' component={EditTutorial}/>
                 <PrivateRoute path= '/admin/addNewPractical' component={AddNewPractical}/>
                 <PrivateRoute path= '/admin/editPractical' component={EditPractical}/>
+                <PrivateRoute path= '/admin/addNewCompete' component={AddCompeteQuestion}/>
+                <PrivateRoute path= '/admin/editCompete' component={EditCompeteQuestion}/>
 
                 <PrivateRoute exact path="/" component={DashBoard} />
                 <Route exact path="/" component={DashBoard} />

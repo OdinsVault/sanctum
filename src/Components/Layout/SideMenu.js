@@ -98,8 +98,8 @@ class SideMenu extends React.Component {
                                 <Menu.Item key="15"><Link to={'/admin/editPractical'}>Edit/Delete</Link></Menu.Item>
                             </SubMenu>
                             <SubMenu key="sub9" title="Compete">
-                                <Menu.Item key="16"><Link>Add New</Link></Menu.Item>
-                                <Menu.Item key="17"><Link>Edit/Delete</Link></Menu.Item>
+                                <Menu.Item key="16"><Link to={'/admin/addNewCompete'}>Add New</Link></Menu.Item>
+                                <Menu.Item key="17"><Link to={'/admin/editCompete'}>Edit/Delete</Link></Menu.Item>
                             </SubMenu>
                         </SubMenu>) : ''}
                     <Menu.Item link={"/courses/overview"} key='2' icon={< HighlightOutlined/>}

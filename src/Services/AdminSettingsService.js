@@ -60,6 +60,31 @@ export async function DeletePractical(qId){
 
 }
 
+////////Compete////////
+
+export async function NewCompete(submission){
+  const endpoint = `/admin/competequestion`;
+  let header = getToken();
+  let api = await API();
+  return await api.post(endpoint,submission,header);
+
+}
+export async function EditCompete(qId,submission){
+  const endpoint = `/admin/competequestion/${qId}`;
+  let header = getToken();
+  let api = await API();
+  return await api.patch(endpoint,submission,header);
+
+}
+
+export async function DeleteCompete(qId){
+  const endpoint = `/admin/competequestion/${qId}`;
+  let header = getToken();
+  let api = await API();
+  return await api.delete(endpoint,header);
+
+}
+
 function getToken (){
   var token = localStorage.getItem('token');
   const options = {

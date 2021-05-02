@@ -23,6 +23,10 @@ const layout = {
   },
 }
 
+const LEVEL_EXISTS = 0
+const NEW_LEVEL = 1
+const NO_DATA = -1
+
 class EditPractical extends React.Component {
 
   constructor (props) {
@@ -123,6 +127,19 @@ class EditPractical extends React.Component {
     })
   }
 
+  checkLevelNum = (level) => {
+    if (this.state.currentCourseList) {
+      for (let i = 0; i < this.state.currentCourseList.levelCount; i++) {
+        if (this.state.currentCourseList.levels[i].level === level) {
+          return LEVEL_EXISTS
+        }
+      }
+      return NEW_LEVEL
+    } else {
+      return NO_DATA
+    }
+  }
+
   onFinish = async (data) => {
     if (!data.testcases || data.testcases.length < 1) {
       notification.warn({ message: 'Add at least one test case' })
@@ -130,6 +147,8 @@ class EditPractical extends React.Component {
       this.setState({
         dataLoading: true
       })
+      let levelCheck = this.checkLevelNum(data.level)
+      if (levelCheck === LEVEL_EXISTS) {
       try {
 
         let qId = this.state.selectedQuestion._id
@@ -148,6 +167,12 @@ class EditPractical extends React.Component {
         notification.error({
           message: 'Error!',
           description: e.message ? e.message : 'Error occurred while submitting'
+        })
+      }
+      } else {
+        notification.warn({
+          message: 'Level dose not exists!',
+          description: 'Cannot add a practical to a non existing level'
         })
       }
       this.setState({
@@ -219,7 +244,7 @@ class EditPractical extends React.Component {
               </Col>
               <Col offset={1}>
                 <Button shape="round" icon={<SearchOutlined/>} disabled={!this.state.selectedQuestionId}
-                        onClick={() => this.searchQuestion()}>Search</Button>
+                        onClick={() => this.searchQuestion()}>View</Button>
               </Col>
             </Row>
           </Card>
@@ -290,7 +315,7 @@ class EditPractical extends React.Component {
                     },
                   ]}
                 >
-                  <InputNumber disabled/>
+                  <InputNumber disabled={!this.state.isEditable}/>
                 </Form.Item>
                 <Form.Item
                   name={'category'}
