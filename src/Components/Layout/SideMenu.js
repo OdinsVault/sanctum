@@ -91,15 +91,15 @@ class SideMenu extends React.Component {
                         <SubMenu key='sub6' icon={<SettingOutlined/>} title="Settings">
                             <SubMenu key="sub7" title="Courses">
                                 <Menu.Item key="12"><Link to={"/admin/addNewCourse"}>Add New</Link></Menu.Item>
-                                <Menu.Item key="13"><Link>Edit/Delete</Link></Menu.Item>
+                                <Menu.Item key="13"><Link to={'/admin/editCourse' }>Edit/Delete</Link></Menu.Item>
                             </SubMenu>
                             <SubMenu key="sub8" title="Practice">
-                                <Menu.Item key="14"><Link>Add New</Link></Menu.Item>
-                                <Menu.Item key="15"><Link>Edit/Delete</Link></Menu.Item>
+                                <Menu.Item key="14"><Link to={'/admin/addNewPractical'}>Add New</Link></Menu.Item>
+                                <Menu.Item key="15"><Link to={'/admin/editPractical'}>Edit/Delete</Link></Menu.Item>
                             </SubMenu>
                             <SubMenu key="sub9" title="Compete">
-                                <Menu.Item key="16"><Link>Add New</Link></Menu.Item>
-                                <Menu.Item key="17"><Link>Edit/Delete</Link></Menu.Item>
+                                <Menu.Item key="16"><Link to={'/admin/addNewCompete'}>Add New</Link></Menu.Item>
+                                <Menu.Item key="17"><Link to={'/admin/editCompete'}>Edit/Delete</Link></Menu.Item>
                             </SubMenu>
                         </SubMenu>) : ''}
                     <Menu.Item link={"/courses/overview"} key='2' icon={< HighlightOutlined/>}
