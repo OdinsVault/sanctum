@@ -24,6 +24,9 @@ import AdminLogin from "./Components/Admin/Login/AdminLogin";
 import {logout} from "./Services/UserLoginService";
 import { notification} from "antd";
 import AddNewTutorial from "./Components/Admin/CourseSettings/AddTutorial";
+import EditTutorial from './Components/Admin/CourseSettings/EditTutorial'
+import AddNewPractical from './Components/Admin/PracticeSettings/AddPractical'
+import EditPractical from './Components/Admin/PracticeSettings/EditPractical'
 
 
 function CheckLogOnStatus() {
@@ -93,6 +96,9 @@ const Routes = () => {
                 {/*Admin routes*/}
                 <Route path='/admin/login' component={AdminLogin}/>
                 <PrivateRoute path= '/admin/addNewCourse' component={AddNewTutorial}/>
+                <PrivateRoute path= '/admin/editCourse' component={EditTutorial}/>
+                <PrivateRoute path= '/admin/addNewPractical' component={AddNewPractical}/>
+                <PrivateRoute path= '/admin/editPractical' component={EditPractical}/>
 
                 <PrivateRoute exact path="/" component={DashBoard} />
                 <Route exact path="/" component={DashBoard} />
