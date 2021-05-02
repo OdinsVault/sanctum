@@ -17,7 +17,7 @@ class Leaderboard extends React.Component {
         this.state = {
             loading: false,
             total: 0, //total number of users per page,
-            userList: [1, 2, 3, 4, 5, 6, 7, 8],
+            userList: [],
             rankList: '',
             filter: { institute: '', score: '' },
             userAutoCompleteOptions: [],
@@ -50,7 +50,7 @@ class Leaderboard extends React.Component {
             const {results} = await getUserAutocomplete(value);
             this.setState({
                 userAutoCompleteOptions: results
-                    .map(r => ({key: r.email, value: r.fname, id: r._id}))
+                    .map(r => ({value: `${r.fname+" "+r.lname}`, label: `${r.fname+" "+r.lname}`, id: r._id}))
                 });
         } catch (e) {
             console.error(e);
@@ -134,13 +134,15 @@ class Leaderboard extends React.Component {
                                 onSearch={this.getUserAutoCompletion}
                                 onClear={this.refreshLeaderboard}
                             />
-                            <Col offset={2} span={16}>
+                            <Col offset={2} span={14}>
                                 <Input.Group compact>
-                                    <Input 
+                                    <Input
+                                      allowClear
                                         style={{ width: '25%' }}
                                         value={this.state.filter.institute}
                                         onChange={(e) => this.setState((state) => ({ filter: { ...state.filter, institute: e.target.value } }))} placeholder={"By institute"} />
-                                    <Input 
+                                    <Input
+                                      allowClear
                                         style={{ width: '25%' }}
                                         value={this.state.filter.score}
                                         onChange={(e) => this.setState((state) => ({ filter: { ...state.filter, score: e.target.value } }))} placeholder={"By score"} />
