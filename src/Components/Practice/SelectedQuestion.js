@@ -342,7 +342,7 @@ class Question extends React.Component {
                             {this.state.runCaseResult.consoleResult.testResults.stdout?this.state.runCaseResult.consoleResult.testResults.stdout:''}
                         </Paragraph>
                         <Paragraph style={{whiteSpace: 'pre-wrap'}}>
-                            <b>Testcase output:</b> <br/> {this.state.selectedQuestion.outputs}
+                            <b>Testcase output:</b> <br/>{this.state.selectedQuestion.outputs}
                         </Paragraph>
                     </div>
                 </Result>)
