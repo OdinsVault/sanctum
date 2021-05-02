@@ -484,7 +484,7 @@ class EditCompeteQuestion extends React.Component {
               </Form.Item>
               <Form.Item
                 name={'inputs'}
-                label="Input"
+                label="Sample Input"
                 rules={[
                   {
                     required: true,
@@ -492,11 +492,11 @@ class EditCompeteQuestion extends React.Component {
                   },
                 ]}
               >
-                <Input disabled={!this.state.isEditable} onChange={this.setInputs} value={this.state.newCompeteInputs}/>
+                <Input.TextArea disabled={!this.state.isEditable} onChange={this.setInputs} value={this.state.newCompeteInputs}/>
               </Form.Item>
               <Form.Item
                 name={'outputs'}
-                label="Outputs"
+                label="Sample Outputs"
                 rules={[
                   {
                     required: true,
@@ -504,7 +504,7 @@ class EditCompeteQuestion extends React.Component {
                   },
                 ]}
               >
-                <Input disabled={!this.state.isEditable} onChange={this.setOutputs} value={this.state.newCompeteOutputs}/>
+                <Input.TextArea disabled={!this.state.isEditable} onChange={this.setOutputs} value={this.state.newCompeteOutputs}/>
               </Form.Item>
               <Form.Item name={'testcases'} label={'Test Cases'} getValueProps={() => this.state.newPracticalTestcases}>
                 <Row gutter={16}>
@@ -548,11 +548,11 @@ class EditCompeteQuestion extends React.Component {
                       cancelText="No"
                     >
                       <Button danger disabled={!this.state.isEditable}>
-                        Delete Practical
+                        Delete
                       </Button>
                     </Popconfirm>
                     <Button type={'primary'} htmlType="submit" disabled={!this.state.isEditable}>
-                      Edit Practical
+                      Edit
                     </Button>
                   </Col>
                 </Row>
@@ -598,7 +598,7 @@ class EditCompeteQuestion extends React.Component {
               fieldKey={'inputs'}
               rules={[{ required: true, message: 'Missing inputs' }]}
             >
-              <Input placeholder="Inputs"/>
+              <Input.TextArea placeholder="Inputs"/>
             </Form.Item>
             <Form.Item
               label={'Outputs'}
@@ -606,7 +606,7 @@ class EditCompeteQuestion extends React.Component {
               fieldKey={'outputs'}
               rules={[{ required: true, message: 'Missing outputs' }]}
             >
-              <Input placeholder="Outputs"/>
+              <Input.TextArea placeholder="Outputs"/>
             </Form.Item>
             <Form.Item
               label={'Description'}
@@ -614,7 +614,7 @@ class EditCompeteQuestion extends React.Component {
               fieldKey={'description'}
               rules={[{ required: true, message: 'Missing description' }]}
             >
-              <Input placeholder="Description"/>
+              <Input.TextArea placeholder="Description"/>
             </Form.Item>
             <Form.Item>
               <Row>

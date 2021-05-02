@@ -108,7 +108,7 @@ class AddNewPractical extends React.Component {
         <Card>
           <PageHeader
             className="site-page-header"
-            title="Add New Practical"
+            title="Add New Practice Question"
           />
           <Spin spinning={this.state.dataLoading}>
             <Form {...layout} name="nest-messages" onFinish={this.onFinish}
@@ -226,7 +226,7 @@ class AddNewPractical extends React.Component {
               </Form.Item>
               <Form.Item
                 name={'inputs'}
-                label="Input"
+                label="Sample Input"
                 rules={[
                   {
                     required: true,
@@ -234,11 +234,11 @@ class AddNewPractical extends React.Component {
                   },
                 ]}
               >
-                <Input/>
+                <Input.TextArea/>
               </Form.Item>
               <Form.Item
                 name={'outputs'}
-                label="Outputs"
+                label="Sample Outputs"
                 rules={[
                   {
                     required: true,
@@ -246,7 +246,7 @@ class AddNewPractical extends React.Component {
                   },
                 ]}
               >
-                <Input/>
+                <Input.TextArea/>
               </Form.Item>
               <Form.List name="testcases">
                 {(fields, { add, remove }) => (
@@ -269,7 +269,7 @@ class AddNewPractical extends React.Component {
                           fieldKey={[fieldKey, 'inputs']}
                           rules={[{ required: true, message: 'Missing inputs' }]}
                         >
-                          <Input placeholder="Inputs"/>
+                          <Input.TextArea placeholder="Inputs"/>
                         </Form.Item>
                         <Form.Item
                           {...restField}
@@ -278,7 +278,7 @@ class AddNewPractical extends React.Component {
                           fieldKey={[fieldKey, 'outputs']}
                           rules={[{ required: true, message: 'Missing outputs' }]}
                         >
-                          <Input placeholder="Outputs"/>
+                          <Input.TextArea placeholder="Outputs"/>
                         </Form.Item>
                         <Form.Item
                           {...restField}
@@ -287,7 +287,7 @@ class AddNewPractical extends React.Component {
                           fieldKey={[fieldKey, 'description']}
                           rules={[{ required: true, message: 'Missing description' }]}
                         >
-                          <Input placeholder="Description"/>
+                          <Input.TextArea placeholder="Description"/>
                         </Form.Item>
                         <Button shape={'round'} icon={< MinusCircleOutlined/>}
                                 onClick={() => remove(name)}>Remove</Button>
@@ -305,7 +305,7 @@ class AddNewPractical extends React.Component {
               </Form.List>
               <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 18 }}>
                 <Button type="primary" htmlType="submit">
-                  Add Practical
+                  Add Practice Question
                 </Button>
               </Form.Item>
             </Form>

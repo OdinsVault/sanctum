@@ -210,7 +210,7 @@ class EditPractical extends React.Component {
         <Card>
           <PageHeader
             className="site-page-header"
-            title="Edit/Delete Practical"
+            title="Edit/Delete Practice Question"
           />
           <Card title={'Select Question Level'}>
             <Row>
@@ -374,7 +374,7 @@ class EditPractical extends React.Component {
                     },
                   ]}
                 >
-                  <Input disabled={!this.state.isEditable}/>
+                  <Input.TextArea disabled={!this.state.isEditable}/>
                 </Form.Item>
                 <Form.Item
                   name={'outputs'}
@@ -386,7 +386,7 @@ class EditPractical extends React.Component {
                     },
                   ]}
                 >
-                  <Input disabled={!this.state.isEditable}/>
+                  <Input.TextArea disabled={!this.state.isEditable}/>
                 </Form.Item>
                 <Form.List name="testcases">
                   {(fields, { add, remove }) => (
@@ -409,7 +409,7 @@ class EditPractical extends React.Component {
                             fieldKey={[fieldKey, 'inputs']}
                             rules={[{ required: true, message: 'Missing inputs' }]}
                           >
-                            <Input placeholder="Inputs"/>
+                            <Input.TextArea placeholder="Inputs"/>
                           </Form.Item>
                           <Form.Item
                             {...restField}
@@ -418,7 +418,7 @@ class EditPractical extends React.Component {
                             fieldKey={[fieldKey, 'outputs']}
                             rules={[{ required: true, message: 'Missing outputs' }]}
                           >
-                            <Input placeholder="Outputs"/>
+                            <Input.TextArea placeholder="Outputs"/>
                           </Form.Item>
                           <Form.Item
                             {...restField}
@@ -427,7 +427,7 @@ class EditPractical extends React.Component {
                             fieldKey={[fieldKey, 'description']}
                             rules={[{ required: true, message: 'Missing description' }]}
                           >
-                            <Input placeholder="Description"/>
+                            <Input.TextArea placeholder="Description"/>
                           </Form.Item>
                           <Button shape={'round'} icon={< MinusCircleOutlined/>}
                                   onClick={() => remove(name)}>Remove</Button>
@@ -460,11 +460,11 @@ class EditPractical extends React.Component {
                         cancelText="No"
                       >
                         <Button danger disabled={!this.state.isEditable}>
-                          Delete Practical
+                          Delete
                         </Button>
                       </Popconfirm>
                       <Button type={'primary'} htmlType="submit" disabled={!this.state.isEditable}>
-                        Edit Practical
+                        Edit
                       </Button>
                     </Col>
                   </Row>

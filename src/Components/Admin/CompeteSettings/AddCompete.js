@@ -345,7 +345,7 @@ class AddCompeteQuestion extends React.Component {
               </Form.Item>
               <Form.Item
                 name={'inputs'}
-                label="Input"
+                label="Sample Input"
                 rules={[
                   {
                     required: true,
@@ -353,11 +353,11 @@ class AddCompeteQuestion extends React.Component {
                   },
                 ]}
               >
-                <Input onChange={this.setInputs} value={this.state.newCompeteInputs}/>
+                <Input.TextArea onChange={this.setInputs} value={this.state.newCompeteInputs}/>
               </Form.Item>
               <Form.Item
                 name={'outputs'}
-                label="Outputs"
+                label="Sample Outputs"
                 rules={[
                   {
                     required: true,
@@ -365,7 +365,7 @@ class AddCompeteQuestion extends React.Component {
                   },
                 ]}
               >
-                <Input onChange={this.setOutputs} value={this.state.newCompeteOutputs}/>
+                <Input.TextArea onChange={this.setOutputs} value={this.state.newCompeteOutputs}/>
               </Form.Item>
               <Form.Item name={'testcases'} label={'Test Cases'} getValueProps={() => this.state.newPracticalTestcases}>
                 <Row gutter={16}>
@@ -395,7 +395,7 @@ class AddCompeteQuestion extends React.Component {
               </Form.Item>
               <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 18 }}>
                 <Button type="primary" htmlType="submit">
-                  Add Question
+                  Add Compete Question
                 </Button>
               </Form.Item>
             </Form>
@@ -438,7 +438,7 @@ class AddCompeteQuestion extends React.Component {
               fieldKey={'inputs'}
               rules={[{ required: true, message: 'Missing inputs' }]}
             >
-              <Input placeholder="Inputs"/>
+              <Input.TextArea placeholder="Inputs"/>
             </Form.Item>
             <Form.Item
               label={'Outputs'}
@@ -446,7 +446,7 @@ class AddCompeteQuestion extends React.Component {
               fieldKey={'outputs'}
               rules={[{ required: true, message: 'Missing outputs' }]}
             >
-              <Input placeholder="Outputs"/>
+              <Input.TextArea placeholder="Outputs"/>
             </Form.Item>
             <Form.Item
               label={'Description'}
@@ -454,7 +454,7 @@ class AddCompeteQuestion extends React.Component {
               fieldKey={'description'}
               rules={[{ required: true, message: 'Missing description' }]}
             >
-              <Input placeholder="Description"/>
+              <Input.TextArea placeholder="Description"/>
             </Form.Item>
             <Form.Item>
               <Row>
