@@ -279,11 +279,11 @@ class Question extends React.Component {
                     status="warning"
                     title="Code execution failed!"
                     subTitle="Cannot compile your code!">
-                        <Paragraph>
+                        <Paragraph style={{whiteSpace: 'pre-wrap'}}>
                            <b>stdout:</b>  <br/>
                            {this.state.runCaseResult.consoleResult.compilerResult.stdout?this.state.runCaseResult.consoleResult.compilerResult.stdout:''}
                         </Paragraph>
-                        <Paragraph>
+                        <Paragraph style={{whiteSpace: 'pre-wrap'}}>
                            <b>stderr:</b> <br/> 
                            {this.state.runCaseResult.consoleResult.compilerResult.stderr?this.state.runCaseResult.consoleResult.compilerResult.stderr:''}
                         </Paragraph>
@@ -293,11 +293,11 @@ class Question extends React.Component {
                     status="warning"
                     title="Code execution failed!"
                     subTitle="Cannot compile your code!">
-                        <Paragraph>
+                        <Paragraph style={{whiteSpace: 'pre-wrap'}}>
                            <b>stdout:</b> <br/>
                            {this.state.submitCaseResult.consoleResult.compilerResult.stdout?this.state.submitCaseResult.consoleResult.compilerResult.stdout:''}
                         </Paragraph>
-                        <Paragraph>
+                        <Paragraph style={{whiteSpace: 'pre-wrap'}}>
                            <b>stderr:</b> <br/>
                            {this.state.submitCaseResult.consoleResult.compilerResult.stderr?this.state.submitCaseResult.consoleResult.compilerResult.stderr:''}
                         </Paragraph>
@@ -337,11 +337,11 @@ class Question extends React.Component {
                     status={this.state.runCasePassed?'success':'error'}
                     title={this.state.runCasePassed?'Test case Passed!':'Test case failed!'}>
                     <div className="desc">
-                        <Paragraph>
+                        <Paragraph style={{whiteSpace: 'pre-wrap'}}>
                             <b>Your output:</b> <br/>
                             {this.state.runCaseResult.consoleResult.testResults.stdout?this.state.runCaseResult.consoleResult.testResults.stdout:''}
                         </Paragraph>
-                        <Paragraph>
+                        <Paragraph style={{whiteSpace: 'pre-wrap'}}>
                             <b>Testcase output:</b> <br/> {this.state.selectedQuestion.outputs}
                         </Paragraph>
                     </div>

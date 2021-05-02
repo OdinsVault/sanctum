@@ -21,7 +21,8 @@ class Leaderboard extends React.Component {
             rankList: '',
             filter: { institute: '', score: '' },
             userAutoCompleteOptions: [],
-            throttleTime: null
+            throttleTime: null,
+            userId: ''
         }
     }
 
@@ -41,18 +42,6 @@ class Leaderboard extends React.Component {
         }
         this.setState({loading: false});
     }
-    // getUserAutoCompletion = async (value) => {
-    //     if (value === '') return;
-    //     try {
-    //         const {results} = await getUserAutocomplete(value);
-    //         this.setState({
-    //             userAutoCompleteOptions: results
-    //                 .map(r => ({key: r.email, value: r.fname, id: r._id}))
-    //             });
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // }
     getUserAutoCompletion = async (value) => {
         if (!value) return;
         if (this.state.throttleTime !== null) return;
@@ -114,7 +103,8 @@ class Leaderboard extends React.Component {
         let loggedIn = CheckLogOnStatus();
         if (loggedIn) {
             await this.getLeaderboardList(0, 10);
-            ;
+            const usersession = JSON.parse(localStorage.getItem('usersession'));
+            this.setState({ userId: usersession.Id });
         } else {
             this.props.history.push({
                 pathname: `/dashboard`,
@@ -142,11 +132,18 @@ class Leaderboard extends React.Component {
                                 options={this.state.userAutoCompleteOptions}
                                 onSelect={this.handleSearch}
                                 onSearch={this.getUserAutoCompletion}
+                                onClear={this.refreshLeaderboard}
                             />
                             <Col offset={2} span={16}>
                                 <Input.Group compact>
-                                    <Input style={{width: '25%'}} value={this.state.filter.institute} onChange={(e) => this.setState((state) => ({filter: {...state.filter, institute: e.target.value}}))} placeholder={"By institute"}/>
-                                    <Input style={{width: '25%'}} value={this.state.filter.score} onChange={(e) => this.setState((state) => ({filter: {...state.filter, score: e.target.value}}))} placeholder={"By score"}/>
+                                    <Input 
+                                        style={{ width: '25%' }}
+                                        value={this.state.filter.institute}
+                                        onChange={(e) => this.setState((state) => ({ filter: { ...state.filter, institute: e.target.value } }))} placeholder={"By institute"} />
+                                    <Input 
+                                        style={{ width: '25%' }}
+                                        value={this.state.filter.score}
+                                        onChange={(e) => this.setState((state) => ({ filter: { ...state.filter, score: e.target.value } }))} placeholder={"By score"} />
                                     <Button type='primary' onClick={this.getFilteredRanks}>Search</Button>
                                 </Input.Group>
                             </Col>
@@ -161,12 +158,13 @@ class Leaderboard extends React.Component {
                                     dataSource={this.state.rankList.results}
                                     pagination={{
                                         onChange: page => {
-                                            this.getLeaderboardList(page,10);
+                                            this.getLeaderboardList(page - 1,10);
                                         },
                                         pageSize: 10,
+                                        total: this.state.rankList.pageInfo?.total
                                     }}
                                     renderItem={item => (
-                                        <List.Item>
+                                        <List.Item style={{backgroundColor: item._id === this.state.userId? '#fdf5d4': 'white'}}>
                                             <List.Item.Meta
                                                 avatar={item.rank <= 3 ?
                                                     <Avatar
