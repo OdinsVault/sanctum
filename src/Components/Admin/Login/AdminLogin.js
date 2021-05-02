@@ -78,7 +78,7 @@ class AdminLogin extends React.Component {
                         <div className="site-layout-content">
                             <Row>
                                 <Col span={6} offset={9}>
-                                    <Card title="Amin Login" style={{width:'400px'}} hoverable>
+                                    <Card title="Admin Login" style={{width:'400px'}} hoverable>
                                         <Form
                                             name="normal_login"
                                             className="login-form"
