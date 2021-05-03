@@ -492,7 +492,7 @@ class EditCompeteQuestion extends React.Component {
                   },
                 ]}
               >
-                <Input.TextArea disabled={!this.state.isEditable} onChange={this.setInputs} value={this.state.newCompeteInputs}/>
+                <Input disabled={!this.state.isEditable} onChange={this.setInputs} value={this.state.newCompeteInputs}/>
               </Form.Item>
               <Form.Item
                 name={'outputs'}
@@ -598,7 +598,7 @@ class EditCompeteQuestion extends React.Component {
               fieldKey={'inputs'}
               rules={[{ required: true, message: 'Missing inputs' }]}
             >
-              <Input.TextArea placeholder="Inputs"/>
+              <Input placeholder="Space delimited string for CLI input args"/>
             </Form.Item>
             <Form.Item
               label={'Outputs'}

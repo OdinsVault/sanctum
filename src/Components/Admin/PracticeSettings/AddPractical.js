@@ -234,7 +234,7 @@ class AddNewPractical extends React.Component {
                   },
                 ]}
               >
-                <Input.TextArea/>
+                <Input/>
               </Form.Item>
               <Form.Item
                 name={'outputs'}
@@ -269,7 +269,7 @@ class AddNewPractical extends React.Component {
                           fieldKey={[fieldKey, 'inputs']}
                           rules={[{ required: true, message: 'Missing inputs' }]}
                         >
-                          <Input.TextArea placeholder="Inputs"/>
+                          <Input placeholder="Space delimited string for CLI input args"/>
                         </Form.Item>
                         <Form.Item
                           {...restField}

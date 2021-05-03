@@ -374,7 +374,7 @@ class EditPractical extends React.Component {
                     },
                   ]}
                 >
-                  <Input.TextArea disabled={!this.state.isEditable}/>
+                  <Input disabled={!this.state.isEditable}/>
                 </Form.Item>
                 <Form.Item
                   name={'outputs'}
@@ -409,7 +409,7 @@ class EditPractical extends React.Component {
                             fieldKey={[fieldKey, 'inputs']}
                             rules={[{ required: true, message: 'Missing inputs' }]}
                           >
-                            <Input.TextArea placeholder="Inputs"/>
+                            <Input placeholder="Space delimited string for CLI input args"/>
                           </Form.Item>
                           <Form.Item
                             {...restField}

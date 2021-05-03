@@ -353,7 +353,7 @@ class AddCompeteQuestion extends React.Component {
                   },
                 ]}
               >
-                <Input.TextArea onChange={this.setInputs} value={this.state.newCompeteInputs}/>
+                <Input onChange={this.setInputs} value={this.state.newCompeteInputs}/>
               </Form.Item>
               <Form.Item
                 name={'outputs'}
@@ -438,7 +438,7 @@ class AddCompeteQuestion extends React.Component {
               fieldKey={'inputs'}
               rules={[{ required: true, message: 'Missing inputs' }]}
             >
-              <Input.TextArea placeholder="Inputs"/>
+              <Input placeholder="Space delimited string for CLI input args"/>
             </Form.Item>
             <Form.Item
               label={'Outputs'}
