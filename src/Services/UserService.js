@@ -25,6 +25,14 @@ export async function  updateUser(user){
     return await api.put(endpoint,user,options);
 }
 
+export async function  deleteUser(){
+
+    const endpoint = '/user'
+    const options = getToken();
+    let api = await API();
+    return await api.delete(endpoint,options);
+}
+
 
 function getToken (){
     var token = localStorage.getItem('token');
