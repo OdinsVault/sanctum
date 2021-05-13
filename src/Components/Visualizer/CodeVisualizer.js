@@ -11,6 +11,8 @@ import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/theme-solarized_light";
 import {CheckLogOnStatus} from "../../Services/UserLoginService";
 
+import {Layout} from "./Layout";
+
 const {Panel} = Collapse;
 
 class Visualizer extends React.Component {
@@ -130,6 +132,7 @@ class Visualizer extends React.Component {
                         </Col>
                         <Divider/>
                         {/*////////////Add visualizer below here///////////////*/}
+                        <Layout></Layout>
                     </Col>
                 </Card>
             </div>
