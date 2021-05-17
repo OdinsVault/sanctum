@@ -1,7 +1,8 @@
 import React from 'react';
 import {PageHeader, Card, Spin, Collapse, Row, Col, Switch, Slider, Button, Divider} from 'antd';
 import {SettingTwoTone, SlidersFilled} from "@ant-design/icons";
-import {withRouter} from 'react-router';
+import { withRouter } from 'react-router';
+import { VizLayout } from './VizLayout'
 
 //Editor imports
 import AceEditor from "react-ace"
@@ -130,6 +131,7 @@ class Visualizer extends React.Component {
                         </Col>
                         <Divider/>
                         {/*////////////Add visualizer below here///////////////*/}
+                        <VizLayout />
                     </Col>
                 </Card>
             </div>

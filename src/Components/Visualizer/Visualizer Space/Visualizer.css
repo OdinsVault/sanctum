@@ -1,0 +1,126 @@
+.h4{
+  font-weight: 400;
+  color:#222e6a;
+  text-shadow:1px 1px white; 
+}
+th,
+td {
+  padding: 0.25rem !important;
+}
+
+.p-box {                                                                   
+    color:#222E6A !important;
+    padding: 10px;
+    border-radius:2px !important;
+    border:2px solid white !important;
+    background-color:rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 2px 2px 0 #7b1db970;
+    
+}
+
+.table-outer {
+  padding: 0.25rem;
+}
+
+.table-if {
+  background-color: rgba(47, 96, 153, 0.1);
+  text-align: left;
+  color: rgba(47, 96, 153);
+  border:white !important;
+}
+
+.table-var {
+  background-color: rgb(122,29,185,0.1);
+  text-align: left;
+  color: #561E66;
+  border:white !important;
+}
+
+.table-loop {
+  background-color: rgba(125, 31, 187, 0.1);
+  text-align: left;
+  color: #B974E9;
+  border:white !important;
+}
+
+.table-func {
+  background-color: rgba(34, 46, 106, 0.1);
+  text-align: left;
+  color: #222e6a;
+  border:white !important;
+}
+
+.table-if-head {
+  /* background-color: rgba(240, 73, 99); */
+  background-color: rgba(47, 96, 153);
+  text-align: left;
+  color: white;
+}
+
+.table-var-head {
+  background-color: #561E66;
+  text-align: left;
+  color: white;
+}
+
+.table-loop-head {
+  background-color: #B974E9;
+  text-align: left;
+  color: white;
+}
+
+.table-func-head {
+  background-color: rgba(34, 46, 106);
+  text-align: left;
+  color: white;
+}
+
+.table-highlight {
+  /* background-color: #febb94 !important; */
+  border:4px solid #ffc94cd0;
+  border-radius: 2px;
+}
+
+.table-not-highlight {
+  
+}
+
+.tabClass {
+  border-bottom: 2px solid white !important;
+  border-right: 2px solid white !important;
+  border-left: 2px solid white !important;
+  border-top: 0 !important;
+  background-color:rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 2px 4px 0 #7b1db970;
+  border-radius:3px
+}
+
+.nav-tabs .nav-link {
+  color: #222e6a !important;
+}
+
+table{
+    margin-bottom:0 !important
+}
+
+.table-bordered td, .table-bordered th {
+ border:1px solid white;
+}
+
+.list-data {
+  background-color: #561E66;
+  color: white;
+  border-radius: 2px;
+}
+
+.img-rocket{
+    width:5rem;
+    height:11rem;
+    margin-top:-50px;
+    margin-left:-20px;
+    -webkit-filter: drop-shadow(1px 1px 1px #000000e7);
+    -webkit-filter: drop-shadow(12px 12px 25px #93c000da);
+    position: absolute;
+}
+
+/* background-color: rgba(1, 148, 157, 0.1); */

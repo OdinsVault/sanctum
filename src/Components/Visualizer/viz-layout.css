@@ -1,0 +1,22 @@
+.outer {
+    background-color:rgba(255, 255, 255, 0.6) !important;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.226);
+    border-radius: 4px;
+    border:2px solid white;
+}
+
+#codeSpace{
+    background-color:rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.226);
+    border-radius: 4px;
+    border:2px solid white;
+    color:rgba(34, 46, 106);
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+html{
+    height:100%;
+}
