@@ -1,5 +1,6 @@
 import React from "react";
-import "./codeSpace.css";
+import "./codeSpace.scoped.css";
+import "bootstrap/dist/css/bootstrap.css";
 import alien from "./assets/spacep.png";
 
 import Row from "react-bootstrap/Row";
@@ -105,13 +106,6 @@ export class CodeSpace extends React.Component {
 
   mapCodeOrder() {
     codeOrder = [];
-    /* var code = this.state.code;
-    for(var i in code){
-      if(!code[i].includes("function main")){
-        codeOrder.push(parseInt(i));
-      }
-      else break;
-    } */
     data.map((obj) => {
       var line = sourceMap.filter(
         (i) => i.Java === parseInt(obj.Line.slice(9))
@@ -166,9 +160,6 @@ export class CodeSpace extends React.Component {
         }
         repeat = count;
       }
-
-      //console.log("current line: " + currentLine);
-      //this.setPopoverClass(currentLine, "back");
     }
     commentTag = 0;
 
@@ -402,7 +393,7 @@ export class CodeSpace extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="red-font">
         <Row>
           <Col className="col-12 pl-0">
             <ol>
@@ -416,43 +407,44 @@ export class CodeSpace extends React.Component {
         </Row>
 
         <Row>
-          <Col>
-            <Button className="btn btn-primary mb-3" onClick={this.onClickBack}>
+          <Col className="pr-0 pl-3">
+            <Button className="btn-sm mb-3" onClick={this.onClickBack}>
               <FontAwesomeIcon icon={faStepBackward} />
             </Button>
           </Col>
-          <Col>
-            <Button className="btn btn-primary mb-3" onClick={this.onClickStop}>
+          <Col className="p-0">
+            <Button className="btn-sm mb-3" onClick={this.onClickStop}>
               <FontAwesomeIcon icon={faStop} />
             </Button>
           </Col>
-          <Col>
-            <Button
-              className="btn btn-primary mb-3"
-              onClick={this.onClickStart}
-            >
+          <Col className="p-0">
+            <Button className="btn-sm mb-3" onClick={this.onClickStart}>
               <FontAwesomeIcon icon={faPlay} />
             </Button>
           </Col>
-          <Col>
-            <Button className="btn btn-primary mb-3" onClick={this.onClickNext}>
+          <Col className="p-0">
+            <Button className="btn-sm mb-3" onClick={this.onClickNext}>
               <FontAwesomeIcon icon={faStepForward} />
             </Button>
           </Col>
         </Row>
         <Row className={this.setPopoverClass().all}>
-          <Col></Col>
-          <Col>
+          <Col />
+          <Col className="p-0">
             <Button
-              className={this.setPopoverClass().back + " btn btn-primary mb-3"}
+              className={
+                this.setPopoverClass().back + " btn-sm mb-3"
+              }
               onClick={() => this.onSkipFunction("back")}
             >
               <FontAwesomeIcon icon={faFastBackward} />
             </Button>
           </Col>
-          <Col>
+          <Col className="p-0">
             <Button
-              className={this.setPopoverClass().next + " btn btn-primary mb-3"}
+              className={
+                this.setPopoverClass().next + " btn-sm mb-3"
+              }
               onClick={() => this.onSkipFunction("next")}
             >
               <FontAwesomeIcon icon={faFastForward} />
@@ -510,18 +502,18 @@ export class CodeSpace extends React.Component {
 
         <Row>
           <Col className="col-2">
-            <img className="img-alien" src={alien} alt="alien"></img>
+            <img className="img-alien" src={alien} alt="alien" />
           </Col>
           <Col className="col-10">
             <Card className="card text-light comment-box">
               <div className="card-body pb-2 pt-2 pl-2 pr-4">
-                <h5 className="card-title">
+                <h5 className="notes card-title">
                   Notes : <FontAwesomeIcon icon={faBookOpen} />
                 </h5>
                 <p>
-                  {this.state.commentData
-                    .filter((comment, i) => i === commentTag)
-                  }
+                  {this.state.commentData.filter(
+                    (comment, i) => i === commentTag
+                  )}
                 </p>
                 <Row>
                   <Col className="text-left pr-0">

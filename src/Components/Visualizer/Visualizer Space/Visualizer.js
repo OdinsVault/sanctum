@@ -1,7 +1,7 @@
 import React from "react";
-//import "./visualizerSpace.css";
-import "./Visualizer.css";
-import rocket from "../Code Space/assets/rocket.png";
+import "bootstrap/dist/css/bootstrap.css";
+import "./Visualizer.scoped.css";
+import rocket from "../Code Space/assets/rocket1.png";
 
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -160,15 +160,17 @@ export class Visualizer extends React.Component {
 
   getExternals() {
     imports = [];
+    var code = this.state.code;
     var line = this.state.lineNumber;
     var data = "";
-    if (line >= 0) {
-      var code = this.state.code[line];
-      if (code.includes("get ")) {
-        data = code.slice(4, code.lastIndexOf(";"));
+
+    for (var i in code) {
+      if (code[i].includes("get ")) {
+        data = code[i].slice(4, code[i].lastIndexOf(";"));
+        imports.push(data);
       }
-      imports.push(data);
     }
+
     return imports;
   }
 
@@ -360,15 +362,6 @@ export class Visualizer extends React.Component {
         }
       }
     }
-
-    /* var gRender = [];
-    for (var g in globals) {
-       console.log(globals[g]);
-      if (traversed.lastIndexOf(parseInt(globals[g].line)) !== -1) {
-        gRender.push(globals[g]);
-      }
-    }
-    console.log(gRender); */
 
     var render = {
       variables: variables,
@@ -589,46 +582,18 @@ export class Visualizer extends React.Component {
     }
   }
 
-  /* onVisualizeData(){
-    var vizData = {};
-    var line = this.state.lineNumber;
-    console.log(line);
-
-    var functions = this.getFunctions();
-    var variables = this.getVariables();
-    var conditions = this.getConditions();
-    var loops = this.getLoops();
-    var keyins = this.getKeyIn();
-    var externals = this.getExternals();
-    var prints = this.getPrint();
-
-    vizData = {
-      line: line,
-      data: {
-        functions: functions,
-        variables: variables,
-        conditions: conditions,
-        loops: loops,
-        keyins: keyins,
-        externals: externals,
-        prints: prints
-      }
-    };
-
-    this.handleVisualize(vizData);
-    this.setState({vizData: vizData});
-  }
-
-  handleVisualize(vizData){
-    this.props.getVizData(vizData);
-  }
- */
-
   render() {
     this.getClassName();
-
+    
     return (
       <div>
+        <style>
+          {"\
+        .nav-tabs .nav-link{\
+          color:#222E6A;\
+        }\
+      "}
+        </style>
         <Row>
           <Col className="col-6">
             <div className="p text-center p-box mb-3">
@@ -649,7 +614,7 @@ export class Visualizer extends React.Component {
             </div>
           </Col>
           <Col className="col-1">
-            <img className="img-rocket" src={rocket} alt="rocket"></img>
+            <img className="img-rocket" src={rocket} alt="rocket" />
           </Col>
         </Row>
         <Row>
@@ -657,7 +622,9 @@ export class Visualizer extends React.Component {
             <div className="p text-center mb-3 p-box">
               Global Variables:
               <div
-                className={classList.global + " table-responsive table-outer"}
+                className={
+                  classList.global + " table-responsive table-outer"
+                }
               >
                 <Table className="table-bordered text-light">
                   <thead className="table-var-head">
@@ -691,7 +658,7 @@ export class Visualizer extends React.Component {
             </div>
           </Col>
 
-          <Col className="col-1"></Col>
+          <Col className="col-1" />
         </Row>
         <div>
           <p className="h4 text-center">Function Area:</p>
@@ -731,7 +698,6 @@ export class Visualizer extends React.Component {
                                     <td colspan="1">Parameter</td>
                                     <td colspan="1">Data type</td>
                                     <td colspan="1">Name</td>
-                                    {/* <td colspan="1">Value</td> */}
                                   </tr>
                                 </thead>
                                 <tbody className="table-func">
@@ -739,25 +705,23 @@ export class Visualizer extends React.Component {
                                     <td colspan="1">In</td>
                                     <td colspan="1">
                                       {func.in.map((obj) => (
-                                        <p className="p-0 m-0">{obj.type}</p>
+                                        <p className="p-0 m-0">
+                                          {obj.type}
+                                        </p>
                                       ))}
                                     </td>
                                     <td colspan="1">
                                       {func.in.map((obj) => (
-                                        <p className="p-0 m-0">{obj.name}</p>
+                                        <p className="p-0 m-0">
+                                          {obj.name}
+                                        </p>
                                       ))}
                                     </td>
-                                    {/* <td colspan="1">
-                                {func.in.map((obj) => (
-                                  <p className="p-0 m-0">{obj.value}</p>
-                                ))}
-                              </td> */}
                                   </tr>
                                   <tr>
                                     <td colspan="1">Out</td>
                                     <td colspan="1">{func.out}</td>
-                                    <td colspan="1"></td>
-                                    {/* <td colspan="1"></td> */}
+                                    <td colspan="1" />
                                   </tr>
                                 </tbody>
                               </Table>
@@ -798,24 +762,32 @@ export class Visualizer extends React.Component {
                                       ))
                                     )}
                                   {this.getLists()
-                                    .filter((f) => f.functionName === func.name)
+                                    .filter(
+                                      (f) => f.functionName === func.name
+                                    )
                                     .map((line, i) => (
                                       <tr key={i}>
                                         <td colspan="2">
                                           list: {line.data.type}
                                         </td>
-                                        <td colspan="2">{line.data.name}</td>
+                                        <td colspan="2">
+                                          {line.data.name}
+                                        </td>
                                         <td colspan="2">
                                           <tr>
-                                            <td className="border-0"></td>
-                                            {line.data.values.map((value) => (
-                                              <td className="list-data pl-2 pr-2">
-                                                {value}
-                                              </td>
-                                            ))}
+                                            <td className="border-0" />
+                                            {line.data.values.map(
+                                              (value) => (
+                                                <td className="list-data pl-2 pr-2">
+                                                  {value}
+                                                </td>
+                                              )
+                                            )}
                                           </tr>
                                           <tr>
-                                            <td className="border-0">Index:</td>
+                                            <td className="border-0">
+                                              Index:
+                                            </td>
                                             {line.data.values.map(
                                               (values, v) => (
                                                 <td className="border-0 pl-2 pr-2">
@@ -824,12 +796,6 @@ export class Visualizer extends React.Component {
                                               )
                                             )}
                                           </tr>
-                                          {/* {line.data.values.map((value, l) => (
-                                            <tr>
-                                              <td colspan="1">{l}:</td>
-                                              <td colspan="1">{value}</td>
-                                            </tr>
-                                          ))} */}
                                         </td>
                                       </tr>
                                     ))}
@@ -862,14 +828,17 @@ export class Visualizer extends React.Component {
                                 <tbody className="table-if">
                                   {this.getConditions()
                                     .filter(
-                                      (cond) => cond.functionLine === func.line
+                                      (cond) =>
+                                        cond.functionLine === func.line
                                     )
                                     .map((line) => (
                                       <tr>
                                         <td colspan="4">
                                           {line.data.condition}
                                         </td>
-                                        <td colspan="2">{line.data.value}</td>
+                                        <td colspan="2">
+                                          {line.data.value}
+                                        </td>
                                       </tr>
                                     ))}
                                 </tbody>
@@ -879,7 +848,8 @@ export class Visualizer extends React.Component {
                           <Col className="col-6">
                             <div
                               className={
-                                classList.loop + " table-responsive table-outer"
+                                classList.loop +
+                                " table-responsive table-outer"
                               }
                             >
                               <Table className="table-bordered text-light">
@@ -899,14 +869,21 @@ export class Visualizer extends React.Component {
                                 <tbody className="table-loop">
                                   {this.getLoops()
                                     .filter(
-                                      (loop) => loop.functionLine === func.line
+                                      (loop) =>
+                                        loop.functionLine === func.line
                                     )
                                     .map((data) => (
                                       <tr>
-                                        <td colspan="3">{data.data.range}</td>
-                                        <td colspan="1">{data.data.start}</td>
+                                        <td colspan="3">
+                                          {data.data.range}
+                                        </td>
+                                        <td colspan="1">
+                                          {data.data.start}
+                                        </td>
                                         <td colspan="1">{data.data.end}</td>
-                                        <td colspan="1">{data.data.next}</td>
+                                        <td colspan="1">
+                                          {data.data.next}
+                                        </td>
                                       </tr>
                                     ))}
                                 </tbody>
@@ -927,7 +904,7 @@ export class Visualizer extends React.Component {
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
           crossorigin="anonymous"
-        ></script>
+        />
       </div>
     );
   }

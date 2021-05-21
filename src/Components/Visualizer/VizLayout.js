@@ -1,15 +1,14 @@
 import React from "react";
 import MetaTags from "react-meta-tags";
 
-import "./viz-layout.css";
+import "./viz-layout.scoped.css";
+import "bootstrap/dist/css/bootstrap.css";
 import { CodeSpace } from "./Code Space/codeSpace";
-//import {VisualizerSpace} from './Visualizer Space/visualizerSpace';
 import { Visualizer } from "./Visualizer Space/Visualizer";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Container";
-import Navbar from "react-bootstrap/Navbar";
 
 var key = -1;
 
@@ -26,7 +25,6 @@ export class VizLayout extends React.Component {
     };
 
     this.handleCodeData = this.handleCodeData.bind(this);
-    //this.handleVizData = this.handleVizData.bind(this);
   }
 
   handleCodeData(data, line, code, order) {
@@ -39,10 +37,6 @@ export class VizLayout extends React.Component {
       key: key,
     });
   }
-
-  /* handleVizData(vizData) {
-    this.setState({ vizData: vizData });
-  } */
 
   render() {
     return (
@@ -64,26 +58,17 @@ export class VizLayout extends React.Component {
           ></script>
         </MetaTags>
 
-        <Navbar className="navbar navbar-dark d-none  bg-dark">
-          <div className="container-fluid">
-            <span className="navbar-brand mb-0 h1">Navbar</span>
-          </div>
-        </Navbar>
-
-        <Container className="container container-fluid">
+        <Container className="container container-fluid py-4">
           <Row className="row p-2">
-            <Col className="col-3 m-2 p-3 outer" id="codeSpace">
+            <Col className="col-3 p-3 outer" id="codeSpace">
               <CodeSpace
                 getCodeData={this.handleCodeData}
-                /* getVizData={this.state.vizData}
-                key={this.state.key} */
               />
             </Col>
-            <Col className="col-8 m-2 p-3 outer" id="visualizer">
+            <Col className="col-8 p-3 outer" id="visualizer">
               <Visualizer
                 getCodeData={this.state}
                 key={this.state.key}
-                /* getVizData={this.handleVizData} */
               />
             </Col>
           </Row>

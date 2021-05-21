@@ -1,7 +1,9 @@
 .h4{
-  font-weight: 400;
+  font-weight: 600;
   color:#222e6a;
   text-shadow:1px 1px white; 
+  font-size:20px;
+  padding:20px;
 }
 th,
 td {
@@ -10,19 +12,23 @@ td {
 
 .p-box {                                                                   
     color:#222E6A !important;
-    padding: 10px;
+    padding: 5px;
     border-radius:2px !important;
     border:2px solid white !important;
     background-color:rgba(255, 255, 255, 0.8) !important;
     box-shadow: 0 2px 2px 0 #7b1db970;
+    font-size:13px
     
+}
+.table-var, .table-var-head, .table-loop, .table-loop-head, .table-if, .table-if-head, .table-func, .table-func-head{
+  font-size:12px
 }
 
 .table-outer {
   padding: 0.25rem;
 }
 
-.table-if {
+.table-loop {
   background-color: rgba(47, 96, 153, 0.1);
   text-align: left;
   color: rgba(47, 96, 153);
@@ -36,7 +42,7 @@ td {
   border:white !important;
 }
 
-.table-loop {
+.table-if {
   background-color: rgba(125, 31, 187, 0.1);
   text-align: left;
   color: #B974E9;
@@ -50,7 +56,7 @@ td {
   border:white !important;
 }
 
-.table-if-head {
+.table-loop-head {
   /* background-color: rgba(240, 73, 99); */
   background-color: rgba(47, 96, 153);
   text-align: left;
@@ -63,7 +69,7 @@ td {
   color: white;
 }
 
-.table-loop-head {
+.table-if-head {
   background-color: #B974E9;
   text-align: left;
   color: white;
@@ -92,12 +98,10 @@ td {
   border-top: 0 !important;
   background-color:rgba(255, 255, 255, 0.9) !important;
   box-shadow: 0 2px 4px 0 #7b1db970;
-  border-radius:3px
-}
-
-.nav-tabs .nav-link {
+  border-radius:3px;
   color: #222e6a !important;
 }
+
 
 table{
     margin-bottom:0 !important
@@ -114,12 +118,12 @@ table{
 }
 
 .img-rocket{
-    width:5rem;
-    height:11rem;
-    margin-top:-50px;
-    margin-left:-20px;
+    width:3.5rem;
+    margin-top:-20px;
+    margin-left:-10px;
     -webkit-filter: drop-shadow(1px 1px 1px #000000e7);
-    -webkit-filter: drop-shadow(12px 12px 25px #93c000da);
+    -webkit-filter: drop-shadow(12px 12px 25px #d745ff);
+    transform: rotate(-30deg);
     position: absolute;
 }
 

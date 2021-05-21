@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@craco/craco": "^6.1.2",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
@@ -12,6 +13,7 @@
     "antd": "^4.10.3",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "craco-plugin-scoped-css": "^1.1.1",
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
     "rc-tween-one": "^2.7.3",
@@ -32,10 +34,10 @@
     "web-vitals": "^0.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
     "extract": "formatjs extract",
     "compile": "formatjs compile"
   },
