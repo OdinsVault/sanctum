@@ -12,21 +12,20 @@ import "ace-builds/src-noconflict/ext-language_tools";
 
 //SERVICES
 import {getQuestionById, runPracticeAnswer, submitPracticeAnswer} from "../../Services/PracticeService";
-import {getCompeteQuestionById, runCompeteAnswer, submitCompeteAnswer} from "../../Services/CompeteService";
+import { getCompeteQuestionById, runCompeteAnswer, submitCompeteAnswer, translateCode } from "../../Services/CompeteService";
 
 //STYLES
 import {Button, Col, PageHeader, Card, Row, Tabs, Descriptions, notification,
-    Spin, Result, Input, Collapse, Switch, Slider, Typography, List, Progress
+    Spin, Result, Collapse, Switch, Slider, Typography, List, Progress, Select,
 } from 'antd';
 import {SettingTwoTone, CheckCircleTwoTone, CloseCircleTwoTone} from '@ant-design/icons';
 import {CheckLogOnStatus} from "../../Services/UserLoginService";
 
 
-const {Meta} = Card;
-const {TabPane} = Tabs;
-const {TextArea} = Input;
+const { TabPane } = Tabs;
 const {Panel} = Collapse;
-const {Paragraph, Text} = Typography;
+const { Paragraph } = Typography;
+const { Option } = Select;
 
 
 class Question extends React.Component {
@@ -46,7 +45,8 @@ class Question extends React.Component {
             submitLoading: false, submitCaseResult: '', submitCasePassed: false, submitCaseFailed: false,
             compileError: false,
             editorTheme: 'github',
-            editorFontSize: 14
+            editorFontSize: 14,
+            codeLang: 'eng', translationLoading: false,
         };
     }
 
@@ -108,6 +108,7 @@ class Question extends React.Component {
 
         var submission = {
             answer: this.state.answerCode ? this.state.answerCode : "",
+            lang: this.state.codeLang || 'eng'
         }
 
         this.setState({
@@ -171,7 +172,8 @@ class Question extends React.Component {
     submitCode = async () => {
 
         var submission = {
-            answer: this.state.answerCode ? this.state.answerCode : ""
+            answer: this.state.answerCode ? this.state.answerCode : "",
+            lang: this.state.codeLang || 'eng'
         }
         this.setState({
             submitLoading: true,
@@ -350,6 +352,20 @@ class Question extends React.Component {
         }
     }
 
+    translateCode = async () => {
+        this.setState({ translationLoading: true });
+        try {
+            const translated = await translateCode({
+                answer: this.state.answerCode || '',
+                lang: this.state.codeLang || 'eng'
+            });
+            this.setCode(translated);
+        } catch (err) {
+            notification.error({ message: 'Error!', description: err.message ? err.message : '' })
+        }
+        this.setState({ translationLoading: false })
+    }
+
     async componentDidMount() {
         let loggedIn = CheckLogOnStatus();
         if (loggedIn) {
@@ -506,6 +522,25 @@ class Question extends React.Component {
                                         <Descriptions.Item
                                             label="Points">{this.state.selectedQuestion.pointsAllocated}</Descriptions.Item><br/>
                                     </Descriptions>
+                                </Card>
+
+                                <Card title="Translate code" style={{ margin: '50% auto' }}>
+                                    <Row style={{ margin: '1rem auto' }}>
+                                        <Col style={{ padding: '0.5rem 1rem' }}>From: </Col>
+                                        <Col>
+                                            <Select style={{ width: 120 }} defaultValue={this.state.codeLang} onChange={(e) => this.setState({ codeLang: e })}>
+                                                <Option value="eng">English</Option>
+                                                <Option value="sn">සිංහල</Option>
+                                            </Select></Col>
+                                    </Row>
+                                    <Row style={{ margin: '1rem auto' }}>
+                                        <Col offset={5}>
+                                            <p>to: {this.state.codeLang === 'sn' ? 'English' : 'සිංහල'}</p>
+                                        </Col>
+                                    </Row>
+                                    <Row style={{ margin: '1rem auto' }}>
+                                        <Button style={{ margin: '0 auto' }} onClick={this.translateCode} loading={this.state.translationLoading}><b>Translate</b></Button>
+                                    </Row>
                                 </Card>
                             </Col>
                         </Row>

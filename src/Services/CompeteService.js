@@ -45,6 +45,14 @@ export async function submitCompeteAnswer (qId,submission){
 
 }
 
+export async function translateCode(submission) {
+    const endpoint = '/answer/translate';
+    let header = getToken();
+    let api = await API();
+    return api.post(endpoint, submission, header);
+
+}
+
 function getToken (){
     var token = localStorage.getItem('token');
     const options = {
