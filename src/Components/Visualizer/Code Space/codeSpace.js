@@ -20,8 +20,8 @@ import {
   faFastBackward,
 } from "@fortawesome/free-solid-svg-icons";
 
-var data = require("./assets/code.json");
-var sourceMap = require("./assets/sourceMap.json");
+var data = require("./assets/code1.json");
+var sourceMap = require("./assets/sourceMap1.json");
 var comments = require("./assets/comments.json");
 
 var currentLine = 0;
@@ -47,7 +47,7 @@ export class CodeSpace extends React.Component {
 
     this.state = {
       code: [
-        "get io;",
+        /* "get io;",
         "",
         "global integer a = 3;",
         "",
@@ -65,12 +65,11 @@ export class CodeSpace extends React.Component {
         "",
         "function add(in: integer x, integer y) out: integer {",
         "return x + y;",
-        "}",
-        /* "function main(in: ) out: no {",
+        "}", */
+        "function main(in: ) out: no {",
         "integer a = 3;",
         "integer b = 4;",
         "integer sum = 0;",
-        "list: integer arr = [1,2,3,4,5];",
         "if(a<b){",
         "sum = a + b;",
         "}",
@@ -78,7 +77,7 @@ export class CodeSpace extends React.Component {
         "sum = sum + 1;",
         "}",
         'display("sum =" + sum);',
-        "}", */
+        "}",
       ],
       currentLine: -1,
       lineData: [],
@@ -115,7 +114,7 @@ export class CodeSpace extends React.Component {
     next = codeOrder.indexOf(currentLine);
     back = next;
 
-    console.log(codeOrder);
+    //console.log(codeOrder);
   }
 
   onClickNext() {
@@ -123,12 +122,14 @@ export class CodeSpace extends React.Component {
       next++;
       back = next;
       currentLine = codeOrder[next];
+      repeat = 0;
 
-      if (codeOrder[next] !== codeOrder[next - 1]) {
-        repeat = 0;
-      } else {
-        repeat++;
+      for(var i=0; i<next; i++){
+        if(codeOrder[i]===codeOrder[next]){
+          repeat++;
+        }
       }
+      //console.log(repeat);
     }
     commentTag = 0;
     this.onComments();
@@ -382,7 +383,7 @@ export class CodeSpace extends React.Component {
       var newLineList = codeOrder
         .slice(0, codeOrder.indexOf(currentLine) - 1)
         .filter((i) => i > functionList[func].startLine);
-      console.log(newLineList);
+      //console.log(newLineList);
       var newLine = newLineList[newLineList.length - 1];
       back = codeOrder.indexOf(newLine) + 1;
       this.onClickBack();

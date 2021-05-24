@@ -367,7 +367,7 @@ export class Visualizer extends React.Component {
       variables: variables,
       globals: globals,
     };
-    console.log(render);
+    //console.log(render);
     return render;
   }
 
