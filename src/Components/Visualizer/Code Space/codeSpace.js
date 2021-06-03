@@ -32,7 +32,21 @@ var next,
 var repeat = 0;
 var stop = true;
 var dataTypes = ["integer", "float", "boolean", "string", "character"];
-var keywords = ["function", "in", "out", "get", "global", "display", "input", "if", "else", "repeat", "range", "next", "return"];
+var keywords = [
+  "function",
+  "in",
+  "out",
+  "get",
+  "global",
+  "display",
+  "input",
+  "if",
+  "else",
+  "repeat",
+  "range",
+  "next",
+  "return",
+];
 var commentTag = 0;
 var commentNextClass = "btn-comment";
 var commentBackClass = "btn-comment d-none";
@@ -84,7 +98,8 @@ export class CodeSpace extends React.Component {
       currentLine: -1,
       lineData: [],
       vizData: this.props.getVizData,
-      commentData: comments.mainFunc.split(".").filter((i) => i !== ""),
+      commentData:
+        (comments.welcome+comments.externals).split(".").filter((i) => i !== ""),
       commentTag: 0,
       popoverClass: "d-none",
     };
@@ -122,39 +137,58 @@ export class CodeSpace extends React.Component {
   }
 
   highlightCode(line) {
-    for(var i in keywords){
+    for (var i in keywords) {
       var text = "<span style='color: blue;'>" + keywords[i] + "</span>";
-      line = line.replaceAll(new RegExp('\\b' + keywords[i] + '\\b', 'g'), text);
+      line = line.replaceAll(
+        new RegExp("\\b" + keywords[i] + "\\b", "g"),
+        text
+      );
     }
-    for(var i in dataTypes){
+    for (var i in dataTypes) {
       var text = "<span style='color: red;'>" + dataTypes[i] + "</span>";
-      line = line.replaceAll(new RegExp("\\b" + dataTypes[i] + "\\b", 'g'), text);
+      line = line.replaceAll(
+        new RegExp("\\b" + dataTypes[i] + "\\b", "g"),
+        text
+      );
     }
-    return line;    
+    return line;
   }
 
-  renderCode(line){
-    if(line.includes('<')){
-      return line.slice(line.indexOf('<'));
-    }
-    else{
+  renderCode(line) {
+    if (line.includes("<")) {
+      return line.slice(line.indexOf("<"));
+    } else {
       return "";
     }
   }
 
   onClickNext() {
+    var code = this.state.code;
     if (next < codeOrder.length - 1) {
-      next++;
-      back = next;
-      currentLine = codeOrder[next];
+      if (currentLine < codeOrder[0]) {
+        var blank = 0;
+        for (var i = currentLine; i < codeOrder[0]-1; i++) {
+          if(code[i+1] === ""){
+            blank++;
+          }
+          else{
+            break;
+          }
+        }
+        currentLine += blank + 1;
+      } else {
+        next++;
+        back = next;
+        currentLine = codeOrder[next];
+      }
       repeat = 0;
 
-      for(var i=0; i<next; i++){
-        if(codeOrder[i]===codeOrder[next]){
+      for (var i = 0; i < next; i++) {
+        if (codeOrder[i] === codeOrder[next]) {
           repeat++;
         }
       }
-      //console.log(repeat);
+      //console.log(currentLine);
     }
     commentTag = 0;
     this.onComments();
@@ -168,24 +202,36 @@ export class CodeSpace extends React.Component {
   }
 
   onClickBack() {
-    if (back >= 1) {
-      back--;
-      next = back;
-      currentLine = codeOrder[back];
-
-      if (codeOrder[back] !== codeOrder[back - 1]) {
-        repeat = 0;
-      } else {
-        var count = 0;
-        for (var i = back - 1; i > 0; i--) {
-          if (codeOrder[back] === codeOrder[i]) {
-            count++;
-          } else {
-            break;
-          }
+    var code =  this.state.code;
+    if (currentLine <= codeOrder[0] && currentLine !== 0) {
+      var blank = 0;
+      console.log(currentLine);
+      for (var i = currentLine; i >= 0; i--) {
+        if (code[i - 1] === "") {
+          blank++;
+        } else {
+          break;
         }
-        repeat = count;
       }
+      currentLine -= blank+1;
+    }
+    else if(back >= 1) {
+       back--;
+       next = back;
+       currentLine = codeOrder[back];
+    }
+    if (codeOrder[back] !== codeOrder[back - 1]) {
+      repeat = 0;
+    } else {
+      var count = 0;
+      for (var i = back - 1; i > 0; i--) {
+        if (codeOrder[back] === codeOrder[i]) {
+          count++;
+        } else {
+          break;
+        }
+      }
+      repeat = count;
     }
     commentTag = 0;
 
@@ -220,7 +266,7 @@ export class CodeSpace extends React.Component {
   getClassName(i) {
     if (
       i === currentLine &&
-      (currentLine === 0 || currentLine === codeOrder[next])
+      (currentLine <= codeOrder[0] || currentLine === codeOrder[next])
     ) {
       return "highlight";
     } else {
@@ -231,10 +277,16 @@ export class CodeSpace extends React.Component {
   onVisualizeData(sourceLine, repeat) {
     var source = sourceMap.filter((i) => i.Simply === sourceLine + 1);
     if (source !== undefined) {
+      var newData;
       var lineData = [];
-      var newData = data.filter(
-        (i) => parseInt(i.Line.slice(9)) === source[0].Java
-      );
+      if (sourceLine < codeOrder[0]) {
+        newData = [];
+        newData.push(data[0]);
+      } else {
+        newData = data.filter(
+          (i) => parseInt(i.Line.slice(9)) === source[0].Java
+        );
+      }
       lineData.push(newData[repeat]);
       //console.log(lineData);
 
@@ -259,10 +311,10 @@ export class CodeSpace extends React.Component {
     var funcName = "";
 
     if (line !== 0) {
-      if (code[line - 1].includes("function")) {
-        funcName = code[line - 1].slice(
-          code[line - 1].lastIndexOf("function") + 9,
-          code[line - 1].lastIndexOf("in:") - 1
+      if (code[line].includes("function")) {
+        funcName = code[line].slice(
+          code[line].lastIndexOf("function") + 9,
+          code[line].lastIndexOf("in:") - 1
         );
         commentData = comments.insideFunctions + funcName + ".";
       }
@@ -270,6 +322,8 @@ export class CodeSpace extends React.Component {
 
     if (code[line].includes("if") || code[line].includes("else")) {
       commentData += comments.conditions;
+    } else if(code[line].includes("global")) {
+      commentData += comments.globals;
     } else if (code[line].includes("repeat")) {
       commentData += comments.loops;
     } else if (code[line].includes("display")) {
@@ -424,10 +478,7 @@ export class CodeSpace extends React.Component {
           <Col className="col-12 pl-0">
             <ol>
               {this.state.code.map((line, i) => (
-                <li
-                  className={this.getClassName(i)}
-                  key={i}
-                >
+                <li className={this.getClassName(i)} key={i}>
                   {ReactHtmlParser(this.highlightCode(line))}
                   <span>{this.renderCode(line)}</span>
                 </li>

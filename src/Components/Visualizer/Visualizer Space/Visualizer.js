@@ -277,7 +277,7 @@ export class Visualizer extends React.Component {
         render.push(conditions[c]);
       }
     }
-    //console.log(render);
+    console.log(render);
     return render;
   }
 
