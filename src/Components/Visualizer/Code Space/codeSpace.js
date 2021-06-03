@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
+import ReactHtmlParser from "react-html-parser";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -20,8 +21,8 @@ import {
   faFastBackward,
 } from "@fortawesome/free-solid-svg-icons";
 
-var data = require("./assets/code1.json");
-var sourceMap = require("./assets/sourceMap1.json");
+var data = require("./assets/code.json");
+var sourceMap = require("./assets/sourceMap.json");
 var comments = require("./assets/comments.json");
 
 var currentLine = 0;
@@ -31,6 +32,7 @@ var next,
 var repeat = 0;
 var stop = true;
 var dataTypes = ["integer", "float", "boolean", "string", "character"];
+var keywords = ["function", "in", "out", "get", "global", "display", "input", "if", "else", "repeat", "range", "next", "return"];
 var commentTag = 0;
 var commentNextClass = "btn-comment";
 var commentBackClass = "btn-comment d-none";
@@ -47,7 +49,7 @@ export class CodeSpace extends React.Component {
 
     this.state = {
       code: [
-        /* "get io;",
+        "get io;",
         "",
         "global integer a = 3;",
         "",
@@ -65,8 +67,8 @@ export class CodeSpace extends React.Component {
         "",
         "function add(in: integer x, integer y) out: integer {",
         "return x + y;",
-        "}", */
-        "function main(in: ) out: no {",
+        "}",
+        /* "function main(in: ) out: no {",
         "integer a = 3;",
         "integer b = 4;",
         "integer sum = 0;",
@@ -77,7 +79,7 @@ export class CodeSpace extends React.Component {
         "sum = sum + 1;",
         "}",
         'display("sum =" + sum);',
-        "}",
+        "}", */
       ],
       currentLine: -1,
       lineData: [],
@@ -98,6 +100,8 @@ export class CodeSpace extends React.Component {
     this.onCommentBack = this.onCommentBack.bind(this);
     this.onSkipFunction = this.onSkipFunction.bind(this);
     this.setPopoverClass = this.setPopoverClass.bind(this);
+    this.highlightCode = this.highlightCode.bind(this);
+    this.renderCode = this.renderCode.bind(this);
 
     this.mapCodeOrder();
     this.getFunctionList();
@@ -115,6 +119,27 @@ export class CodeSpace extends React.Component {
     back = next;
 
     //console.log(codeOrder);
+  }
+
+  highlightCode(line) {
+    for(var i in keywords){
+      var text = "<span style='color: blue;'>" + keywords[i] + "</span>";
+      line = line.replaceAll(new RegExp('\\b' + keywords[i] + '\\b', 'g'), text);
+    }
+    for(var i in dataTypes){
+      var text = "<span style='color: red;'>" + dataTypes[i] + "</span>";
+      line = line.replaceAll(new RegExp("\\b" + dataTypes[i] + "\\b", 'g'), text);
+    }
+    return line;    
+  }
+
+  renderCode(line){
+    if(line.includes('<')){
+      return line.slice(line.indexOf('<'));
+    }
+    else{
+      return "";
+    }
   }
 
   onClickNext() {
@@ -399,8 +424,12 @@ export class CodeSpace extends React.Component {
           <Col className="col-12 pl-0">
             <ol>
               {this.state.code.map((line, i) => (
-                <li className={this.getClassName(i)} key={i}>
-                  {line}{" "}
+                <li
+                  className={this.getClassName(i)}
+                  key={i}
+                >
+                  {ReactHtmlParser(this.highlightCode(line))}
+                  <span>{this.renderCode(line)}</span>
                 </li>
               ))}
             </ol>
@@ -433,9 +462,7 @@ export class CodeSpace extends React.Component {
           <Col />
           <Col className="p-0">
             <Button
-              className={
-                this.setPopoverClass().back + " btn-sm mb-3"
-              }
+              className={this.setPopoverClass().back + " btn-sm mb-3"}
               onClick={() => this.onSkipFunction("back")}
             >
               <FontAwesomeIcon icon={faFastBackward} />
@@ -443,9 +470,7 @@ export class CodeSpace extends React.Component {
           </Col>
           <Col className="p-0">
             <Button
-              className={
-                this.setPopoverClass().next + " btn-sm mb-3"
-              }
+              className={this.setPopoverClass().next + " btn-sm mb-3"}
               onClick={() => this.onSkipFunction("next")}
             >
               <FontAwesomeIcon icon={faFastForward} />
