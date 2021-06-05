@@ -77,7 +77,19 @@ export class Visualizer extends React.Component {
       });
     }
 
-    traversed = codeOrder.slice(0, codeOrder.lastIndexOf(line + 1));
+    var preLines = [];
+    for (var i = 0; i < codeOrder[0]; i++) {
+      preLines.push(i);
+    }
+    if (line < codeOrder[0]) {
+      traversed = preLines.slice(0, preLines.lastIndexOf(line + 1));
+    } else {
+      traversed = preLines;
+      traversed = traversed.concat(
+        codeOrder.slice(0, codeOrder.lastIndexOf(line + 1))
+      );
+    }
+    //console.log(traversed);
   }
 
   switchTab() {
@@ -167,11 +179,22 @@ export class Visualizer extends React.Component {
     for (var i in code) {
       if (code[i].includes("get ")) {
         data = code[i].slice(4, code[i].lastIndexOf(";"));
-        imports.push(data);
+        imports.push({
+          data: data,
+          line: line,
+        });
       }
     }
 
-    return imports;
+    var render = [];
+    for (var i in imports) {
+      if (traversed.lastIndexOf(imports[i].line) !== -1) {
+        render.push(imports[i]);
+      } else if (imports[i].line === line) {
+        render.push(imports[i]);
+      }
+    }
+    return render;
   }
 
   getFunctions() {
@@ -277,7 +300,7 @@ export class Visualizer extends React.Component {
         render.push(conditions[c]);
       }
     }
-    console.log(render);
+    //console.log(render);
     return render;
   }
 
@@ -286,6 +309,7 @@ export class Visualizer extends React.Component {
     var code = this.state.code;
     var type = [];
     globals = [];
+    var gRender = [];
     for (var l in code) {
       for (var t in dataTypes) {
         if (code[l].includes(dataTypes[t]) && l > 0) {
@@ -323,6 +347,7 @@ export class Visualizer extends React.Component {
       }
     }
 
+    gRender = globals.filter((g) => g.line <= line);
     var typeRender = [];
     for (var tp in type) {
       if (type[tp].line <= line) {
@@ -365,7 +390,7 @@ export class Visualizer extends React.Component {
 
     var render = {
       variables: variables,
-      globals: globals,
+      globals: gRender,
     };
     //console.log(render);
     return render;
@@ -374,14 +399,23 @@ export class Visualizer extends React.Component {
   getLoops() {
     loops = [];
     var code = this.state.code;
-    var range, start, endId, end, nextId, nextVal, data;
+    var range, start, endId, end, nextId, nextVal;
     var next = "";
+    var data = {
+      line: -1,
+      range: null,
+      start: null,
+      end: null,
+      next: null,
+    };
 
-    for (var i = 2; i < code.length; i++) {
+    var lineNumber = this.state.lineNumber;
+
+    for (var i = 0; i < code.length; i++) {
       if (code[i].includes("repeat")) {
         range = code[i]
           .slice(
-            code[i].lastIndexOf("range:") + 6,
+            code[i].lastIndexOf("range") + 6,
             code[i].lastIndexOf("next") - 2
           )
           .trim();
@@ -391,12 +425,12 @@ export class Visualizer extends React.Component {
         nextId = code[i]
           .slice(
             code[i].lastIndexOf("integer") + 8,
-            code[i].lastIndexOf("; range:")
+            code[i].lastIndexOf("; range")
           )
           .trim();
         nextVal = parseInt(
           code[i].slice(
-            code[i].lastIndexOf("next:") + 5,
+            code[i].lastIndexOf("next") + 5,
             code[i].lastIndexOf("){")
           )
         );
@@ -406,61 +440,88 @@ export class Visualizer extends React.Component {
           range: range,
           start: start,
           end: end,
+          endId: endId,
           next: next,
+          nextId: nextId,
+          nextVal: nextVal,
         };
 
-        var id;
-        for (var j = 0; j < functions.length; j++) {
-          if (j < functions.length - 1) {
-            if (i > functions[j].line && i < functions[j + 1].line) {
-              if (variables[j].functionData[0].length !== 0) {
-                id = variables[j].functionData[0].data.filter(
-                  (d) => d.name === nextId
-                );
-                if (id.length !== 0) {
-                  next = id[0].value + nextVal;
-                  data.next = next;
-                }
-
-                data.end = variables[j].functionData[0].data.filter(
-                  (v) => v.name === endId
-                )[0].value;
-              }
-
-              loops.push({
-                functionLine: functions[j].line,
-                functionName: functions[j].name,
-                data: data,
-              });
-            }
-          } else if (j === functions.length - 1 && i > functions[j].line) {
-            if (variables[j].functionData.length !== 0) {
-              id = variables[j].functionData[0].data.filter(
-                (d) => d.name === nextId
-              );
-              if (id.length !== 0) {
-                next = id[0].value + nextVal;
-                data.next = next;
-              }
-
-              data.end = variables[j].functionData[0].data.filter(
-                (v) => v.name === endId
-              )[0].value;
-            }
-
-            loops.push({
-              functionLine: functions[j].line,
-              functionName: functions[j].name,
-              data: data,
-            });
-          }
-        }
+        loops.push({
+          functionLine: -1,
+          functionName: null,
+          data: data,
+        });
       }
     }
 
     var render = [];
     for (var r in loops) {
+      var id;
       if (traversed.lastIndexOf(loops[r].data.line) !== -1) {
+        for (var j = 0; j < functions.length; j++) {
+          if (j < functions.length - 1) {
+            if (
+              lineNumber > functions[j].line &&
+              lineNumber < functions[j + 1].line
+            ) {
+              if (variables[j].functionData[0].length !== 0) {
+                id = variables[j].functionData[0].data.filter(
+                  (d) => d.name === loops[r].data.nextId
+                );
+                if (id.length !== 0) {
+                  var n = id[0].value + loops[r].data.nextVal;
+                  loops[r].data.next = n;
+                }
+
+                var varIds = variables[j].functionData[0].data.filter(
+                  (v) => v.name === loops[r].data.endId
+                );
+                var gIds = globals.filter(
+                  (g) => g.name === loops[r].data.endId
+                );
+                if (varIds.length !== 0) {
+                  loops[r].data.end = varIds[0].value;
+                } else if (gIds !== 0) {
+                  loops[r].data.end = gIds[0].value;
+                }
+              }
+            }
+
+            if (
+              loops[r].data.line > functions[j].line &&
+              loops[r].data.line < functions[j + 1].line
+            ) {
+              loops[r].functionLine = functions[j].line;
+              loops[r].functionName = functions[j].name;
+            }
+          } else if (
+            j === functions.length - 1 &&
+            lineNumber > functions[j].line
+          ) {
+            if (variables[j].functionData.length !== 0) {
+              id = variables[j].functionData[0].data.filter(
+                (d) => d.name === loops[r].data.nextId
+              );
+              if (id.length !== 0) {
+                var n = id[0].value + loops[r].data.nextVal;
+                loops[r].data.next = n;
+              }
+
+              var varIds = variables[j].functionData[0].data.filter(
+                (v) => v.name === loops[r].data.endId
+              );
+              var gIds = globals.filter((g) => g.name === loops[r].data.endId);
+              if (varIds.length !== 0) {
+                loops[r].data.end = varIds[0].value;
+              } else if (gIds !== 0) {
+                loops[r].data.end = gIds[0].value;
+              }
+
+              loops[r].functionLine = functions[j].line;
+              loops[r].functionName = functions[j].name;
+            }
+          }
+        }
         render.push(loops[r]);
       }
     }
@@ -575,7 +636,7 @@ export class Visualizer extends React.Component {
         print: printClass,
         lib: libClass,
         input: inputClass,
-        global: globalClass
+        global: globalClass,
       };
 
       //console.log(classList);
@@ -584,15 +645,17 @@ export class Visualizer extends React.Component {
 
   render() {
     this.getClassName();
-    
+
     return (
       <div>
         <style>
-          {"\
+          {
+            "\
         .nav-tabs .nav-link{\
           color:#222E6A;\
         }\
-      "}
+      "
+          }
         </style>
         <Row>
           <Col className="col-6">
@@ -622,9 +685,7 @@ export class Visualizer extends React.Component {
             <div className="p text-center mb-3 p-box">
               Global Variables:
               <div
-                className={
-                  classList.global + " table-responsive table-outer"
-                }
+                className={classList.global + " table-responsive table-outer"}
               >
                 <Table className="table-bordered text-light">
                   <thead className="table-var-head">
@@ -652,7 +713,7 @@ export class Visualizer extends React.Component {
               External Libraries:
               {this.getExternals().map((lib, i) => (
                 <p className={classList.libClass + " mb-0"} key={i}>
-                  {lib}
+                  {lib.data}
                 </p>
               ))}
             </div>
@@ -705,16 +766,12 @@ export class Visualizer extends React.Component {
                                     <td colspan="1">In</td>
                                     <td colspan="1">
                                       {func.in.map((obj) => (
-                                        <p className="p-0 m-0">
-                                          {obj.type}
-                                        </p>
+                                        <p className="p-0 m-0">{obj.type}</p>
                                       ))}
                                     </td>
                                     <td colspan="1">
                                       {func.in.map((obj) => (
-                                        <p className="p-0 m-0">
-                                          {obj.name}
-                                        </p>
+                                        <p className="p-0 m-0">{obj.name}</p>
                                       ))}
                                     </td>
                                   </tr>
@@ -762,32 +819,24 @@ export class Visualizer extends React.Component {
                                       ))
                                     )}
                                   {this.getLists()
-                                    .filter(
-                                      (f) => f.functionName === func.name
-                                    )
+                                    .filter((f) => f.functionName === func.name)
                                     .map((line, i) => (
                                       <tr key={i}>
                                         <td colspan="2">
                                           list: {line.data.type}
                                         </td>
-                                        <td colspan="2">
-                                          {line.data.name}
-                                        </td>
+                                        <td colspan="2">{line.data.name}</td>
                                         <td colspan="2">
                                           <tr>
                                             <td className="border-0" />
-                                            {line.data.values.map(
-                                              (value) => (
-                                                <td className="list-data pl-2 pr-2">
-                                                  {value}
-                                                </td>
-                                              )
-                                            )}
+                                            {line.data.values.map((value) => (
+                                              <td className="list-data pl-2 pr-2">
+                                                {value}
+                                              </td>
+                                            ))}
                                           </tr>
                                           <tr>
-                                            <td className="border-0">
-                                              Index:
-                                            </td>
+                                            <td className="border-0">Index:</td>
                                             {line.data.values.map(
                                               (values, v) => (
                                                 <td className="border-0 pl-2 pr-2">
@@ -828,17 +877,14 @@ export class Visualizer extends React.Component {
                                 <tbody className="table-if">
                                   {this.getConditions()
                                     .filter(
-                                      (cond) =>
-                                        cond.functionLine === func.line
+                                      (cond) => cond.functionLine === func.line
                                     )
                                     .map((line) => (
                                       <tr>
                                         <td colspan="4">
                                           {line.data.condition}
                                         </td>
-                                        <td colspan="2">
-                                          {line.data.value}
-                                        </td>
+                                        <td colspan="2">{line.data.value}</td>
                                       </tr>
                                     ))}
                                 </tbody>
@@ -848,8 +894,7 @@ export class Visualizer extends React.Component {
                           <Col className="col-6">
                             <div
                               className={
-                                classList.loop +
-                                " table-responsive table-outer"
+                                classList.loop + " table-responsive table-outer"
                               }
                             >
                               <Table className="table-bordered text-light">
@@ -860,30 +905,25 @@ export class Visualizer extends React.Component {
                                     </th>
                                   </tr>
                                   <tr>
-                                    <td colspan="3">Range</td>
-                                    <td colspan="1">Start Value</td>
-                                    <td colspan="1">End Value</td>
+                                    <td colspan="2">Range</td>
+                                    <td colspan="1">Handler</td>
+                                    <td colspan="1">Start</td>
+                                    <td colspan="1">End</td>
                                     <td colspan="1">Next</td>
                                   </tr>
                                 </thead>
                                 <tbody className="table-loop">
                                   {this.getLoops()
                                     .filter(
-                                      (loop) =>
-                                        loop.functionLine === func.line
+                                      (loop) => loop.functionLine === func.line
                                     )
                                     .map((data) => (
                                       <tr>
-                                        <td colspan="3">
-                                          {data.data.range}
-                                        </td>
-                                        <td colspan="1">
-                                          {data.data.start}
-                                        </td>
+                                        <td colspan="2">{data.data.range}</td>
+                                        <td colspan="1">{data.data.nextId}</td>
+                                        <td colspan="1">{data.data.start}</td>
                                         <td colspan="1">{data.data.end}</td>
-                                        <td colspan="1">
-                                          {data.data.next}
-                                        </td>
+                                        <td colspan="1">{data.data.next}</td>
                                       </tr>
                                     ))}
                                 </tbody>
