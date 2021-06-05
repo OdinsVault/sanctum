@@ -247,6 +247,12 @@ class Question extends React.Component {
                 message: 'Warning!',
                 description: 'Cannot submit if the answer code is empty'
             })
+        } else if(this.state.codeLang !== 'eng'){
+            notification.warn({
+              message: "Warning!",
+              description:
+                "Cannot visualize non-English codes. Please switch back to English first",
+            });
         } else {
 
             const {setMenuKey} = this.context;
@@ -359,7 +365,7 @@ class Question extends React.Component {
                 answer: this.state.answerCode || '',
                 lang: this.state.codeLang || 'eng'
             });
-            this.setCode(translated);
+            this.setCode(translated.stdout);
         } catch (err) {
             notification.error({ message: 'Error!', description: err.message ? err.message : '' })
         }
