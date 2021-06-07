@@ -21,8 +21,8 @@ import {
   faFastBackward,
 } from "@fortawesome/free-solid-svg-icons";
 
-var data = require("./assets/code.json");
-var sourceMap = require("./assets/sourceMap.json");
+var data = require("./assets/code3/code.json");
+var sourceMap = require("./assets/code3/sourceMap.json");
 var comments = require("./assets/comments.json");
 
 var currentLine = 0;
@@ -62,10 +62,11 @@ export class CodeSpace extends React.Component {
     super(props);
 
     this.state = {
-      code: [
+      code: //this.props.answerCode.toString().split('\n')
+      [
         "get io;",
         "",
-        "global integer a = 5;",
+        "global integer a = 3;",
         "",
         "function main(in: ) out: no {",
         "integer b = 4;",
@@ -100,14 +101,16 @@ export class CodeSpace extends React.Component {
       currentLine: -1,
       lineData: [],
       vizData: this.props.getVizData,
-      commentData:
-        (comments.welcome+comments.externals).split(".").filter((i) => i !== ""),
+      commentData: (comments.welcome + comments.externals)
+        .split(".")
+        .filter((i) => i !== ""),
       commentTag: 0,
       popoverClass: "d-none",
+      answerCode: this.props.answerCode.toString().split('\n'),
     };
 
     repeat = 0;
-
+    
     this.onClickNext = this.onClickNext.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
     this.onClickStop = this.onClickStop.bind(this);
@@ -169,11 +172,10 @@ export class CodeSpace extends React.Component {
     if (next < codeOrder.length - 1) {
       if (currentLine < codeOrder[0]) {
         var blank = 0;
-        for (var i = currentLine; i < codeOrder[0]-1; i++) {
-          if(code[i+1] === ""){
+        for (var i = currentLine; i < codeOrder[0] - 1; i++) {
+          if (code[i + 1] === "") {
             blank++;
-          }
-          else{
+          } else {
             break;
           }
         }
@@ -204,7 +206,7 @@ export class CodeSpace extends React.Component {
   }
 
   onClickBack() {
-    var code =  this.state.code;
+    var code = this.state.code;
     if (currentLine <= codeOrder[0] && currentLine !== 0) {
       var blank = 0;
       console.log(currentLine);
@@ -215,12 +217,11 @@ export class CodeSpace extends React.Component {
           break;
         }
       }
-      currentLine -= blank+1;
-    }
-    else if(back >= 1) {
-       back--;
-       next = back;
-       currentLine = codeOrder[back];
+      currentLine -= blank + 1;
+    } else if (back >= 1) {
+      back--;
+      next = back;
+      currentLine = codeOrder[back];
     }
     if (codeOrder[back] !== codeOrder[back - 1]) {
       repeat = 0;
@@ -259,6 +260,10 @@ export class CodeSpace extends React.Component {
         if (next < codeOrder.length - 1) {
           this.onClickNext();
         } else {
+          currentLine = 0;
+          this.setState({ currentLine: currentLine });
+          next = codeOrder.indexOf(currentLine);
+          back = next;
           this.onClickStop();
         }
       }, 2000);
@@ -324,7 +329,7 @@ export class CodeSpace extends React.Component {
 
     if (code[line].includes("if") || code[line].includes("else")) {
       commentData += comments.conditions;
-    } else if(code[line].includes("global")) {
+    } else if (code[line].includes("global")) {
       commentData += comments.globals;
     } else if (code[line].includes("repeat")) {
       commentData += comments.loops;

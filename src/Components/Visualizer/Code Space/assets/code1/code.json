@@ -29,6 +29,5 @@
     "Function": "main",
     "Value": { "b": 4, "i": 4, "sum": 6 }
   },
-  { "Line": "Debuggee:17", "Function": "main", "Value": { "b": 4, "sum": 10 } },
-  { "Line": "Debuggee:18", "Function": "main", "Value": { "b": 4, "sum": 10 } }
+  { "Line": "Debuggee:17", "Function": "main", "Value": { "b": 4, "sum": 10 } }
 ]

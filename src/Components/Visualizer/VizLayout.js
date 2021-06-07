@@ -26,7 +26,6 @@ export class VizLayout extends React.Component {
     };
 
     this.handleCodeData = this.handleCodeData.bind(this);
-    console.log(this.state.answerCode);
   }
 
   handleCodeData(data, line, code, order) {
@@ -65,6 +64,7 @@ export class VizLayout extends React.Component {
             <Col className="col-3 p-3 outer" id="codeSpace">
               <CodeSpace
                 getCodeData={this.handleCodeData}
+                answerCode = {this.state.answerCode}
               />
             </Col>
             <Col className="col-8 p-3 outer" id="visualizer">

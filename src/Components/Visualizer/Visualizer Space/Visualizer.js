@@ -356,6 +356,7 @@ export class Visualizer extends React.Component {
     }
 
     if (line > 0) {
+      console.log(this.state.codeData);
       var codeData = this.state.codeData[0].Value;
       var func = this.state.codeData[0].Function;
       var data = [];
@@ -392,7 +393,7 @@ export class Visualizer extends React.Component {
       variables: variables,
       globals: gRender,
     };
-    //console.log(render);
+    //console.log(variables);
     return render;
   }
 
