@@ -74,7 +74,7 @@ export class CodeSpace extends React.Component {
         "sum = add(a,b);",
         "}",
         "if(a>b){",
-        "repeat(integer i; range: 0 to a; next: 1){",
+        "repeat(integer i; range: 0 to 5; next: 1){",
         "sum = sum + i;",
         "}",
         "}",

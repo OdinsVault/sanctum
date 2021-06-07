@@ -181,7 +181,7 @@ class Visualizer extends React.Component {
                 disabled={!this.state.isVisualizerLoading}
                 key="2"
               >
-                <VizLayout />
+                <VizLayout answerCode={this.state.answerCode}/>
               </TabPane>
             </Tabs>
           </Col>

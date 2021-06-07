@@ -481,8 +481,10 @@ export class Visualizer extends React.Component {
                 );
                 if (varIds.length !== 0) {
                   loops[r].data.end = varIds[0].value;
-                } else if (gIds !== 0) {
+                } else if (gIds.length !== 0) {
                   loops[r].data.end = gIds[0].value;
+                } else {
+                  loops[r].data.end = loops[r].data.endId;
                 }
               }
             }
@@ -513,8 +515,11 @@ export class Visualizer extends React.Component {
               var gIds = globals.filter((g) => g.name === loops[r].data.endId);
               if (varIds.length !== 0) {
                 loops[r].data.end = varIds[0].value;
-              } else if (gIds !== 0) {
+              } else if (gIds.length !== 0) {
                 loops[r].data.end = gIds[0].value;
+              }
+              else{
+                loops[r].data.end = loops[r].dataa.endId;
               }
 
               loops[r].functionLine = functions[j].line;

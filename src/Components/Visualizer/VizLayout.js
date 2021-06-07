@@ -22,9 +22,11 @@ export class VizLayout extends React.Component {
       codeOrder: [],
       key: -1,
       vizData: null,
+      answerCode: this.props.answerCode,
     };
 
     this.handleCodeData = this.handleCodeData.bind(this);
+    console.log(this.state.answerCode);
   }
 
   handleCodeData(data, line, code, order) {
