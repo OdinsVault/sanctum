@@ -130,6 +130,7 @@ class Question extends React.Component {
                 if (this.props.location.state === "compete") {
                     success = await runCompeteAnswer(this.state.selectedQuestion._id, submission)
                 } else {
+                    console.log(this.state.codeLang);
                     success = await runPracticeAnswer(this.state.selectedQuestion._id, submission)
                 }
                 if (success) {
@@ -162,6 +163,8 @@ class Question extends React.Component {
                     }
                 }
             }
+            //console.log(this.state.runCaseResult);
+
         } catch (e) {
             notification.error({message: "Error Code Execution!", description: e.message ? e.message : ""})
         }
@@ -361,15 +364,18 @@ class Question extends React.Component {
     translateCode = async () => {
         this.setState({ translationLoading: true });
         try {
+            var lang = this.state.codeLang === 'eng'? 'sn':'eng';
             const translated = await translateCode({
                 answer: this.state.answerCode || '',
                 lang: this.state.codeLang || 'eng'
             });
+
             this.setCode(translated.stdout);
+            this.setState({codeLang: lang});
         } catch (err) {
             notification.error({ message: 'Error!', description: err.message ? err.message : '' })
         }
-        this.setState({ translationLoading: false })
+        this.setState({ translationLoading: false });
     }
 
     async componentDidMount() {
@@ -534,7 +540,7 @@ class Question extends React.Component {
                                     <Row style={{ margin: '1rem auto' }}>
                                         <Col style={{ padding: '0.5rem 1rem' }}>From: </Col>
                                         <Col>
-                                            <Select style={{ width: 120 }} defaultValue={this.state.codeLang} onChange={(e) => this.setState({ codeLang: e })}>
+                                            <Select style={{ width: 120 }} value={this.state.codeLang} onChange={(e) => this.setState({ codeLang: e })}>
                                                 <Option value="eng">English</Option>
                                                 <Option value="sn">සිංහල</Option>
                                             </Select></Col>

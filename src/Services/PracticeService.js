@@ -33,7 +33,9 @@ export async function runPracticeAnswer (qid,code){
     const endpoint = `/answer/practice-run/${qid}`;
     let body = {
         answer:code.answer,
+        lang: code.lang
     }
+    console.log(body);
     let header = getToken();
     let api = await API();
     return  await api.post(endpoint,body,header);
@@ -45,7 +47,6 @@ export async function submitPracticeAnswer (qid,submission){
     let api = await API();
     return await api.post(endpoint,submission,header);
 }
-
 
 
 function getToken (){
