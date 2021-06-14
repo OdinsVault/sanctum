@@ -21,8 +21,8 @@ import {
   faFastBackward,
 } from "@fortawesome/free-solid-svg-icons";
 
-var data = require("./assets/code3/code.json");
-var sourceMap = require("./assets/code3/sourceMap.json");
+//var data = require("../code.json");
+//var sourceMap = require("../sourceMap.json");
 var comments = require("./assets/comments.json");
 
 var currentLine = 0;
@@ -62,11 +62,11 @@ export class CodeSpace extends React.Component {
     super(props);
 
     this.state = {
-      code: //this.props.answerCode.toString().split('\n')
-      [
+      code: this.props.answerCode.toString().split("\n"),
+      /* [
         "get io;",
         "",
-        "global integer a = 3;",
+        "global integer a = 5;",
         "",
         "function main(in: ) out: no {",
         "integer b = 4;",
@@ -85,7 +85,7 @@ export class CodeSpace extends React.Component {
         "function add(in: integer x, integer y) out: integer {",
         "return x + y;",
         "}",
-        /* "function main(in: ) out: no {",
+        "function main(in: ) out: no {",
         "integer a = 3;",
         "integer b = 4;",
         "integer sum = 0;",
@@ -96,9 +96,9 @@ export class CodeSpace extends React.Component {
         "sum = sum + 1;",
         "}",
         'display("sum =" + sum);',
-        "}", */
-      ],
-      currentLine: -1,
+        "}",
+      ], */
+      currentLine: this.props.startLine,
       lineData: [],
       vizData: this.props.getVizData,
       commentData: (comments.welcome + comments.externals)
@@ -106,11 +106,14 @@ export class CodeSpace extends React.Component {
         .filter((i) => i !== ""),
       commentTag: 0,
       popoverClass: "d-none",
-      answerCode: this.props.answerCode.toString().split('\n'),
+      answerCode: this.props.answerCode.toString().split("\n"),
+      runtimeData: JSON.parse(this.props.runtimeData),
+      sourceMap: this.props.sourceMap,
     };
 
+    console.log(this.state.runtimeData[0]);
     repeat = 0;
-    
+
     this.onClickNext = this.onClickNext.bind(this);
     this.onClickBack = this.onClickBack.bind(this);
     this.onClickStop = this.onClickStop.bind(this);
@@ -128,6 +131,9 @@ export class CodeSpace extends React.Component {
   }
 
   mapCodeOrder() {
+    const data = this.state.runtimeData;
+    const sourceMap = this.state.sourceMap;
+
     codeOrder = [];
     data.map((obj) => {
       var line = sourceMap.filter(
@@ -135,6 +141,13 @@ export class CodeSpace extends React.Component {
       );
       codeOrder.push(line[0].Simply - 1);
     });
+    //codeOrder[codeOrder.length-1] = codeOrder[codeOrder.length-1] - 2;
+    /* codeOrder.pop();
+    var last = codeOrder.pop();
+    codeOrder.push(last-3); */
+    console.log(sourceMap);
+
+    console.log(codeOrder);
     next = codeOrder.indexOf(currentLine);
     back = next;
 
@@ -209,7 +222,7 @@ export class CodeSpace extends React.Component {
     var code = this.state.code;
     if (currentLine <= codeOrder[0] && currentLine !== 0) {
       var blank = 0;
-      console.log(currentLine);
+      //console.log(currentLine);
       for (var i = currentLine; i >= 0; i--) {
         if (code[i - 1] === "") {
           blank++;
@@ -282,17 +295,27 @@ export class CodeSpace extends React.Component {
   }
 
   onVisualizeData(sourceLine, repeat) {
+    const data = this.state.runtimeData;
+    const sourceMap = this.state.sourceMap;
+    console.log(data);
+
     var source = sourceMap.filter((i) => i.Simply === sourceLine + 1);
     if (source !== undefined) {
-      var newData;
+      var newData = [];
       var lineData = [];
       if (sourceLine < codeOrder[0]) {
         newData = [];
         newData.push(data[0]);
       } else {
+        /* for (var i in data) {
+          console.log(data[i].Line);
+          if (parseInt(data[i].Line.slice(9)) === source[0].Java) {
+            newData.push(data[i]);
+          }
+        } */
         newData = data.filter(
-          (i) => parseInt(i.Line.slice(9)) === source[0].Java
-        );
+                 (i) => parseInt(i.Line.slice(9)) === source[0].Java
+               );
       }
       lineData.push(newData[repeat]);
       //console.log(lineData);
@@ -317,7 +340,7 @@ export class CodeSpace extends React.Component {
     var commentData = "";
     var funcName = "";
 
-    if (line !== 0) {
+    if (line !== 0 && code[line]!==undefined) {
       if (code[line].includes("function")) {
         funcName = code[line].slice(
           code[line].lastIndexOf("function") + 9,
@@ -327,30 +350,33 @@ export class CodeSpace extends React.Component {
       }
     }
 
-    if (code[line].includes("if") || code[line].includes("else")) {
-      commentData += comments.conditions;
-    } else if (code[line].includes("global")) {
-      commentData += comments.globals;
-    } else if (code[line].includes("repeat")) {
-      commentData += comments.loops;
-    } else if (code[line].includes("display")) {
-      commentData += comments.prints;
-    } else if (code[line].includes("input()")) {
-      commentData += comments.keyins;
-    } else if (code[line].includes("get ")) {
-      commentData += comments.externals;
-    } else if (code[line].includes("return ")) {
-      commentData += comments.return;
-    } else {
-      for (var i in dataTypes) {
-        if (code[line].includes(dataTypes[i])) {
-          commentData +=
-            comments.variables +
-            " This variables is a " +
-            dataTypes[i] +
-            ". " +
-            comments.varTable;
-          break;
+    if(code[line] !== undefined){
+
+      if (code[line].includes("if") || code[line].includes("else")) {
+        commentData += comments.conditions;
+      } else if (code[line].includes("global")) {
+        commentData += comments.globals;
+      } else if (code[line].includes("repeat")) {
+        commentData += comments.loops;
+      } else if (code[line].includes("display")) {
+        commentData += comments.prints;
+      } else if (code[line].includes("input()")) {
+        commentData += comments.keyins;
+      } else if (code[line].includes("get ")) {
+        commentData += comments.externals;
+      } else if (code[line].includes("return ")) {
+        commentData += comments.return;
+      } else {
+        for (var i in dataTypes) {
+          if (code[line].includes(dataTypes[i])) {
+            commentData +=
+              comments.variables +
+              " This variables is a " +
+              dataTypes[i] +
+              ". " +
+              comments.varTable;
+            break;
+          }
         }
       }
     }

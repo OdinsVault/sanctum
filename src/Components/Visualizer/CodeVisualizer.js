@@ -11,6 +11,7 @@ import {
   Button,
   Divider,
   Tabs,
+  notification
 } from "antd";
 import { SettingTwoTone, SlidersFilled } from "@ant-design/icons";
 import { withRouter } from "react-router";
@@ -23,9 +24,11 @@ import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/theme-solarized_light";
 import { CheckLogOnStatus } from "../../Services/UserLoginService";
+import { getCodeVisualize } from "../../Services/VisualizerService";
 
 const { Panel } = Collapse;
 const { TabPane } = Tabs;
+var key = 1;
 
 class Visualizer extends React.Component {
   constructor(props) {
@@ -34,10 +37,15 @@ class Visualizer extends React.Component {
       answerCode: "", //code
       codeLoading: false, //page loader
       isVisualizerLoading: false, //visualize button submit loader
+      visualizeData: null,
       editorTheme: "solarized_light",
       editorFontSize: 14,
       activeTab: "1",
+      sourceMap: null,
+      key: -1,
     };
+
+    //console.log(this.state.visualizeData);
   }
 
   enableDarkMode = (checked) => {
@@ -64,11 +72,49 @@ class Visualizer extends React.Component {
     });
   };
 
-  onVisualizeClick = () => {
+  reRender = () => {
+    // calling the forceUpdate() method
+    this.forceUpdate();
+  };
+
+  /* onVisualizeClick = () => {
+    var data = await getCodeVisualize();
     this.setState({
       isVisualizerLoading: true,
       activeTab: "2",
     });
+  }; */
+
+  onVisualizeClick = async () => {
+    var data = null;
+    this.setState({
+      isVisualizerLoading: true,
+      answerCode: this.refs.aceEditor.editor.getValue(),
+    });
+    try {
+      data = await getCodeVisualize(this.state.answerCode);
+
+      if (data.status) {
+        key++;
+        this.setState({
+          visualizeData: data.consoleResult.runtimeData,
+          answerCode: data.consoleResult.answer,
+          sourceMap: data.sourceMap,
+          isVisualizerLoading: false,
+          key: key,
+          activeTab: "2",
+        });
+
+        //this.reRender();
+      }
+    } catch (e) {
+      notification.error({
+        message: "Error!",
+        description: e.message ? e.message : "Error occurred while visualizing",
+      });
+
+      this.setState({ isVisualizerLoading: false });
+    }
   };
 
   handleTabClick = (key) => {
@@ -98,8 +144,9 @@ class Visualizer extends React.Component {
     }
   }
 
+  
   render() {
-    return (
+     return (
       <div>
         <Card>
           {/* <PageHeader className="site-page-header" title="Code Visualizer" /> */}
@@ -107,6 +154,7 @@ class Visualizer extends React.Component {
             <Tabs
               activeKey={this.state.activeTab}
               onTabClick={this.handleTabClick}
+              //onChange={this.reRender}
             >
               <TabPane tab="Code" key="1">
                 <Collapse
@@ -126,7 +174,10 @@ class Visualizer extends React.Component {
                     <Row>
                       <Col span={6}>
                         Dark Mode :{" "}
-                        <Switch size={"small"} onChange={this.enableDarkMode} />
+                        <Switch
+                          size={"small"}
+                          onChange={this.enableDarkMode}
+                        />
                       </Col>
                       <Col span={8}>
                         Font Size :{" "}
@@ -141,9 +192,10 @@ class Visualizer extends React.Component {
                     </Row>
                   </Panel>
                 </Collapse>
-                <br></br>
+                <br />
                 <Spin spinning={this.state.codeLoading}>
                   <AceEditor
+                    ref="aceEditor"
                     mode="java"
                     theme={this.state.editorTheme}
                     placeholder="Your Simply code here"
@@ -181,7 +233,12 @@ class Visualizer extends React.Component {
                 disabled={!this.state.isVisualizerLoading}
                 key="2"
               >
-                <VizLayout answerCode={this.state.answerCode}/>
+                <VizLayout
+                  key={key}
+                  answerCode={this.state.answerCode}
+                  runtimeData={this.state.visualizeData}
+                  sourceMap={this.state.sourceMap}
+                />
               </TabPane>
             </Tabs>
           </Col>

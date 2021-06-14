@@ -35,7 +35,7 @@ export class Visualizer extends React.Component {
       vizData: null,
       activeTab: 0,
     };
-
+    console.log(this.state);
     imports = [];
     variables = [];
     loops = [];
@@ -89,7 +89,8 @@ export class Visualizer extends React.Component {
         codeOrder.slice(0, codeOrder.lastIndexOf(line + 1))
       );
     }
-    //console.log(traversed);
+    console.log(traversed);
+    console.log(functions);
   }
 
   switchTab() {
@@ -231,7 +232,7 @@ export class Visualizer extends React.Component {
         );
         var data = {
           line: i + 1,
-          name: name,
+          name: name.trim(),
           in: inputData,
           out: fout,
           value: null,
@@ -356,7 +357,7 @@ export class Visualizer extends React.Component {
     }
 
     if (line > 0) {
-      console.log(this.state.codeData);
+      //console.log(this.state.codeData);
       var codeData = this.state.codeData[0].Value;
       var func = this.state.codeData[0].Function;
       var data = [];
@@ -377,6 +378,8 @@ export class Visualizer extends React.Component {
         }
         count++;
       }
+      //console.log(data);
+      //console.log(variables);
 
       for (var i in variables) {
         variables[i].functionData = [];
@@ -393,7 +396,7 @@ export class Visualizer extends React.Component {
       variables: variables,
       globals: gRender,
     };
-    //console.log(variables);
+    console.log(render);
     return render;
   }
 
