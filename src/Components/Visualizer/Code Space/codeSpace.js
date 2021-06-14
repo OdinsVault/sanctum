@@ -111,7 +111,7 @@ export class CodeSpace extends React.Component {
       sourceMap: this.props.sourceMap,
     };
 
-    console.log(this.state.runtimeData[0]);
+    //console.log(this.state.runtimeData[0]);
     repeat = 0;
 
     this.onClickNext = this.onClickNext.bind(this);
@@ -145,9 +145,9 @@ export class CodeSpace extends React.Component {
     /* codeOrder.pop();
     var last = codeOrder.pop();
     codeOrder.push(last-3); */
-    console.log(sourceMap);
+    //console.log(sourceMap);
 
-    console.log(codeOrder);
+    //console.log(codeOrder);
     next = codeOrder.indexOf(currentLine);
     back = next;
 
@@ -297,7 +297,7 @@ export class CodeSpace extends React.Component {
   onVisualizeData(sourceLine, repeat) {
     const data = this.state.runtimeData;
     const sourceMap = this.state.sourceMap;
-    console.log(data);
+    //console.log(data);
 
     var source = sourceMap.filter((i) => i.Simply === sourceLine + 1);
     if (source !== undefined) {

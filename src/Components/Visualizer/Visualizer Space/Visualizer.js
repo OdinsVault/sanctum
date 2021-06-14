@@ -121,6 +121,7 @@ export class Visualizer extends React.Component {
     printData = [];
     var line = this.state.lineNumber;
     var codeBlock = this.state.code;
+    var codeOrder = this.state.codeOrder;
     var data = "";
 
     for (var i = 1; i < codeBlock.length - 1; i++) {
@@ -157,6 +158,24 @@ export class Visualizer extends React.Component {
         });
 
         //console.log(printData);
+        /* if (codeOrder.filter((j) => j === i).length === 0) {
+          var index = 0;
+          for (var d = 1; d < codeOrder.length - 1; d++) {
+            index++;
+            if (i > codeOrder[d - 1] && i < codeOrder[d + 1]) {
+              break;
+            }
+            console.log(index);
+          }
+          var prelines = codeOrder.slice(0, index+1);
+          console.log(prelines);
+          var postlines = codeOrder.slice(index+1);
+          console.log(postlines);
+          prelines.push(i);
+          codeOrder = prelines.concat(postlines);
+          console.log(codeOrder);
+          this.setState({codeOrder: codeOrder});
+        } */
       }
     }
 
@@ -168,6 +187,7 @@ export class Visualizer extends React.Component {
         render.push(printData[p]);
       }
     }
+    console.log(render);
     return render;
   }
 
@@ -396,7 +416,7 @@ export class Visualizer extends React.Component {
       variables: variables,
       globals: gRender,
     };
-    console.log(render);
+    //console.log(render);
     return render;
   }
 
@@ -521,9 +541,8 @@ export class Visualizer extends React.Component {
                 loops[r].data.end = varIds[0].value;
               } else if (gIds.length !== 0) {
                 loops[r].data.end = gIds[0].value;
-              }
-              else{
-                loops[r].data.end = loops[r].dataa.endId;
+              } else {
+                loops[r].data.end = loops[r].data.endId;
               }
 
               loops[r].functionLine = functions[j].line;
